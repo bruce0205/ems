@@ -10,6 +10,7 @@ var users = require('./routes/users');
 var machine = require('./routes/machine');
 var mold = require('./routes/mold');
 var manufacture = require('./routes/manufacture');
+var login = require('./routes/login');
 
 var app = express();
 
@@ -19,7 +20,7 @@ app.set('view engine', 'hbs');
 app.set('view options', { layout: 'layout' }); // this is defalut value, you can ignore this setting.
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -31,6 +32,7 @@ app.use('/users', users);
 app.use('/machine', machine);
 app.use('/mold', mold);
 app.use('/manufacture', manufacture);
+app.use('/login', login);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
