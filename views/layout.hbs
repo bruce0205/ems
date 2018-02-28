@@ -148,11 +148,11 @@
   <script src="../build/js/custom.min.js"></script>
   <script>
     $(document).ready(function () {
-      var table = $('#moldTable').DataTable({
-        'ajax': 'https://api.myjson.com/bins/qgcu',
-        'rowsGroup': [2]
+      var moldTable = $('#moldTable').DataTable({
+        'rowsGroup': [0, 1],
       });
-      $('#manufactureTable').DataTable({
+
+      var manufactureTable = $('#manufactureTable').DataTable({
         "lengthMenu": [10, 20, 50, 75, 100],
         "pageLength": 10,
         "autoWidth": false,
