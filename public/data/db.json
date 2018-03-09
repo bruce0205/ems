@@ -1,0 +1,24 @@
+{
+    "data": [
+        {
+            "id": "1",
+            "name": "ZAUO062A-P02-01.T1",
+            "position": "M2"
+        },
+        {
+            "id": "2",
+            "name": "ZAUO062A-P02-02.T1",
+            "position": "M19"
+        },
+        {
+            "id": "3",
+            "name": "ZAUO062A-P02-98.T1",
+            "position": "M20"
+        },
+        {
+            "id": "4",
+            "name": "ZAUO062A-P02-98.T1",
+            "position": "M20"
+        }
+    ]
+}
