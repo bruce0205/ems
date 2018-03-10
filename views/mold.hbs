@@ -226,6 +226,9 @@
 </div>
 
 <script>
-
-    console.log('aaaa');
+    $(document).ready(function () {
+        var moldTable = $('#moldTable').DataTable({
+            'rowsGroup': [0, 1],
+        });
+    });
 </script>

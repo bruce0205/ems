@@ -247,4 +247,16 @@
     </div>
   </div>
 </div>
-</div>
+<script>
+  $(document).ready(function () { 
+    var manufactureTable = $('#manufactureTable').DataTable({
+      "lengthMenu": [10, 20, 50, 75, 100],
+      "pageLength": 10,
+      "autoWidth": false,
+      'scrollX': true,
+      "columnDefs": [
+        { width: '16%', targets: 0 }
+      ],
+    });
+  });
+</script>
