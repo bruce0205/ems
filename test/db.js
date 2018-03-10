@@ -44,8 +44,6 @@ sequelize.query(`
 
 // mold
 sequelize.query(`
-    
-
 select pv1.mvs_pn,pv1.mvs_mold,pv1.mvs_hole1,pv1.mvs_hole2,
 pv1.unPivotcol as pn_type,pv1.pn,pv2.pn_date,pv3.pn_count from
 (
@@ -187,7 +185,6 @@ mvs_tpe
 
 // manufacture
 sequelize.query(`
-   
 select d.maf_num
 ,d.maf_pn
 ,d.maf_time
