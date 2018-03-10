@@ -1,11 +1,12 @@
 var express = require('express');
+var Sequelize = require('sequelize');
 var router = express.Router();
 
 module.exports = (app, db) => {
   router.get('/', function (req, res, next) {
 
     // machine
-    sequelize.query(`
+    db.query(`
 select s.mah_num,
 s.mah_sta,
 s.mah_pn,
