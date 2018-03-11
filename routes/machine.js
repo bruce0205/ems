@@ -12,7 +12,7 @@ module.exports = (app, db) => {
   });
 
   router.get('/ajax', function (req, res, next) {
-    if (process.env.NODE_ENV == 'prod' || process.env == 'test') {
+    if (process.env.NODE_ENV == 'prod' || process.env.NODE_ENV == 'test') {
       db.query(`
         select 
         s.mah_num,
@@ -21,7 +21,7 @@ module.exports = (app, db) => {
         s.mah_mold,
         s.mah_cou,
         s.mah_result,
-        (d.maf_oncount-d.maf_pke) / d.maf_oncount
+        (d.maf_oncount-d.maf_pke) / d.maf_oncount AS mah_defect
         from MAH_STA s left join MAF_DATA d on d.maf_num = s.mah_num
       `, {
           raw: false, // Set this to true if you don't have a model definition for your query.

@@ -108,7 +108,7 @@
 
     /* Formatting function for row details - modify as you need */
     function format(datatableRow, data) {
-        var url = '/mold/ajax/second'; // data 為 queryString
+        var url = `/mold/ajax/second?pn=${data.mvs_pn}&mold=${data.mvs_mold}`; // data 為 queryString
 
         var thStyle = { 'background-color': '#eeeee0', 'padding': '4px 8px' }; // E4F1D4
         var tdStyle = { 'background-color': '#fffff0', 'padding': '4px 8px' }; // F1F8E9

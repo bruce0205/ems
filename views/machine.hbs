@@ -69,7 +69,7 @@
                 ul.append(this.genLi(item['mah_mold'], 'fa fa-square grey'));
                 ul.append(this.genLi(item['mah_cou'], 'fa fa-square blue'));
                 ul.append(this.genLi(item['mah_result'], 'fa fa-square green'));
-                ul.append(this.genLi(item['mah_defect'], 'fa fa-square aero'));
+                ul.append(this.genLi(item['mah_defect'] + ' %', 'fa fa-square aero'));
                 contentDiv.append(ul);
 
                 titleDiv.append($('<h2>').append(item['mah_num'])).append($('<div>').addClass('clearfix'));
