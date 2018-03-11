@@ -21,7 +21,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 app.set('view options', { layout: 'layout' }); // this is defalut value, you can ignore this setting.
 
-
 hbs.registerHelper('json', function (obj) {
   return JSON.stringify(obj);;
 });
@@ -38,8 +37,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 machine(app, db);
-app.use('/mold', mold);
-app.use('/manufacture', manufacture);
+mold(app, db);
+manufacture(app, db);
 app.use('/login', login);
 
 // catch 404 and forward to error handler

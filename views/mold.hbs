@@ -1,5 +1,18 @@
 <!-- jQuery -->
 <script src="../vendors/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<style>
+    td.details-control {
+        background: url('http://i.imgur.com/SD7Dz.png') no-repeat center center;
+        cursor: pointer;
+    }
+
+    tr.shown td.details-control {
+        background: url('http://i.imgur.com/d4ICC.png') no-repeat center center;
+    }
+</style>
 
 <div class="right_col" role="main">
     <div class="">
@@ -26,209 +39,168 @@
                         <p class="text-muted font-13 m-b-30">
 
                         </p>
-                        <table id="moldTable" class="table table-striped table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>機種</th>
-                                    <th>模號</th>
-                                    <th>零件</th>
-                                    <th>Count</th>
-                                    <th>更換時間</th>
-                                    <th>更換</th>
-                                    <th>Threshold</th>
-                                    <th>History</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>ZAUO062A-P02-01.T1</td>
-                                    <td>M2</td>
-                                    <td>LLK15-001-62A01</td>
-                                    <td>2205672</td>
-                                    <td>2017-12-13 17:20</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info btn-xs">Change</button>
-                                    </td>
-                                    <td>3000000</td>
-                                    <td>
-                                        <button type="button" class="btn btn-warning btn-xs">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>ZAUO062A-P02-01.T1</td>
-                                    <td>M2</td>
-                                    <td>LLK15-001-62A02</td>
-                                    <td>2205672</td>
-                                    <td>2017-12-13 17:20</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info btn-xs">Change</button>
-                                    </td>
-                                    <td>3000000</td>
-                                    <td>
-                                        <button type="button" class="btn btn-warning btn-xs">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>ZAUO062A-P02-01.T1</td>
-                                    <td>M2</td>
-                                    <td>LLK15-001-62A03</td>
-                                    <td>2300000</td>
-                                    <td>2017-12-13 17:20</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info btn-xs">Change</button>
-                                    </td>
-                                    <td>3000000</td>
-                                    <td>
-                                        <button type="button" class="btn btn-warning btn-xs">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>ZAUO062A-P02-01.T1</td>
-                                    <td>M2</td>
-                                    <td>LLK15-001-62A04</td>
-                                    <td>2300000</td>
-                                    <td>2017-12-13 17:20</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info btn-xs">Change</button>
-                                    </td>
-                                    <td>3000000</td>
-                                    <td>
-                                        <button type="button" class="btn btn-warning btn-xs">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>ZAUO062A-P02-01.T1</td>
-                                    <td>M2</td>
-                                    <td>LLK15-001-62A05</td>
-                                    <td>320000</td>
-                                    <td>2017-12-13 17:20</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info btn-xs">Change</button>
-                                    </td>
-                                    <td>3000000</td>
-                                    <td>
-                                        <button type="button" class="btn btn-warning btn-xs">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>ZAUO062A-P02-01.T1</td>
-                                    <td>M2</td>
-                                    <td>LLK15-001-62A06</td>
-                                    <td>320000</td>
-                                    <td>2017-12-13 17:20</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info btn-xs">Change</button>
-                                    </td>
-                                    <td>50000</td>
-                                    <td>
-                                        <button type="button" class="btn btn-warning btn-xs">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>ZAUO062A-P02-01.T1</td>
-                                    <td>M2</td>
-                                    <td>LLK15-001-62A07</td>
-                                    <td>2205672</td>
-                                    <td>2017-12-13 17:20</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info btn-xs">Change</button>
-                                    </td>
-                                    <td>50000</td>
-                                    <td>
-                                        <button type="button" class="btn btn-warning btn-xs">View</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>ZAUO062A-P02-01.T1</td>
-                                    <td>M2</td>
-                                    <td>LLK15-001-62A08</td>
-                                    <td>2205672</td>
-                                    <td>2017-12-13 17:20</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info btn-xs">Change</button>
-                                    </td>
-                                    <td>3000000</td>
-                                    <td>
-                                        <button type="button" class="btn btn-warning btn-xs">View</button>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>ZAUO062A-P02-02.T1</td>
-                                    <td>M19</td>
-                                    <td>LLK15-001-52A01</td>
-                                    <td>30000</td>
-                                    <td>2017-12-13 18:20</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info btn-xs">Change</button>
-                                    </td>
-                                    <td>12300</td>
-                                    <td>
-                                        <button type="button" class="btn btn-warning btn-xs">View</button>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>ZAUO062A-P02-98.T1</td>
-                                    <td>M20</td>
-                                    <td>LLK16-009-72A01</td>
-                                    <td>40000</td>
-                                    <td>2017-12-14 18:20</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info btn-xs">Change</button>
-                                    </td>
-                                    <td>300</td>
-                                    <td>
-                                        <button type="button" class="btn btn-warning btn-xs">View</button>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>ZAUO062A-P02-98.T1</td>
-                                    <td>M20</td>
-                                    <td>LLK16-009-72A02</td>
-                                    <td>58000</td>
-                                    <td>2017-12-14 18:20</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info btn-xs">Change</button>
-                                    </td>
-                                    <td>89000</td>
-                                    <td>
-                                        <button type="button" class="btn btn-warning btn-xs">View</button>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>ZAUO062A-P02-98.T1</td>
-                                    <td>M20</td>
-                                    <td>LLK16-009-72A03</td>
-                                    <td>43000</td>
-                                    <td>2017-12-14 18:20</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info btn-xs">Change</button>
-                                    </td>
-                                    <td>567300</td>
-                                    <td>
-                                        <button type="button" class="btn btn-warning btn-xs">View</button>
-                                    </td>
-                                </tr>
-
-                            </tbody>
+                        <table id="moldTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead></thead>
+                            <tbody></tbody>
                         </table>
-
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
 
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm">Small modal</button>
+
+    <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm" style="width: 500px">
+            <div class="modal-content" style="top:100px">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 id="modalTitle" class="modal-title">mvs_die01 登錄更換記錄</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">User</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" id="first-name" required="required" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">更換時間</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" id="last-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Threshold</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" id="last-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Alarm %</label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" id="last-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+
+            </div>
         </div>
     </div>
 </div>
 
 <script>
+    function setChangeModal(pnType) {
+        $("#modalTitle").html(`${pnType} 登錄更換記錄`);
+    }
+
+    /* Formatting function for row details - modify as you need */
+    function format(datatableRow, data) {
+        var url = '/mold/ajax/second'; // data 為 queryString
+
+        var thStyle = { 'background-color': '#eeeee0', 'padding': '4px 8px' }; // E4F1D4
+        var tdStyle = { 'background-color': '#fffff0', 'padding': '4px 8px' }; // F1F8E9
+        var tableAttribute = {};
+        var tableStyle = {};
+
+        var table = $('<table>').attr(tableAttribute).addClass('container').css(tableStyle);
+        var tr1 = $('<tr>');
+
+        tr1.append($('<th>').css(thStyle).append('零件'))
+            .append($('<th>').css(thStyle).append('Count'))
+            .append($('<th>').css(thStyle).append('更換時間'))
+            .append($('<th>').css(thStyle).append('更換'))
+            .append($('<th>').css(thStyle).append('Threshold'))
+            .append($('<th>').css(thStyle).append('History'));
+        table.append(tr1);
+
+        fetch(url, {
+            method: 'GET'
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            data.forEach((item, index) => {
+                console.log(item);
+                let contentTr = $('<tr>');
+                let changeButton = $('<button>').addClass('btn btn-info btn-xs').attr({ "id": `changeButton_${index}`, "data-toggle": "modal", "data-target": ".bs-example-modal-sm" }).append('Change'); // add click event
+                let historyButton = $('<button>').addClass('btn btn-warning btn-xs').append('View'); // add click event
+
+                changeButton.on('click', () => $("#modalTitle").html(`${item["pn_type"]} 登錄更換記錄`));
+
+                contentTr.append($('<td>').css(tdStyle).append(item["pn_type"]))
+                    .append($('<td>').css(tdStyle).append(item["pn_count"]))
+                    .append($('<td>').css(tdStyle).append(item["pn_date"]))
+                    .append($('<td>').css(tdStyle).append(changeButton))
+                    .append($('<td>').css(tdStyle).append(''))
+                    .append($('<td>').css(tdStyle).append(historyButton));
+                table.append(contentTr);
+            });
+            datatableRow.child(table).show();
+        }).catch((err) => {
+            console.error(err);
+        });
+    }
+
     $(document).ready(function () {
-        var moldTable = $('#moldTable').DataTable({
-            'rowsGroup': [0, 1],
+        var table = $('#moldTable').DataTable({
+            "ajax": "/mold/ajax/first",
+            "lengthMenu": [10, 20, 50, 75, 100],
+            "pageLength": 10,
+            "autoWidth": false,
+            "columnDefs": [
+                { targets: '_all', width: '26%' },
+                { targets: '_all', orderable: false },
+                { targets: '_all', searchable: false }
+            ],
+            "columns": [
+                {
+                    "className": 'details-control',
+                    "orderable": false,
+                    "data": null,
+                    "width": "8%",
+                    "defaultContent": ''
+                },
+                {
+                    "title": "機種",
+                    "data": "mvs_pn",
+                    "width": "52%",
+                },
+                {
+                    "title": "模具",
+                    "data": "mvs_mold",
+                    "width": "40%",
+                }
+            ],
+            "order": [[1, 'asc']]
+        });
+
+        // Add event listener for opening and closing details
+        $('#moldTable tbody').on('click', 'td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
+                // Open this row
+                format(row, row.data());
+                tr.addClass('shown');
+            }
         });
     });
 </script>

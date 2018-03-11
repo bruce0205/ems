@@ -1,9 +1,10 @@
 const Sequelize = require('sequelize');
+const config = require('config');
 
-const sequelize = new Sequelize('OeeAPP', 'sa', '123456', {
-  host: 'localhost',
+const sequelize = new Sequelize(config.get('db.database'), config.get('db.username'), config.get('db.password'), {
+  host: config.get('db.host'),
   dialect: 'mssql',
-  port: 1433, // Default port
+  port: config.get('db.port'), // Default port
   operatorsAliases: false,
   // similar for sync: you can define this to always force sync for models
   sync: { force: false },

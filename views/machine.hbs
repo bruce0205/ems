@@ -80,11 +80,18 @@
     }());
 
     $(document).ready(function () {
-        var data = JSON.parse('{{{json data}}}');;
-        data.forEach((item, index) => {
-            console.log(item);
-            renderModule.render(item);
+        var url = '/machine/ajax';
+        fetch(url, {
+            method: 'GET'
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            data.forEach((item, index) => {
+                console.log(item);
+                renderModule.render(item);
+            });
+        }).catch((err) => {
+            console.error(err);
         });
-
     });
 </script>

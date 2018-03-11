@@ -4,6 +4,9 @@
     white-space: nowrap;
   }
 </style>
+<!-- jQuery -->
+<script src="../vendors/jquery/dist/jquery.min.js"></script>
+
 <div class="right_col" role="main">
   <div class="">
     <div class="page-title">
@@ -96,150 +99,8 @@
             <div class="ln_solid"></div>
 
             <table id="manufactureTable" class="table table-striped table-bordered">
-              <thead>
-                <tr>
-                  <th>num</th>
-                  <th>pn</th>
-                  <th>time</th>
-                  <th>date</th>
-                  <th>hole1</th>
-                  <th>hole2</th>
-                  <th>mold</th>
-                  <th>cytime</th>
-                  <th>cto</th>
-                  <th>pke</th>
-                  <th>onrest</th>
-                  <th>oncount</th>
-                  <th>ondate</th>
-                  <th>ofresult</th>
-                  <th>ofreason</th>
-                  <th>ofcount</th>
-                  <th>ofdate</th>
-                </tr>
-              </thead>
-
-
-              <tbody>
-                <tr>
-                  <td>S1</td>
-                  <td>ZAUO062A-P02-01.T1</td>
-                  <td></td>
-                  <td></td>
-                  <td>L16-1</td>
-                  <td>L16-2</td>
-                  <td>M1</td>
-                  <td>10</td>
-                  <td>15</td>
-                  <td>225</td>
-                  <td>生產</td>
-                  <td>999</td>
-                  <td>2017-12-21</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>S2</td>
-                  <td>ZAUO062A-P02-01.T2</td>
-                  <td></td>
-                  <td></td>
-                  <td>L7-1</td>
-                  <td></td>
-                  <td>M1</td>
-                  <td>40</td>
-                  <td>1</td>
-                  <td>60</td>
-                  <td>試模</td>
-                  <td>5000</td>
-                  <td>2017-12-21</td>
-                  <td>生產完畢</td>
-                  <td></td>
-                  <td>6500</td>
-                  <td>2017-12-21</td>
-                </tr>
-
-                <tr>
-                  <td>T5</td>
-                  <td>ZAUO013A-P02-01.T1</td>
-                  <td></td>
-                  <td></td>
-                  <td>L2-1</td>
-                  <td>L2-2</td>
-                  <td>M1</td>
-                  <td>10</td>
-                  <td>36</td>
-                  <td>540</td>
-                  <td>生產</td>
-                  <td>5000</td>
-                  <td>2017-12-21</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-
-                <tr>
-                  <td>S6</td>
-                  <td>ZAUO062A-P02-01.T1</td>
-                  <td></td>
-                  <td></td>
-                  <td>L8-1</td>
-                  <td>L8-2</td>
-                  <td>M1</td>
-                  <td>20</td>
-                  <td>4</td>
-                  <td>60</td>
-                  <td>生產</td>
-                  <td>5000</td>
-                  <td>2017-12-21</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-
-                <tr>
-                  <td>S2</td>
-                  <td>ZAUO050NV-P02-01.T3</td>
-                  <td></td>
-                  <td></td>
-                  <td>L1-1</td>
-                  <td>L1-2</td>
-                  <td>M1</td>
-                  <td>30</td>
-                  <td>1</td>
-                  <td>40</td>
-                  <td>生產</td>
-                  <td>5000</td>
-                  <td>2017-12-25</td>
-                  <td>試模完畢</td>
-                  <td></td>
-                  <td>5000</td>
-                  <td>2017-12-27</td>
-                </tr>
-
-                <tr>
-                  <td>S4</td>
-                  <td>ZAUO062A-P02-98.T1</td>
-                  <td></td>
-                  <td></td>
-                  <td>L8-1</td>
-                  <td>L8-2</td>
-                  <td>M1</td>
-                  <td>20</td>
-                  <td>400</td>
-                  <td>60</td>
-                  <td>生產</td>
-                  <td>1000</td>
-                  <td>2017-12-25</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-              </tbody>
-
+              <thead></thead>
+              <tbody></tbody>
             </table>
           </div>
         </div>
@@ -248,15 +109,93 @@
   </div>
 </div>
 <script>
-  $(document).ready(function () { 
+  $(document).ready(function () {
     var manufactureTable = $('#manufactureTable').DataTable({
+      "ajax": "/manufacture/ajax",
       "lengthMenu": [10, 20, 50, 75, 100],
       "pageLength": 10,
       "autoWidth": false,
       'scrollX': true,
       "columnDefs": [
-        { width: '16%', targets: 0 }
+        { targets: '_all', width: '26%' },
+        { targets: '_all', orderable: false },
+        { targets: '_all', searchable: false }
       ],
+      "columns": [
+        {
+          "title": "num",
+          "data": "maf_num",
+          "orderable": true,
+        },
+        {
+          "title": "pn",
+          "data": "maf_pn",
+          "orderable": true,
+        },
+        {
+          "title": "time",
+          "data": "maf_time",
+        },
+        {
+          "title": "date",
+          "data": "maf_date",
+        },
+        {
+          "title": "hole1",
+          "data": "maf_hole1",
+        },
+        {
+          "title": "hole2",
+          "data": "maf_hole2",
+        },
+        {
+          "title": "mold",
+          "data": "maf_mold",
+        },
+
+        {
+          "title": "cytime",
+          "data": "maf_cytime",
+        },
+        {
+          "title": "cto",
+          "data": "maf_cto",
+        },
+        {
+          "title": "pke",
+          "data": "maf_pke",
+        },
+        {
+          "title": "onresult",
+          "data": "maf_onresult",
+        },
+        {
+          "title": "oncount",
+          "data": "maf_oncount",
+        },
+        {
+          "title": "ondate",
+          "data": "maf_ondate",
+        },
+
+        {
+          "title": "ofresult",
+          "data": "maf_ofresult",
+        },
+        {
+          "title": "ofreason",
+          "data": "maf_ofreason",
+        },
+        {
+          "title": "offcount",
+          "data": "maf_offcount",
+        },
+
+        {
+          "title": "offdate",
+          "data": "maf_offdate",
+        },
+      ]
     });
   });
 </script>
