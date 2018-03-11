@@ -1,4 +1,18 @@
 {
+    "apps": [ // setting for pm2
+        {
+            "name": "ems_dev",
+            "script": "./bin/www",
+            "watch": true,
+            "exec_mode": "fork",
+            "env": {
+                "NODE_ENV": "dev"
+            },
+            "ignore_watch": [
+                "node_modules"
+            ]
+        }
+    ],
     "db": {
         "host": "localhost",
         "database": "OeeAPP",

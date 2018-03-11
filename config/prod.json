@@ -1,0 +1,23 @@
+{
+    "apps": [ // setting for pm2
+        {
+            "name": "ems_prod",
+            "script": "./bin/www",
+            "watch": true,
+            "exec_mode": "fork",
+            "env": {
+                "NODE_ENV": "prod"
+            },
+            "ignore_watch": [
+                "node_modules"
+            ]
+        }
+    ],
+    "db": {
+        "host": "localhost",
+        "database": "OeeAPP",
+        "username": "sa",
+        "password": "123456",
+        "port": 1433
+    }
+}
