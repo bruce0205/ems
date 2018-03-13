@@ -82,7 +82,7 @@
               </div>
 
               <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                <button type="button" style="float: right;" class="btn btn-success">Search</button>
+                <button id="searchBtn" type="button" style="float: right;" class="btn btn-success">Search</button>
               </div>
 
             </form>
@@ -115,6 +115,9 @@
       build: function () {
         datatableInstance = $('#manufactureTable').DataTable({
           "searching": false,
+          "processing": true,
+          "serverSide": true,
+          "deferRender": true,
           "ajax": {
             "url": "/manufacture/ajax",
             "data": function (d) {
@@ -321,12 +324,13 @@
             },
           ]
         });
+        return datatableInstance;
       },
       destroy: function () {
-        dataTableInstance.destroy();
+        datatableInstance.destroy();
       },
       draw: function () {
-        dataTableInstance.draw();
+        datatableInstance.draw();
       }
     }
   }());
@@ -335,12 +339,18 @@
 
     $('.input-group.date').datepicker({
       autoclose: true,
-      format: "yyyy/mm/dd"
+      format: "yyyy-mm-dd"
     });
 
-    $("#fromDate").val(moment().subtract(6, 'days').format("YYYY/MM/DD"));
-    $("#endDate").val(moment().format("YYYY/MM/DD"));
+    $("#fromDate").val(moment().subtract(6, 'days').format("YYYY-MM-DD"));
+    $("#endDate").val(moment().format("YYYY-MM-DD"));
+
+    $("#searchBtn").on('click', function () {
+      datatableModule.draw();
+    });
 
     datatableModule.build();
+
+
   });
 </script>
