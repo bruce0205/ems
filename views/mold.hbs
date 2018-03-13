@@ -1,8 +1,3 @@
-<!-- jQuery -->
-<script src="../vendors/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap -->
-<script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-
 <style>
     td.details-control {
         background: url('http://i.imgur.com/SD7Dz.png') no-repeat center center;
@@ -14,12 +9,17 @@
     }
 </style>
 
+<!-- jQuery -->
+<script src="../vendors/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+
 <div class="right_col" role="main">
     <div class="">
         <div class="page-title">
             <div class="title_left">
                 <h3>模具管理
-                    <small>Some text you want to put</small>
+                    <small></small>
                 </h3>
             </div>
         </div>
@@ -27,7 +27,6 @@
         <div class="clearfix"></div>
 
         <div class="row">
-
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
@@ -110,8 +109,8 @@
     function format(datatableRow, data) {
         var url = `/mold/ajax/second?pn=${data.mvs_pn}&mold=${data.mvs_mold}`; // data 為 queryString
 
-        var thStyle = { 'background-color': '#008080', 'padding': '4px 8px', color: 'white' }; // E4F1D4
-        var tdStyle = { 'background-color': '#E0FFFF', 'padding': '4px 8px' }; // fffff0
+        var thStyle = { 'background-color': '#B0C4DE', 'padding': '4px 8px', color: 'white' }; // E4F1D4
+        var tdStyle = { 'background-color': '#F0FFFF', 'padding': '4px 8px' }; // fffff0
         var tableAttribute = {};
         var tableStyle = {};
 
@@ -155,6 +154,7 @@
 
     $(document).ready(function () {
         var table = $('#moldTable').DataTable({
+            "searching": false,
             "ajax": "/mold/ajax/first",
             "lengthMenu": [10, 20, 50, 75, 100],
             "pageLength": 10,
