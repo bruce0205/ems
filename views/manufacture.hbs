@@ -6,6 +6,10 @@
   td {
     white-space: nowrap;
   }
+
+  .highlight-yield {
+    color: red;
+  }
 </style>
 
 <!-- jQuery -->
@@ -120,11 +124,25 @@
           "title": "num",
           "data": "maf_num",
           "orderable": true,
+          "render": function (data, type, row, meta) {
+            var span = $("<span>");
+            span.append(data);
+            console.log(row.maf_num);
+            if (row.maf_num == 'S1') span.addClass('highlight-yield');
+            return span.wrap('<div></div>').parent().html();
+          },
         },
         {
           "title": "pn",
           "data": "maf_pn",
           "orderable": true,
+          "render": function (data, type, row, meta) {
+            var span = $("<span>");
+            span.append(data);
+            console.log(row.maf_num);
+            if (row.maf_num == 'S1') span.addClass('highlight-yield');
+            return span.wrap('<div></div>').parent().html();
+          },
         },
         {
           "title": "time",
