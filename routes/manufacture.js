@@ -12,10 +12,16 @@ module.exports = (app, db) => {
   });
 
   router.get('/ajax', function (req, res, next) {
-    console.log(`env: ${process.env.NODE_ENV}`);
+    console.log('fromDate: ' + req.query.fromDate);
+    console.log('endDate: ' + req.query.endDate);
+    console.log('mafPn: ' + req.query.mafPn);
+    console.log('mafNum: ' + req.query.mafNum);
     if (process.env.NODE_ENV == 'prod' || process.env.NODE_ENV == 'test') {
-      db.query(`
-
+      let sql = `
+      select aa.*
+      ,replace(convert(varchar, d.maf_ondate, 111), '/','-') as maf_ondate_str
+      ,replace(convert(varchar, d.maf_offdate, 111), '/','-') as maf_offdate_str
+      from (
       select d.maf_num
       ,d.maf_pn
       ,d.maf_time
@@ -28,11 +34,11 @@ module.exports = (app, db) => {
       ,d.maf_pke
       ,d.maf_onresult
       ,d.maf_oncount
-      ,replace(convert(varchar, d.maf_ondate, 111), '/','-') as maf_ondate
+      ,d.maf_ondate
       ,d.maf_ofresult
       ,d.maf_ofreason
       ,d.maf_offcount
-      ,replace(convert(varchar, d.maf_offdate, 111), '/','-') as maf_offdate
+      ,d.maf_offdate, 111
       ,e.OK,e.NG
   ,case (e.OK + e.NG) when 0 then NULL else 
   CAST(e.OK as decimal(10,2))/(CAST(e.OK as decimal(10,2))+ cast(e.NG as decimal(10,2)))
@@ -53,16 +59,20 @@ FOR OK_NG IN ([OK], [NG])
 ) AS PivotTable
 ) e
  on e.err_mahnum = d.maf_num and e.err_mafpn = d.maf_pn and e.err_date = d.maf_ondate and e.err_mold = d.maf_mold
+      ) aa      
+      `
 
-        `, {
-          raw: false, // Set this to true if you don't have a model definition for your query.
-          type: Sequelize.QueryTypes.SELECT
-        }).then(data => {
-          console.log(data);
-          res.send({ data });
-        }).catch(err => {
-          console.error(err);
-        });
+
+
+      db.query(sql, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        console.log(data);
+        res.send({ data });
+      }).catch(err => {
+        console.error(err);
+      });
     } else {
       res.send(testingData);
     }
