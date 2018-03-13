@@ -14,7 +14,7 @@ module.exports = (app, db) => {
   router.get('/ajax/first', function (req, res, next) {
     if (process.env.NODE_ENV == 'prod' || process.env.NODE_ENV == 'test') {
       db.query(`
-        select distinct mvs_pn,mvs_mold from MOLD_MVS
+        select mvs_pn,mvs_mold,mvs_hole1,mvs_hole2 from MOLD_MVS
       `, {
           raw: false, // Set this to true if you don't have a model definition for your query.
           type: Sequelize.QueryTypes.SELECT
@@ -34,7 +34,7 @@ module.exports = (app, db) => {
     if (process.env.NODE_ENV == 'prod' || process.env.NODE_ENV == 'test') {
       db.query(`
       select pv1.mvs_pn,pv1.mvs_mold,pv1.mvs_hole1,pv1.mvs_hole2,
-      pv1.unPivotcol as pn_type,pv1.pn,pv2.pn_date,pv3.pn_count from
+      pv1.unPivotcol as pn_type,pv1.pn,replace(convert(varchar, pv2.pn_date, 111), '/','-') pn_date,pv3.pn_count from
       (
       select 
       mvs_pn,mvs_mold,mvs_hole1,mvs_hole2,

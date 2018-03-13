@@ -33,7 +33,10 @@ module.exports = (app, db) => {
       ,d.maf_ofreason
       ,d.maf_offcount
       ,replace(convert(varchar, d.maf_offdate, 111), '/','-') as maf_offdate
-  ,CAST(e.OK as decimal(6,2))/(CAST(e.OK as decimal(6,2))+ cast(e.NG as decimal(6,2))) as YIeld
+      ,e.OK,e.NG
+  ,case (e.OK + e.NG) when 0 then NULL else 
+  CAST(e.OK as decimal(10,2))/(CAST(e.OK as decimal(10,2))+ cast(e.NG as decimal(10,2)))
+   end as yield
   from MAF_DATA d
  left join 
  (
@@ -50,7 +53,6 @@ FOR OK_NG IN ([OK], [NG])
 ) AS PivotTable
 ) e
  on e.err_mahnum = d.maf_num and e.err_mafpn = d.maf_pn and e.err_date = d.maf_ondate and e.err_mold = d.maf_mold
-
 
         `, {
           raw: false, // Set this to true if you don't have a model definition for your query.

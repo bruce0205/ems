@@ -117,11 +117,11 @@
         var table = $('<table>').attr(tableAttribute).addClass('container').css(tableStyle);
         var tr1 = $('<tr>');
 
-        tr1.append($('<th>').css(thStyle).append('零件'))
-            .append($('<th>').css(thStyle).append('Count'))
-            .append($('<th>').css(thStyle).append('更換時間'))
-            .append($('<th>').css(thStyle).append('更換'))
-            .append($('<th>').css(thStyle).append('Threshold'))
+        tr1.append($('<th>').css(thStyle).append('pn_type'))
+            .append($('<th>').css(thStyle).append('pn'))
+            .append($('<th>').css(thStyle).append('pn_date'))
+            .append($('<th>').css(thStyle).append('pn_count'))
+            .append($('<th>').css(thStyle).append('Change'))
             .append($('<th>').css(thStyle).append('History'));
         table.append(tr1);
 
@@ -139,10 +139,10 @@
                 changeButton.on('click', () => $("#modalTitle").html(`${item["pn_type"]} 登錄更換記錄`));
 
                 contentTr.append($('<td>').css(tdStyle).append(item["pn_type"]))
-                    .append($('<td>').css(tdStyle).append(item["pn_count"]))
+                    .append($('<td>').css(tdStyle).append(item["pn"]))
                     .append($('<td>').css(tdStyle).append(item["pn_date"]))
+                    .append($('<td>').css(tdStyle).append(item["pn_count"]))
                     .append($('<td>').css(tdStyle).append(changeButton))
-                    .append($('<td>').css(tdStyle).append(''))
                     .append($('<td>').css(tdStyle).append(historyButton));
                 table.append(contentTr);
             });
@@ -173,14 +173,24 @@
                     "defaultContent": ''
                 },
                 {
-                    "title": "機種",
+                    "title": "mvs_pn",
                     "data": "mvs_pn",
-                    "width": "52%",
+                    "width": "23%",
                 },
                 {
-                    "title": "模具",
+                    "title": "mvs_mold",
                     "data": "mvs_mold",
-                    "width": "40%",
+                    "width": "23%",
+                },
+                {
+                    "title": "mvs_hole1",
+                    "data": "mvs_hole1",
+                    "width": "23%",
+                },
+                {
+                    "title": "mvs_hole2",
+                    "data": "mvs_hole2",
+                    "width": "23%",
                 }
             ],
             "order": [[1, 'asc']]

@@ -8,7 +8,8 @@
   }
 
   .highlight-yield {
-    color: red;
+    color: #FF6347;
+    font-weight: bolder;
   }
 </style>
 
@@ -87,7 +88,7 @@
               </div>
 
               <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                <button type="submit" style="float: right;" class="btn btn-success">Search</button>
+                <button type="button" style="float: right;" class="btn btn-success">Search</button>
               </div>
 
             </form>
@@ -106,6 +107,11 @@
   </div>
 </div>
 <script>
+  function formatFloat(num, pos) {
+    var size = Math.pow(10, pos);
+    return Math.round(num * size) / size;
+  }
+
   $(document).ready(function () {
     var manufactureTable = $('#manufactureTable').DataTable({
       "searching": false,
@@ -121,91 +127,188 @@
       ],
       "columns": [
         {
-          "title": "num",
+          "title": "maf_num",
           "data": "maf_num",
           "orderable": true,
           "render": function (data, type, row, meta) {
             var span = $("<span>");
             span.append(data);
-            console.log(row.maf_num);
-            if (row.maf_num == 'S1') span.addClass('highlight-yield');
+            if (row.yield < 0.9) span.addClass('highlight-yield');
             return span.wrap('<div></div>').parent().html();
           },
         },
         {
-          "title": "pn",
+          "title": "maf_pn",
           "data": "maf_pn",
           "orderable": true,
           "render": function (data, type, row, meta) {
             var span = $("<span>");
             span.append(data);
-            console.log(row.maf_num);
-            if (row.maf_num == 'S1') span.addClass('highlight-yield');
+            if (row.yield < 0.9) span.addClass('highlight-yield');
             return span.wrap('<div></div>').parent().html();
           },
         },
         {
-          "title": "time",
+          "title": "maf_time",
           "data": "maf_time",
+          "render": function (data, type, row, meta) {
+            var span = $("<span>");
+            span.append(data);
+            if (row.yield < 0.9) span.addClass('highlight-yield');
+            return span.wrap('<div></div>').parent().html();
+          },
         },
         {
-          "title": "date",
+          "title": "maf_date",
           "data": "maf_date",
+          "render": function (data, type, row, meta) {
+            var span = $("<span>");
+            span.append(data);
+            if (row.yield < 0.9) span.addClass('highlight-yield');
+            return span.wrap('<div></div>').parent().html();
+          },
         },
         {
-          "title": "hole1",
+          "title": "maf_hole1",
           "data": "maf_hole1",
+          "render": function (data, type, row, meta) {
+            var span = $("<span>");
+            span.append(data);
+            if (row.yield < 0.9) span.addClass('highlight-yield');
+            return span.wrap('<div></div>').parent().html();
+          },
         },
         {
-          "title": "hole2",
+          "title": "maf_hole2",
           "data": "maf_hole2",
+          "render": function (data, type, row, meta) {
+            var span = $("<span>");
+            span.append(data);
+            if (row.yield < 0.9) span.addClass('highlight-yield');
+            return span.wrap('<div></div>').parent().html();
+          },
         },
         {
-          "title": "mold",
+          "title": "maf_mold",
           "data": "maf_mold",
+          "render": function (data, type, row, meta) {
+            var span = $("<span>");
+            span.append(data);
+            if (row.yield < 0.9) span.addClass('highlight-yield');
+            return span.wrap('<div></div>').parent().html();
+          },
         },
 
         {
-          "title": "cytime",
+          "title": "maf_cytime",
           "data": "maf_cytime",
+          "render": function (data, type, row, meta) {
+            var span = $("<span>");
+            span.append(data);
+            if (row.yield < 0.9) span.addClass('highlight-yield');
+            return span.wrap('<div></div>').parent().html();
+          },
         },
         {
-          "title": "cto",
+          "title": "maf_cto",
           "data": "maf_cto",
+          "render": function (data, type, row, meta) {
+            var span = $("<span>");
+            span.append(data);
+            if (row.yield < 0.9) span.addClass('highlight-yield');
+            return span.wrap('<div></div>').parent().html();
+          },
         },
         {
-          "title": "pke",
+          "title": "maf_pke",
           "data": "maf_pke",
+          "render": function (data, type, row, meta) {
+            var span = $("<span>");
+            span.append(data);
+            if (row.yield < 0.9) span.addClass('highlight-yield');
+            return span.wrap('<div></div>').parent().html();
+          },
         },
         {
-          "title": "onresult",
+          "title": "maf_onresult",
           "data": "maf_onresult",
+          "render": function (data, type, row, meta) {
+            var span = $("<span>");
+            span.append(data);
+            if (row.yield < 0.9) span.addClass('highlight-yield');
+            return span.wrap('<div></div>').parent().html();
+          },
         },
         {
-          "title": "oncount",
+          "title": "maf_oncount",
           "data": "maf_oncount",
+          "render": function (data, type, row, meta) {
+            var span = $("<span>");
+            span.append(data);
+            if (row.yield < 0.9) span.addClass('highlight-yield');
+            return span.wrap('<div></div>').parent().html();
+          },
         },
         {
-          "title": "ondate",
+          "title": "maf_ondate",
           "data": "maf_ondate",
+          "render": function (data, type, row, meta) {
+            var span = $("<span>");
+            span.append(data);
+            if (row.yield < 0.9) span.addClass('highlight-yield');
+            return span.wrap('<div></div>').parent().html();
+          },
         },
 
         {
-          "title": "ofresult",
+          "title": "maf_ofresult",
           "data": "maf_ofresult",
+          "render": function (data, type, row, meta) {
+            var span = $("<span>");
+            span.append(data);
+            if (row.yield < 0.9) span.addClass('highlight-yield');
+            return span.wrap('<div></div>').parent().html();
+          },
         },
         {
-          "title": "ofreason",
+          "title": "maf_ofreason",
           "data": "maf_ofreason",
+          "render": function (data, type, row, meta) {
+            var span = $("<span>");
+            span.append(data);
+            if (row.yield < 0.9) span.addClass('highlight-yield');
+            return span.wrap('<div></div>').parent().html();
+          },
         },
         {
-          "title": "offcount",
+          "title": "maf_offcount",
           "data": "maf_offcount",
+          "render": function (data, type, row, meta) {
+            var span = $("<span>");
+            span.append(data);
+            if (row.yield < 0.9) span.addClass('highlight-yield');
+            return span.wrap('<div></div>').parent().html();
+          },
         },
-
         {
-          "title": "offdate",
+          "title": "maf_offdate",
           "data": "maf_offdate",
+          "render": function (data, type, row, meta) {
+            var span = $("<span>");
+            span.append(data);
+            if (row.yield < 0.9) span.addClass('highlight-yield');
+            return span.wrap('<div></div>').parent().html();
+          },
+        },
+        {
+          "title": "yield",
+          "data": "yield",
+          "render": function (data, type, row, meta) {
+            var span = $("<span>");
+            span.append(formatFloat(data, 2).toFixed(2));
+            if (row.yield < 0.9) span.addClass('highlight-yield');
+            return span.wrap('<div></div>').parent().html();
+          },
         },
       ]
     });

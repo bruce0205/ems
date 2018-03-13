@@ -17,7 +17,7 @@
         "host": "localhost",
         "database": "OeeAPP",
         "username": "sa",
-        "password": "xS346@Dc01",
+        "password": "123456",
         "port": 1433
     }
 }
