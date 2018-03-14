@@ -90,6 +90,8 @@ FOR OK_NG IN ([OK], [NG])
           var totalResult = Object.assign({}, results[0]);
           var pageResult = Object.assign({}, results[1]);
 
+          console.log('totalResult.length : ' + totalResult.length);
+
           res.send({
             "recordsTotal": totalResult.length,
             "recordsFiltered": totalResult.length,
