@@ -81,7 +81,11 @@ FOR OK_NG IN ([OK], [NG])
         raw: false, // Set this to true if you don't have a model definition for your query.
         type: Sequelize.QueryTypes.SELECT
       }).then(data => {
-        res.send({ data });
+        res.send({
+          "recordsTotal": 20,
+          "recordsFiltered": 20,
+          "data": data
+        });
       }).catch(err => {
         console.error(err);
       });
