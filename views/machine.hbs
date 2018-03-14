@@ -46,9 +46,23 @@
 
 
 <script>
-
-    var renderModule = (function () {
+    var machineModule = (function () {
         return {
+            fetchData: function () {
+                var url = '/machine/ajax';
+                fetch(url, {
+                    method: 'GET'
+                }).then((response) => {
+                    return response.json();
+                }).then((data) => {
+                    data.forEach((item, index) => {
+                        console.log(item);
+                        machineModule.render(item);
+                    });
+                }).catch((err) => {
+                    console.error(err);
+                });
+            },
             genLi: function (name, classname) {
                 var li = $('<li>');
                 var p = $('<p>');
@@ -77,20 +91,8 @@
             }
         }
     }());
-
+    
     $(document).ready(function () {
-        var url = '/machine/ajax';
-        fetch(url, {
-            method: 'GET'
-        }).then((response) => {
-            return response.json();
-        }).then((data) => {
-            data.forEach((item, index) => {
-                console.log(item);
-                renderModule.render(item);
-            });
-        }).catch((err) => {
-            console.error(err);
-        });
+        machineModule.fetchData();
     });
 </script>
