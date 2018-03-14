@@ -87,6 +87,7 @@ FOR OK_NG IN ([OK], [NG])
 
       Promise.all([totalPromise, pagePromise])
         .then(function (results) {
+          console.log('results : ' + results);
           var totalResult = Object.assign({}, results[0]);
           var pageResult = Object.assign({}, results[1]);
 
