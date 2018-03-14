@@ -70,8 +70,10 @@ FOR OK_NG IN ([OK], [NG])
       if (req.query.endDate) sql += ` and (aa.maf_offdate <= CONVERT(DATETIME, '${req.query.endDate}', 102)) `;
       sql += ' ) xx';
 
+      let finalSql = `select * from (${sql}) zz where num >0 and num <=10`;
 
-      db.query(sql, {
+
+      db.query(finalSql, {
         raw: false, // Set this to true if you don't have a model definition for your query.
         type: Sequelize.QueryTypes.SELECT
       }).then(data => {
