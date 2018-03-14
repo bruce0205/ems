@@ -21,7 +21,7 @@ module.exports = (app, db) => {
     const end = parseInt(req.query.start) + parseInt(req.query.length)
 
     if (process.env.NODE_ENV == 'prod' || process.env.NODE_ENV == 'test') {
-      let sql = `
+      let totalSql = `
       select ROW_NUMBER() Over(Order By xx.maf_num asc) num, xx.* from (
       select aa.*
       ,replace(convert(varchar, aa.maf_ondate, 111), '/','-') as maf_ondate_str
@@ -68,27 +68,37 @@ FOR OK_NG IN ([OK], [NG])
       ) aa where 1=1 
       `
 
-      if (req.query.mafNum) sql += ` and aa.maf_num like '%${req.query.mafNum}%' `;
-      if (req.query.mafPn) sql += ` and aa.maf_pn like '%${req.query.mafPn}%' `;
-      if (req.query.fromDate) sql += ` and (aa.maf_ondate >= CONVERT(DATETIME, '${req.query.fromDate}', 102)) `;
-      if (req.query.endDate) sql += ` and (aa.maf_offdate <= CONVERT(DATETIME, '${req.query.endDate}', 102)) `;
-      sql += ' ) xx';
+      if (req.query.mafNum) totalSql += ` and aa.maf_num like '%${req.query.mafNum}%' `;
+      if (req.query.mafPn) totalSql += ` and aa.maf_pn like '%${req.query.mafPn}%' `;
+      if (req.query.fromDate) totalSql += ` and (aa.maf_ondate >= CONVERT(DATETIME, '${req.query.fromDate}', 102)) `;
+      if (req.query.endDate) totalSql += ` and (aa.maf_offdate <= CONVERT(DATETIME, '${req.query.endDate}', 102)) `;
+      totalSql += ' ) xx';
 
-      let finalSql = `select * from (${sql}) zz where num >${req.query.start} and num <=${end}`;
+      let pageSql = `select * from (${totalSql}) zz where num >${req.query.start} and num <=${end}`;
 
-
-      db.query(finalSql, {
+      const totalPromise = db.query(sql, {
         raw: false, // Set this to true if you don't have a model definition for your query.
         type: Sequelize.QueryTypes.SELECT
-      }).then(data => {
-        res.send({
-          "recordsTotal": 20,
-          "recordsFiltered": 20,
-          "data": data
-        });
-      }).catch(err => {
-        console.error(err);
       });
+      const pagePromise = db.query(pageSql, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      });
+
+      Promise.all([totalPromise, pagePromise])
+        .then(function (results) {
+          var totalResult = Object.assign({}, results[0]);
+          var pageResult = Object.assign({}, results[1]);
+
+          res.send({
+            "recordsTotal": totalResult.length,
+            "recordsFiltered": totalResult.length,
+            "data": pageResult
+          });
+
+        }).catch(err => {
+          console.error(err);
+        });
     } else {
       res.send(testingData);
     }
