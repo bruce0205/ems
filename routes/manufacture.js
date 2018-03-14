@@ -50,7 +50,7 @@ SELECT err_mahnum,err_mafpn,err_date,err_mold,
 [OK], [NG]
 FROM
 (SELECT err_mahnum,err_mafpn,err_date,err_mold,err_Ct,
-  (case err_id when '11' then 'OK' else 'NG' end) as OK_NG
+  (case err_id when '12' then 'OK' else 'NG' end) as OK_NG
     FROM ERR_COUNT) AS SourceTable
 PIVOT
 (
