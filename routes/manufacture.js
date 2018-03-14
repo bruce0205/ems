@@ -76,7 +76,7 @@ FOR OK_NG IN ([OK], [NG])
 
       let pageSql = `select * from (${totalSql}) zz where num >${req.query.start} and num <=${end}`;
 
-      const totalPromise = db.query(sql, {
+      const totalPromise = db.query(totalSql, {
         raw: false, // Set this to true if you don't have a model definition for your query.
         type: Sequelize.QueryTypes.SELECT
       });
