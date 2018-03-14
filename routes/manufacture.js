@@ -18,6 +18,7 @@ module.exports = (app, db) => {
     console.log('mafNum: ' + req.query.mafNum);
     if (process.env.NODE_ENV == 'prod' || process.env.NODE_ENV == 'test') {
       let sql = `
+      select ROW_NUMBER() Over(Order By xx.maf_num asc) num, xx.* from (
       select aa.*
       ,replace(convert(varchar, aa.maf_ondate, 111), '/','-') as maf_ondate_str
       ,replace(convert(varchar, aa.maf_offdate, 111), '/','-') as maf_offdate_str
@@ -67,8 +68,7 @@ FOR OK_NG IN ([OK], [NG])
       if (req.query.mafPn) sql += ` and aa.maf_pn like '%${req.query.mafPn}%' `;
       if (req.query.fromDate) sql += ` and (aa.maf_ondate >= CONVERT(DATETIME, '${req.query.fromDate}', 102)) `;
       if (req.query.endDate) sql += ` and (aa.maf_offdate <= CONVERT(DATETIME, '${req.query.endDate}', 102)) `;
-      sql += `order by aa.maf_num`;
-      sql = `select xx.*, ROW_NUMBER() Over(Order By xx.maf_num Desc) num from (${sql}) xx`
+      sql += ' ) xx';
 
 
       db.query(sql, {
