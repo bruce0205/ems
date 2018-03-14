@@ -19,13 +19,11 @@ module.exports = (app, db) => {
     if (process.env.NODE_ENV == 'prod' || process.env.NODE_ENV == 'test') {
       let sql = `
       select aa.*
-      ,ROW_NUMBER() Over(Order By d.maf_num Desc) num
       ,replace(convert(varchar, aa.maf_ondate, 111), '/','-') as maf_ondate_str
       ,replace(convert(varchar, aa.maf_offdate, 111), '/','-') as maf_offdate_str
       from (
       select 
-      ROW_NUMBER() Over(Order By d.maf_num Desc) num
-      ,d.maf_num
+      d.maf_num
       ,d.maf_pn
       ,d.maf_time
       ,d.maf_date
@@ -69,7 +67,9 @@ FOR OK_NG IN ([OK], [NG])
       if (req.query.mafPn) sql += ` and aa.maf_pn like '%${req.query.mafPn}%' `;
       if (req.query.fromDate) sql += ` and (aa.maf_ondate >= CONVERT(DATETIME, '${req.query.fromDate}', 102)) `;
       if (req.query.endDate) sql += ` and (aa.maf_offdate <= CONVERT(DATETIME, '${req.query.endDate}', 102)) `;
-      sql += `order by aa.maf_num, aa.maf_pn`;
+      sql += `order by aa.maf_num`;
+      sql = `select xx.*, ROW_NUMBER() Over(Order By xx.maf_num Desc) num from (${sql}) xx`
+
 
       db.query(sql, {
         raw: false, // Set this to true if you don't have a model definition for your query.
