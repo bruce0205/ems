@@ -16,7 +16,7 @@ module.exports = (app, db) => {
       db.query(`
         select s.mah_num,
         s.mah_sta,
-        (select top (1) maf_pn from MAF_DATA d where d.maf_num = s.mah_num) maf_pn,
+        (select top (1) maf_pn from MAF_DATA d where d.maf_num = s.mah_num) mah_pn,
         s.mah_mold,
         s.mah_cou,
         s.mah_result   
