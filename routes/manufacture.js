@@ -18,6 +18,7 @@ module.exports = (app, db) => {
     console.log('mafNum: ' + req.query.mafNum);
     console.log('start: ' + req.query.start);
     console.log('length: ' + req.query.length);
+    const end = parseInt(req.query.start) + parseInt(req.query.length)
 
     if (process.env.NODE_ENV == 'prod' || process.env.NODE_ENV == 'test') {
       let sql = `
@@ -73,7 +74,7 @@ FOR OK_NG IN ([OK], [NG])
       if (req.query.endDate) sql += ` and (aa.maf_offdate <= CONVERT(DATETIME, '${req.query.endDate}', 102)) `;
       sql += ' ) xx';
 
-      let finalSql = `select * from (${sql}) zz where num >${req.query.start} and num <=${req.query.length}`;
+      let finalSql = `select * from (${sql}) zz where num >${req.query.start} and num <=${end}`;
 
 
       db.query(finalSql, {
