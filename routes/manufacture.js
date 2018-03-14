@@ -87,13 +87,10 @@ FOR OK_NG IN ([OK], [NG])
 
       Promise.all([totalPromise, pagePromise])
         .then(function (results) {
-          var totalResult = Object.assign({}, results[0]);
-          var pageResult = Object.assign({}, results[1]);
-
           res.send({
-            "recordsTotal": Object.keys(totalResult).length,
-            "recordsFiltered": Object.keys(totalResult).length,
-            "data": pageResult
+            "recordsTotal": results[0].length,
+            "recordsFiltered": results[0].length,
+            "data": results[1]
           });
 
         }).catch(err => {
