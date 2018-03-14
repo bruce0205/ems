@@ -206,6 +206,16 @@ var manufactureModule = (function () {
                 ],
                 "columns": [
                     {
+                        "title": "num",
+                        "data": "num",
+                        "render": function (data, type, row, meta) {
+                            var span = $("<span>");
+                            span.append(data);
+                            if (row.yield < 0.9) span.addClass('highlight-yield');
+                            return span.wrap('<div></div>').parent().html();
+                        },
+                    },
+                    {
                         "title": "maf_num",
                         "data": "maf_num",
                         "orderable": true,
@@ -389,7 +399,8 @@ var manufactureModule = (function () {
                             return span.wrap('<div></div>').parent().html();
                         },
                     },
-                ]
+                ],
+                "order": []
             });
             return datatableInstance;
         },

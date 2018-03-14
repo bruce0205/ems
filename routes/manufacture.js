@@ -22,7 +22,9 @@ module.exports = (app, db) => {
       ,replace(convert(varchar, aa.maf_ondate, 111), '/','-') as maf_ondate_str
       ,replace(convert(varchar, aa.maf_offdate, 111), '/','-') as maf_offdate_str
       from (
-      select d.maf_num
+      select 
+      ROW_NUMBER() Over(Order By d.maf_num Desc) num
+      ,d.maf_num
       ,d.maf_pn
       ,d.maf_time
       ,d.maf_date
