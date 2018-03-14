@@ -218,7 +218,6 @@ var manufactureModule = (function () {
                     {
                         "title": "maf_num",
                         "data": "maf_num",
-                        "orderable": true,
                         "render": function (data, type, row, meta) {
                             var span = $("<span>");
                             span.append(data);
@@ -229,7 +228,6 @@ var manufactureModule = (function () {
                     {
                         "title": "maf_pn",
                         "data": "maf_pn",
-                        "orderable": true,
                         "render": function (data, type, row, meta) {
                             var span = $("<span>");
                             span.append(data);

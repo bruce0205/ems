@@ -16,6 +16,9 @@ module.exports = (app, db) => {
     console.log('endDate: ' + req.query.endDate);
     console.log('mafPn: ' + req.query.mafPn);
     console.log('mafNum: ' + req.query.mafNum);
+    console.log('start: ' + req.query.start);
+    console.log('length: ' + req.query.length);
+
     if (process.env.NODE_ENV == 'prod' || process.env.NODE_ENV == 'test') {
       let sql = `
       select ROW_NUMBER() Over(Order By xx.maf_num asc) num, xx.* from (
@@ -70,7 +73,7 @@ FOR OK_NG IN ([OK], [NG])
       if (req.query.endDate) sql += ` and (aa.maf_offdate <= CONVERT(DATETIME, '${req.query.endDate}', 102)) `;
       sql += ' ) xx';
 
-      let finalSql = `select * from (${sql}) zz where num >0 and num <=10`;
+      let finalSql = `select * from (${sql}) zz where num >${req.query.start} and num <=${req.query.length}`;
 
 
       db.query(finalSql, {
