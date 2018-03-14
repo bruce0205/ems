@@ -3,7 +3,162 @@ function formatFloat(num, pos) {
     return Math.round(num * size) / size;
 }
 
+var machineModule = (function () {
+    return {
+        fetchData: function () {
+            var url = '/machine/ajax';
+            fetch(url, {
+                method: 'GET'
+            }).then((response) => {
+                return response.json();
+            }).then((data) => {
+                data.forEach((item, index) => {
+                    console.log(item);
+                    machineModule.render(item);
+                });
+            }).catch((err) => {
+                console.error(err);
+            });
+        },
+        genLi: function (name, classname) {
+            var li = $('<li>');
+            var p = $('<p>');
+            var iconSpan = $('<span>').addClass('icon').append($('<i>').addClass(classname));
+            var nameSpan = $('<span>').addClass('name').append(name);
+            return li.append(p.append(iconSpan).append(nameSpan));
+        },
+        render: function (item) {
+            console.log('mah_num: ' + item['mah_num']);
+            var containerDiv = $("[name='machineDiv']");
+            var outerDiv = $('<div>').addClass('col-md-3 col-xs-12 widget widget_tally_box');
+            var innerDiv = $('<div>').addClass('x_panel fixed_height_300');
+            var titleDiv = $('<div>').addClass('x_title');
+            var contentDiv = $('<div>').addClass('x_content');
+            var ul = $('<ul>').addClass('legend list-unstyled');
 
+            ul.append(this.genLi(item['mah_pn'], 'fa fa-square dark'));
+            ul.append(this.genLi(item['mah_mold'], 'fa fa-square grey'));
+            ul.append(this.genLi(item['mah_cou'], 'fa fa-square blue'));
+            ul.append(this.genLi(item['mah_result'], 'fa fa-square green'));
+            contentDiv.append(ul);
+
+            titleDiv.append($('<h2>').append(item['mah_num'])).append($('<div>').addClass('clearfix'));
+
+            containerDiv.append(outerDiv.append(innerDiv.append(titleDiv).append(contentDiv)));
+        }
+    }
+}());
+
+var moldModule = (function () {
+    return {
+        format: function (datatableRow, data) {
+            var url = `/mold/ajax/second?pn=${data.mvs_pn}&mold=${data.mvs_mold}`; // data 為 queryString
+
+            var thStyle = { 'background-color': '#B0C4DE', 'padding': '4px 8px', color: 'white' }; // E4F1D4
+            var tdStyle = { 'background-color': '#F0FFFF', 'padding': '4px 8px' }; // fffff0
+            var tableAttribute = {};
+            var tableStyle = {};
+
+            var table = $('<table>').attr(tableAttribute).addClass('container').css(tableStyle);
+            var tr1 = $('<tr>');
+
+            tr1.append($('<th>').css(thStyle).append('pn_type'))
+                .append($('<th>').css(thStyle).append('pn'))
+                .append($('<th>').css(thStyle).append('pn_date'))
+                .append($('<th>').css(thStyle).append('pn_count'))
+                .append($('<th>').css(thStyle).append('Change'))
+                .append($('<th>').css(thStyle).append('History'));
+            table.append(tr1);
+
+            fetch(url, {
+                method: 'GET'
+            }).then((response) => {
+                return response.json();
+            }).then((data) => {
+                data.forEach((item, index) => {
+                    console.log(item);
+                    let contentTr = $('<tr>');
+                    let changeButton = $('<button>').addClass('btn btn-info btn-xs').attr({ "id": `changeButton_${index}`, "data-toggle": "modal", "data-target": ".bs-example-modal-sm" }).append('Change'); // add click event
+                    let historyButton = $('<button>').addClass('btn btn-warning btn-xs').append('View'); // add click event
+
+                    changeButton.on('click', () => $("#modalTitle").html(`${item["pn_type"]} 登錄更換記錄`));
+
+                    contentTr.append($('<td>').css(tdStyle).append(item["pn_type"]))
+                        .append($('<td>').css(tdStyle).append(item["pn"]))
+                        .append($('<td>').css(tdStyle).append(item["pn_date"]))
+                        .append($('<td>').css(tdStyle).append(item["pn_count"]))
+                        .append($('<td>').css(tdStyle).append(changeButton))
+                        .append($('<td>').css(tdStyle).append(historyButton));
+                    table.append(contentTr);
+                });
+                datatableRow.child(table).show();
+            }).catch((err) => {
+                console.error(err);
+            });
+        },
+        build: function () {
+            var table = $('#moldTable').DataTable({
+                "searching": false,
+                "ajax": "/mold/ajax/first",
+                "lengthMenu": [10, 20, 50, 75, 100],
+                "pageLength": 10,
+                "autoWidth": false,
+                "columnDefs": [
+                    { targets: '_all', width: '26%' },
+                    { targets: '_all', orderable: false },
+                    { targets: '_all', searchable: false }
+                ],
+                "columns": [
+                    {
+                        "className": 'details-control',
+                        "orderable": false,
+                        "data": null,
+                        "width": "8%",
+                        "defaultContent": ''
+                    },
+                    {
+                        "title": "mvs_pn",
+                        "data": "mvs_pn",
+                        "width": "23%",
+                    },
+                    {
+                        "title": "mvs_mold",
+                        "data": "mvs_mold",
+                        "width": "23%",
+                    },
+                    {
+                        "title": "mvs_hole1",
+                        "data": "mvs_hole1",
+                        "width": "23%",
+                    },
+                    {
+                        "title": "mvs_hole2",
+                        "data": "mvs_hole2",
+                        "width": "23%",
+                    }
+                ],
+                "order": [[1, 'asc']]
+            });
+
+            // Add event listener for opening and closing details
+            $('#moldTable tbody').on('click', 'td.details-control', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                }
+                else {
+                    // Open this row
+                    moldModule.format(row, row.data());
+                    tr.addClass('shown');
+                }
+            });
+        }
+    }
+}());
 
 var manufactureModule = (function () {
     var datatableInstance;

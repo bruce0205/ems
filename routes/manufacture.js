@@ -6,7 +6,7 @@ var testingData = require('../data/manufacture.json');
 module.exports = (app, db) => {
   router.get('/', function (req, res, next) {
     res.render('manufacture', {
-      title: 'Express',
+      isManufacture: true,
       layout: 'layout',
     });
   });

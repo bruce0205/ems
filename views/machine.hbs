@@ -1,6 +1,3 @@
-<!-- jQuery -->
-<script src="../vendors/jquery/dist/jquery.min.js"></script>
-
 <div class="right_col" role="main">
     <div class="">
         <div class="page-title">
@@ -43,56 +40,3 @@
         </div>
     </div>
 </div>
-
-
-<script>
-    var machineModule = (function () {
-        return {
-            fetchData: function () {
-                var url = '/machine/ajax';
-                fetch(url, {
-                    method: 'GET'
-                }).then((response) => {
-                    return response.json();
-                }).then((data) => {
-                    data.forEach((item, index) => {
-                        console.log(item);
-                        machineModule.render(item);
-                    });
-                }).catch((err) => {
-                    console.error(err);
-                });
-            },
-            genLi: function (name, classname) {
-                var li = $('<li>');
-                var p = $('<p>');
-                var iconSpan = $('<span>').addClass('icon').append($('<i>').addClass(classname));
-                var nameSpan = $('<span>').addClass('name').append(name);
-                return li.append(p.append(iconSpan).append(nameSpan));
-            },
-            render: function (item) {
-                console.log('mah_num: ' + item['mah_num']);
-                var containerDiv = $("[name='machineDiv']");
-                var outerDiv = $('<div>').addClass('col-md-3 col-xs-12 widget widget_tally_box');
-                var innerDiv = $('<div>').addClass('x_panel fixed_height_300');
-                var titleDiv = $('<div>').addClass('x_title');
-                var contentDiv = $('<div>').addClass('x_content');
-                var ul = $('<ul>').addClass('legend list-unstyled');
-
-                ul.append(this.genLi(item['mah_pn'], 'fa fa-square dark'));
-                ul.append(this.genLi(item['mah_mold'], 'fa fa-square grey'));
-                ul.append(this.genLi(item['mah_cou'], 'fa fa-square blue'));
-                ul.append(this.genLi(item['mah_result'], 'fa fa-square green'));
-                contentDiv.append(ul);
-
-                titleDiv.append($('<h2>').append(item['mah_num'])).append($('<div>').addClass('clearfix'));
-
-                containerDiv.append(outerDiv.append(innerDiv.append(titleDiv).append(contentDiv)));
-            }
-        }
-    }());
-    
-    $(document).ready(function () {
-        machineModule.fetchData();
-    });
-</script>
