@@ -16,10 +16,10 @@ module.exports = (app, db) => {
       db.query(`
         select s.mah_num,
         s.mah_sta,
-        s.mah_pn,
+        (select top (1) maf_pn from MAF_DATA d where d.maf_num = s.mah_num) maf_pn,
         s.mah_mold,
         s.mah_cou,
-        s.mah_result
+        s.mah_result   
         from MAH_STA s
       `, {
           raw: false, // Set this to true if you don't have a model definition for your query.
