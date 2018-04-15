@@ -8,19 +8,16 @@ module.exports = (app, db) => {
     res.render('manufacture', {
       isManufacture: true,
       layout: 'layout',
+      fromDate: req.query.fromDate,
+      endDate: req.query.endDate
     });
   });
 
   router.get('/ajax', function (req, res, next) {
-    console.log('fromDate: ' + req.query.fromDate);
-    console.log('endDate: ' + req.query.endDate);
-    console.log('mafPn: ' + req.query.mafPn);
-    console.log('mafNum: ' + req.query.mafNum);
-
     db.query(`
       GetMFGHistory_sp
-      @err_sdate = '2018-03-01',
-      @err_edate = '2018-03-25',
+      @err_sdate = '${req.query.fromDate}',
+      @err_edate = '${req.query.endDate}',
       @Target_Alarm = 1
     `, {
         raw: false, // Set this to true if you don't have a model definition for your query.

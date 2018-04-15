@@ -119,7 +119,21 @@ var machineModule = (function () {
           },
           {
             "title": "良率",
-            "data": "生產良率"
+            "data": "生產良率",
+            "render": function (data, type, row, meta) {
+              var span = $("<span>").addClass("badge").append(data);
+              if (data > 95) {
+                span.addClass('alert-info')
+              } else if (data > 85) {
+                span.addClass('alert-success')
+              } else if (data > 60) {
+                span.addClass('alert-warning')
+              } else {
+                span.addClass('alert-danger')
+              }
+
+              return span.wrap('<div></div>').parent().html();
+            }
           },
           {
             "title": "黑點",
@@ -164,12 +178,26 @@ var moldModule = (function () {
     format: function (datatableRow, data) {
       var url = `/mold/ajax/second?pn=${data.mvs_pn}&mold=${data.mvs_mold}`; // data 為 queryString
 
-      var thStyle = { 'background-color': '#B0C4DE', 'padding': '4px 8px', color: 'white' }; // E4F1D4
-      var tdStyle = { 'background-color': '#F0FFFF', 'padding': '4px 8px' }; // fffff0
-      var tableAttribute = {};
-      var tableStyle = {};
+      var thStyle = {
+        'background-color': '#B0C4DE',
+        'padding': '4px 8px',
+        color: 'white'
+      };
+      var tdStyle = {
+        'background-color': '#F0FFFF',
+        'padding': '4px 8px',
+      };
+      var tableAttribute = {
+        "cellpadding": 10
+      };
+      var tableStyle = {
+        "border-collapse": "separate",
+        "border-spacing": "4px",
+        "padding": "10px 0px 10px 0px;"
+      };
 
       var table = $('<table>').attr(tableAttribute).addClass('container').css(tableStyle);
+      var thead = $('<thead>');
       var tr1 = $('<tr>');
 
       tr1.append($('<th>').css(thStyle).append('pn_type'))
@@ -178,15 +206,15 @@ var moldModule = (function () {
         .append($('<th>').css(thStyle).append('pn_count'))
         .append($('<th>').css(thStyle).append('Change'))
         .append($('<th>').css(thStyle).append('History'));
-      table.append(tr1);
+      table.append(thead.append(tr1));
 
       fetch(url, {
         method: 'GET'
       }).then((response) => {
         return response.json();
       }).then((data) => {
+        var tbody = $('<tbody>');
         data.forEach((item, index) => {
-          console.log(item);
           let contentTr = $('<tr>');
           let changeButton = $('<button>').addClass('btn btn-info btn-xs').attr({ "id": `changeButton_${index}`, "data-toggle": "modal", "data-target": ".bs-example-modal-sm" }).append('Change'); // add click event
           let historyButton = $('<button>').addClass('btn btn-warning btn-xs').append('View'); // add click event
@@ -199,9 +227,9 @@ var moldModule = (function () {
             .append($('<td>').css(tdStyle).append(item["pn_count"]))
             .append($('<td>').css(tdStyle).append(changeButton))
             .append($('<td>').css(tdStyle).append(historyButton));
-          table.append(contentTr);
+          tbody.append(contentTr);
         });
-        datatableRow.child(table).show();
+        datatableRow.child(table.append(tbody)).show();
       }).catch((err) => {
         console.error(err);
       });
@@ -273,17 +301,27 @@ var moldModule = (function () {
 var manufactureModule = (function () {
   var dataTableInstance;
   return {
-    init: function () {
+    init: function (fromDate, endDate) {
+      if (fromDate) {
+        $("#fromDate").val(fromDate);
+      } else {
+        $("#fromDate").val(moment().subtract(14, 'days').format("YYYY-MM-DD"));
+      }
+
+      if (endDate) {
+        $("#endDate").val(endDate);
+      } else {
+        $("#endDate").val(moment().format("YYYY-MM-DD"));
+      }
+
       $('.input-group.date').datepicker({
         autoclose: true,
         format: "yyyy-mm-dd"
       });
 
-      $("#fromDate").val(moment().subtract(6, 'days').format("YYYY-MM-DD"));
-      $("#endDate").val(moment().format("YYYY-MM-DD"));
-
       $("#searchBtn").on('click', function () {
-        manufactureModule.draw();
+        manufactureModule.destroy();
+        manufactureModule.build();
       });
     },
     getInstance: function () {
@@ -338,7 +376,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var span = $("<span>");
               span.append(data);
-              if (row.yield < 0.9) span.addClass('highlight-yield');
+              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
               return span.wrap('<div></div>').parent().html();
             },
           },
@@ -348,7 +386,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var span = $("<span>");
               span.append(data);
-              if (row.yield < 0.9) span.addClass('highlight-yield');
+              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
               return span.wrap('<div></div>').parent().html();
             },
           },
@@ -358,7 +396,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var span = $("<span>");
               span.append(data);
-              if (row.yield < 0.9) span.addClass('highlight-yield');
+              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
               return span.wrap('<div></div>').parent().html();
             },
           },
@@ -368,7 +406,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var span = $("<span>");
               span.append(data);
-              if (row.yield < 0.9) span.addClass('highlight-yield');
+              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
               return span.wrap('<div></div>').parent().html();
             },
           },
@@ -378,7 +416,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var span = $("<span>");
               span.append(data);
-              if (row.yield < 0.9) span.addClass('highlight-yield');
+              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
               return span.wrap('<div></div>').parent().html();
             },
           },
@@ -389,7 +427,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var span = $("<span>");
               span.append(data);
-              if (row.yield < 0.9) span.addClass('highlight-yield');
+              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
               return span.wrap('<div></div>').parent().html();
             },
           },
@@ -399,7 +437,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var span = $("<span>");
               span.append(data);
-              if (row.yield < 0.9) span.addClass('highlight-yield');
+              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
               return span.wrap('<div></div>').parent().html();
             },
           },
@@ -409,7 +447,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var span = $("<span>");
               span.append(data);
-              if (row.yield < 0.9) span.addClass('highlight-yield');
+              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
               return span.wrap('<div></div>').parent().html();
             },
           },
@@ -419,7 +457,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var span = $("<span>");
               span.append(data);
-              if (row.yield < 0.9) span.addClass('highlight-yield');
+              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
               return span.wrap('<div></div>').parent().html();
             },
           },
@@ -429,7 +467,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var span = $("<span>");
               span.append(data);
-              if (row.yield < 0.9) span.addClass('highlight-yield');
+              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
               return span.wrap('<div></div>').parent().html();
             },
           },
@@ -439,7 +477,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var span = $("<span>");
               span.append(data);
-              if (row.yield < 0.9) span.addClass('highlight-yield');
+              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
               return span.wrap('<div></div>').parent().html();
             },
           },
@@ -450,7 +488,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var span = $("<span>");
               span.append(data);
-              if (row.yield < 0.9) span.addClass('highlight-yield');
+              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
               return span.wrap('<div></div>').parent().html();
             },
           },
@@ -460,7 +498,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var span = $("<span>");
               span.append(data);
-              if (row.yield < 0.9) span.addClass('highlight-yield');
+              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
               return span.wrap('<div></div>').parent().html();
             },
           },
@@ -470,7 +508,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var span = $("<span>");
               span.append(data);
-              if (row.yield < 0.9) span.addClass('highlight-yield');
+              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
               return span.wrap('<div></div>').parent().html();
             },
           },
@@ -480,7 +518,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var span = $("<span>");
               span.append(data);
-              if (row.yield < 0.9) span.addClass('highlight-yield');
+              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
               return span.wrap('<div></div>').parent().html();
             },
           },

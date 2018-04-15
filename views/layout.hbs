@@ -161,7 +161,7 @@
       {{else if isMold}}
       moldModule.build();
       {{else if isManufacture}}
-      manufactureModule.init();
+      manufactureModule.init('{{fromDate}}', '{{endDate}}');
       manufactureModule.build();
       {{/if}}
     });

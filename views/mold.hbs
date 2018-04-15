@@ -1,11 +1,13 @@
 <style>
     td.details-control {
-        background: url('http://i.imgur.com/SD7Dz.png') no-repeat center center;
+        background: url('../build/images/plus.png') no-repeat center center;
+        background-size: 14px 14px;
         cursor: pointer;
     }
 
     tr.shown td.details-control {
-        background: url('http://i.imgur.com/d4ICC.png') no-repeat center center;
+        background: url('../build/images/minus.png') no-repeat center center;
+        background-size: 14px 14px;
     }
 </style>
 
@@ -43,9 +45,7 @@
         </div>
     </div>
 
-
-
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm">Small modal</button>
+    <button style="display: none;" type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm">Small modal</button>
 
     <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-sm" style="width: 500px">
