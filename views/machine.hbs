@@ -1,42 +1,68 @@
+<style>
+  th,
+  td {
+    white-space: nowrap;
+  }
+</style>
+
 <div class="right_col" role="main">
-    <div class="">
-        <div class="page-title">
-            <div class="title_left">
-                <h3>機台狀態
-                    <small></small>
-                </h3>
-            </div>
+  <div class="">
+    <div class="page-title">
+      <div class="title_left">
+        <h3>機台狀態
+          <small></small>
+        </h3>
+      </div>
 
-            <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                    <div class="form-inline">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" class="flat" checked="checked"> filter 1
-                            </label>
-                        </div>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" class="flat"> filter 2
-                            </label>
-                        </div>
-                    </div>
-                </div>
+      <div class="title_right">
+        <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+          <div class="form-inline">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" class="flat" checked="checked"> filter 1
+              </label>
             </div>
-
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" class="flat"> filter 2
+              </label>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div class="clearfix"></div>
+      <div class="clearfix"></div>
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="">
-                    <div class="x_content">
-                        <div name="machineDiv" class="row">
-                        </div>
-                    </div>
-                </div>
+      <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2>機台即時資訊
+              </h2>
+              <div class="clearfix"></div>
             </div>
+            <div class="x_content">
+              <table id="machineTable" class="table table-striped table-bordered nowrap">
+                <thead></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="">
+          <div class="x_content">
+            <div name="machineDiv" class="row">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

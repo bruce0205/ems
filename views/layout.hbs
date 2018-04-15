@@ -156,7 +156,8 @@
   <script>
     $(document).ready(function () {
       {{#if isMachine}}
-      machineModule.fetchData();
+      // machineModule.fetchData();
+      machineModule.build();
       {{else if isMold}}
       moldModule.build();
       {{else if isManufacture}}
