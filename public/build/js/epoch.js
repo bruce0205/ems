@@ -63,6 +63,18 @@ var machineModule = (function () {
         "pageLength": 10,
         "autoWidth": false,
         'scrollX': true,
+        "stripeClasses": [],
+        "rowCallback": function( row, data, index ) {
+          console.log(data)
+          // if(index%2 == 0){
+          if(data.mah_num == 'S1' || data.mah_num == 'S3' || data.mah_num == 'S5' || data.mah_num == 'S7' || data.mah_num == 'S9') {
+              $(row).addClass('sType');
+          } else if(data.mah_num == 'T1' || data.mah_num == 'T3' || data.mah_num == 'T5' || data.mah_num == 'T7' || data.mah_num == 'T9') {
+            $(row).addClass('tType');
+          }else{
+              //  $(row).addClass('myeven');
+          }
+        },
         "columnDefs": [
           { targets: '_all', width: '26%' },
           { targets: '_all', orderable: false },
