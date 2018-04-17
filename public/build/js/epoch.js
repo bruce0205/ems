@@ -65,7 +65,6 @@ var machineModule = (function () {
         'scrollX': true,
         "stripeClasses": [],
         "rowCallback": function( row, data, index ) {
-          console.log(data)
           // if(index%2 == 0){
           if(data.mah_num == 'S1' || data.mah_num == 'S3' || data.mah_num == 'S5' || data.mah_num == 'S7' || data.mah_num == 'S9') {
               $(row).addClass('sType');
@@ -87,23 +86,26 @@ var machineModule = (function () {
           },
           {
             "title": "狀態",
-            "data": "mah_result"
+            "data": "mah_result",
+            // "render": function (data, type, row, meta) {
+            //   var span = $("<span>").append(data)
+            //   var img = $("<img>").css({ height: '14', width: '14' })
+
+            //   // if (data === '生產') {
+            //   //   img.attr({ "src": "./build/images/green.png" }).css({'margin-right':'4px'})
+            //   //   let div = $('<div>').append(img).append(span);
+            //   //   return div.wrap('<div></div>').parent().html();
+            //   // } else if (data === '試模') {
+            //   //   img.attr({ "src": "./build/images/green.png" }).css({'margin-right':'4px'})
+            //   //   let div = $('<div>').append(img).append(span);
+            //   //   return div.wrap('<div></div>').parent().html();
+            //   // }
+            //   return span.wrap('<div></div>').parent().html();
+            // }
           },
           {
             "title": "料號",
             "data": "料號"
-          },
-          {
-            "title": "穴號",
-            "data": "穴號"
-          },
-          {
-            "title": "班別",
-            "data": "班別"
-          },
-          {
-            "title": "人員",
-            "data": "人員"
           },
           {
             "title": "燈號",
@@ -133,7 +135,8 @@ var machineModule = (function () {
             "title": "良率",
             "data": "生產良率",
             "render": function (data, type, row, meta) {
-              var span = $("<span>").addClass("badge").append(data);
+              const adjustData = data ? data + '%' : data
+              var span = $("<span>").addClass("badge").append(adjustData);
               if (data > 95) {
                 span.addClass('alert-info')
               } else if (data > 85) {
@@ -149,23 +152,31 @@ var machineModule = (function () {
           },
           {
             "title": "黑點",
-            "data": "黑點"
+            "data": "黑點",
+            "render": function (data, type, row, meta) {
+              return data ? data + '%' : data;
+            }
           },
           {
             "title": "亮點",
-            "data": "亮點"
+            "data": "亮點",
+            "render": function (data, type, row, meta) {
+              return data ? data + '%' : data;
+            }
           },
           {
             "title": "白污",
-            "data": "白污"
+            "data": "白污",
+            "render": function (data, type, row, meta) {
+              return data ? data + '%' : data;
+            }
           },
           {
             "title": "目標良率",
-            "data": "目標良率"
-          },
-          {
-            "title": "損益金額",
-            "data": "損益成本"
+            "data": "目標良率",
+            "render": function (data, type, row, meta) {
+              return data ? data + '%' : data;
+            }
           },
           {
             "title": "損益金額",
