@@ -64,14 +64,14 @@ var machineModule = (function () {
         "autoWidth": false,
         'scrollX': true,
         "stripeClasses": [],
-        "rowCallback": function( row, data, index ) {
+        "rowCallback": function (row, data, index) {
           // if(index%2 == 0){
-          if(data.mah_num == 'S1' || data.mah_num == 'S3' || data.mah_num == 'S5' || data.mah_num == 'S7' || data.mah_num == 'S9') {
-              $(row).addClass('sType');
-          } else if(data.mah_num == 'T1' || data.mah_num == 'T3' || data.mah_num == 'T5' || data.mah_num == 'T7' || data.mah_num == 'T9') {
+          if (data.mah_num == 'S1' || data.mah_num == 'S3' || data.mah_num == 'S5' || data.mah_num == 'S7' || data.mah_num == 'S9') {
+            $(row).addClass('sType');
+          } else if (data.mah_num == 'T1' || data.mah_num == 'T3' || data.mah_num == 'T5' || data.mah_num == 'T7' || data.mah_num == 'T9') {
             $(row).addClass('tType');
-          }else{
-              //  $(row).addClass('myeven');
+          } else {
+            //  $(row).addClass('myeven');
           }
         },
         "columnDefs": [
@@ -82,46 +82,33 @@ var machineModule = (function () {
         "columns": [
           {
             "title": "機台",
-            "data": "mah_num"
+            "data": "mah_num",
+            "class": "text-center"
           },
           {
             "title": "狀態",
             "data": "mah_result",
-            // "render": function (data, type, row, meta) {
-            //   var span = $("<span>").append(data)
-            //   var img = $("<img>").css({ height: '14', width: '14' })
+            "render": function (data, type, row, meta) {
+              var span = $("<span>");
+              span.append(data);
 
-            //   // if (data === '生產') {
-            //   //   img.attr({ "src": "./build/images/green.png" }).css({'margin-right':'4px'})
-            //   //   let div = $('<div>').append(img).append(span);
-            //   //   return div.wrap('<div></div>').parent().html();
-            //   // } else if (data === '試模') {
-            //   //   img.attr({ "src": "./build/images/green.png" }).css({'margin-right':'4px'})
-            //   //   let div = $('<div>').append(img).append(span);
-            //   //   return div.wrap('<div></div>').parent().html();
-            //   // }
-            //   return span.wrap('<div></div>').parent().html();
-            // }
+              var img = $("<img>").css({ height: '12', width: '12' })
+
+              if (data === '生產') {
+                img.attr({ "src": "./build/images/green.png" }).css({ 'margin-right': '4px' })
+                let div = $('<div>').append(img).append(span);
+                return div.wrap('<div></div>').parent().html();
+              } else if (data === '試模') {
+                img.attr({ "src": "./build/images/green.png" }).css({ 'margin-right': '4px' })
+                let div = $('<div>').append(img).append(span);
+                return div.wrap('<div></div>').parent().html();
+              }
+              return data;
+            }
           },
           {
             "title": "料號",
             "data": "料號"
-          },
-          {
-            "title": "燈號",
-            "data": "mah_result",
-            "class": "text-center",
-            "render": function (data, type, row, meta) {
-              var img = $("<img>").css({ height: '14', width: '14' })
-              if (data === '生產') {
-                img.attr({ "src": "./build/images/green.png" })
-                return img.wrap('<div></div>').parent().html();
-              } else if (data === '試模') {
-                img.attr({ "src": "./build/images/green.png" })
-                return img.wrap('<div></div>').parent().html();
-              }
-              return '';
-            }
           },
           {
             "title": "嫁動數",
