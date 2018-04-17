@@ -93,17 +93,27 @@ var machineModule = (function () {
               span.append(data);
 
               var img = $("<img>").css({ height: '12', width: '12' })
-
-              if (data === '生產') {
-                img.attr({ "src": "./build/images/green.png" }).css({ 'margin-right': '4px' })
+              if(data) {
+                if (data === '生產' || data === '生產中') { // green
+                  img.attr({ "src": "./build/images/green.png" }).css({ 'margin-right': '4px' })
+                } else if (data === '試模') { // green
+                  img.attr({ "src": "./build/images/green.png" }).css({ 'margin-right': '4px' })
+                } else if (data === '生產完畢') { // green
+                  img.attr({ "src": "./build/images/green.png" }).css({ 'margin-right': '4px' })
+                } else if (data === '異常') { // red
+                  img.attr({ "src": "./build/images/red.png" }).css({ 'margin-right': '4px' })
+                } else if (data === '停機') { // blue
+                  img.attr({ "src": "./build/images/blue.png" }).css({ 'margin-right': '4px' })
+                } else if (data === '換班') { // blue
+                  img.attr({ "src": "./build/images/blue.png" }).css({ 'margin-right': '4px' })
+                } else if (data === '調整' || data === '調整中') { // yellow
+                  img.attr({ "src": "./build/images/yellow.png" }).css({ 'margin-right': '4px' })
+                }
                 let div = $('<div>').append(img).append(span);
-                return div.wrap('<div></div>').parent().html();
-              } else if (data === '試模') {
-                img.attr({ "src": "./build/images/green.png" }).css({ 'margin-right': '4px' })
-                let div = $('<div>').append(img).append(span);
-                return div.wrap('<div></div>').parent().html();
+                return img.wrap('<div></div>').parent().html() + data;
+              } else {
+                return data;
               }
-              return data;
             }
           },
           {
@@ -123,16 +133,22 @@ var machineModule = (function () {
             "data": "生產良率",
             "render": function (data, type, row, meta) {
               const adjustData = data ? data + '%' : data
+              console.log(row)
               var span = $("<span>").addClass("badge").append(adjustData);
-              if (data > 95) {
-                span.addClass('alert-info')
-              } else if (data > 85) {
+              if (data > row['目標良率']) {
                 span.addClass('alert-success')
-              } else if (data > 60) {
-                span.addClass('alert-warning')
               } else {
                 span.addClass('alert-danger')
               }
+              // if (data > 95) {
+              //   span.addClass('alert-info')
+              // } else if (data > 85) {
+              //   span.addClass('alert-success')
+              // } else if (data > 60) {
+              //   span.addClass('alert-warning')
+              // } else {
+              //   span.addClass('alert-danger')
+              // }
 
               return span.wrap('<div></div>').parent().html();
             }
