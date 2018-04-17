@@ -191,21 +191,27 @@ var moldModule = (function () {
       var url = `/mold/ajax/second?pn=${data.mvs_pn}&mold=${data.mvs_mold}`; // data 為 queryString
 
       var thStyle = {
-        'background-color': '#B0C4DE',
+        'border': '1px solid #7ecbfe',
+        'background-color': '#1EA4FF',
         'padding': '4px 8px',
-        color: 'white'
+        'color': '#FFFFFF',
+        'font-weight': 'bolder',
+        'font-size': '1em',
+        'border-width': '1px 0 1px 0'
       };
       var tdStyle = {
-        'background-color': '#F0FFFF',
+        'border': '1px solid #7ecbfe',
+        // 'background-color': '#F0FFFF',
         'padding': '4px 8px',
       };
       var tableAttribute = {
-        "cellpadding": 10
       };
       var tableStyle = {
-        "border-collapse": "separate",
-        "border-spacing": "4px",
-        "padding": "10px 0px 10px 0px;"
+        'width': '70%',
+        "border-collapse": "collapse",
+        "border-spacing": "0px",
+        "padding": "10px 0px 10px 0px;",
+        "margin-left": "30px"
       };
 
       var table = $('<table>').attr(tableAttribute).addClass('container').css(tableStyle);
