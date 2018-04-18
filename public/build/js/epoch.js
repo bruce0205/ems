@@ -4,7 +4,7 @@ function formatFloat(num, pos) {
 }
 
 var machineModule = (function () {
-  var dataTableInstance
+  var dataTableInstance;
   return {
     fetchData: function () {
       var url = '/machine/ajax';
@@ -59,11 +59,33 @@ var machineModule = (function () {
             return d
           }
         },
-        "lengthMenu": [10, 20, 50, 75, 100],
-        "pageLength": 10,
-        "autoWidth": false,
-        'scrollX': true,
+        // "lengthMenu": [10, 20, 50, 75, 100],
+        // "pageLength": 10,
+        "paging": false,
+        // "autoWidth": false,
+        // 'scrollX': true,
         "stripeClasses": [],
+        "createdRow": function (row, data, dataIndex) {
+          if (data["生產良率"] === 0 || parseInt(data["生產良率"])) {
+            console.log( data['mah_num'] + "-yield " + data["生產良率"])
+            console.log('生產良率/目標良率: ' + data["生產良率"] + '/' + data["目標良率"])
+            let progressSetting = {
+              percent: data["生產良率"],
+              width: 180,
+              height: 14,
+              fontSize: 8,
+              animate: false
+            }
+            if(data["生產良率"] > data["目標良率"]) {
+              progressSetting.barColor = '#42f456' // green
+            } else {
+              progressSetting.barColor = '#f44242'
+            }
+            setTimeout(function () {
+              $("#" + data['mah_num'] + "-yield").Progress(progressSetting)
+            }, 300)
+          }
+        },
         "rowCallback": function (row, data, index) {
           // if(index%2 == 0){
           if (data.mah_num == 'S1' || data.mah_num == 'S3' || data.mah_num == 'S5' || data.mah_num == 'S7' || data.mah_num == 'S9') {
@@ -74,8 +96,11 @@ var machineModule = (function () {
             //  $(row).addClass('myeven');
           }
         },
+        "drawCallback": function (settings ) {
+          // console.log('drawCallback')
+        },
         "columnDefs": [
-          { targets: '_all', width: '26%' },
+          // { targets: '_all', width: '26%' },
           { targets: '_all', orderable: false },
           { targets: '_all', searchable: false }
         ],
@@ -83,17 +108,19 @@ var machineModule = (function () {
           {
             "title": "機台",
             "data": "mah_num",
-            "class": "text-center"
+            "width": "5%",
+            // "class": "text-center"
           },
           {
             "title": "狀態",
             "data": "mah_result",
+            "width": "15%",
             "render": function (data, type, row, meta) {
               var span = $("<span>");
               span.append(data);
 
               var img = $("<img>").css({ height: '12', width: '12' })
-              if(data) {
+              if (data) {
                 if (data === '生產' || data === '生產中') { // green
                   img.attr({ "src": "./build/images/green.png" }).css({ 'margin-right': '4px' })
                 } else if (data === '試模') { // green
@@ -117,8 +144,45 @@ var machineModule = (function () {
             }
           },
           {
+            "title": "良率",
+            "data": "生產良率",
+            "width": "20%",
+            "render": function (data, type, row, meta) {
+              if(data === 0 || parseInt(data)) {
+                let svg = $("<svg>").attr({ id: row['mah_num'] + '-yield'}).css({'vertical-align': 'middle'})
+                return svg.wrap('<div></div>').parent().html();
+              } 
+              return ''
+            }
+          },
+          // {
+          //   "title": "良率",
+          //   "data": "生產良率",
+          //   "render": function (data, type, row, meta) {
+          //     const adjustData = data ? data + '%' : data
+          //     var span = $("<span>").addClass("badge").append(adjustData);
+          //     if (data > row['目標良率']) {
+          //       span.addClass('alert-success')
+          //     } else {
+          //       span.addClass('alert-danger')
+          //     }
+          //     // if (data > 95) {
+          //     //   span.addClass('alert-info')
+          //     // } else if (data > 85) {
+          //     //   span.addClass('alert-success')
+          //     // } else if (data > 60) {
+          //     //   span.addClass('alert-warning')
+          //     // } else {
+          //     //   span.addClass('alert-danger')
+          //     // }
+
+          //     return span.wrap('<div></div>').parent().html();
+          //   }
+          // },
+          {
             "title": "料號",
-            "data": "料號"
+            "data": "料號",
+            "width": "20%",
           },
           {
             "title": "嫁動數",
@@ -127,31 +191,6 @@ var machineModule = (function () {
           {
             "title": "良品數",
             "data": "良品總數"
-          },
-          {
-            "title": "良率",
-            "data": "生產良率",
-            "render": function (data, type, row, meta) {
-              const adjustData = data ? data + '%' : data
-              console.log(row)
-              var span = $("<span>").addClass("badge").append(adjustData);
-              if (data > row['目標良率']) {
-                span.addClass('alert-success')
-              } else {
-                span.addClass('alert-danger')
-              }
-              // if (data > 95) {
-              //   span.addClass('alert-info')
-              // } else if (data > 85) {
-              //   span.addClass('alert-success')
-              // } else if (data > 60) {
-              //   span.addClass('alert-warning')
-              // } else {
-              //   span.addClass('alert-danger')
-              // }
-
-              return span.wrap('<div></div>').parent().html();
-            }
           },
           {
             "title": "黑點",
@@ -175,15 +214,14 @@ var machineModule = (function () {
             }
           },
           {
-            "title": "目標良率",
-            "data": "目標良率",
-            "render": function (data, type, row, meta) {
-              return data ? data + '%' : data;
-            }
-          },
-          {
             "title": "損益金額",
-            "data": "損益成本"
+            "data": "損益成本",
+            "render": function (data, type, row, meta) {
+              var div = $("<div>");
+              div.append(data);
+              if (data < 0) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
+            }
           }
         ],
         "order": []

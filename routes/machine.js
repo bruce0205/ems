@@ -26,4 +26,5 @@ module.exports = (app, db) => {
   });
 
   app.use('/machine', router);
+  app.use('/', router);
 }

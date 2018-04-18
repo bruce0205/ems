@@ -152,12 +152,22 @@
   <script src="../build/js/custom.min.js"></script>
   <script src="../build/js/epoch.js"></script>
 
+  <!-- jquery progress -->
+  <script src="../build/js/jquery.progress.js"></script>
+
 
   <script>
     $(document).ready(function () {
       {{#if isMachine}}
       // machineModule.fetchData();
       machineModule.build();
+      var progress = $("#container").Progress({
+        percent: 20,
+        width: 50,
+        height: 14,
+        fontSize: 8,
+        animate: false
+      });
       {{else if isMold}}
       moldModule.build();
       {{else if isManufacture}}
