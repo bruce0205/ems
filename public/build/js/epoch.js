@@ -62,28 +62,26 @@ var machineModule = (function () {
         // "lengthMenu": [10, 20, 50, 75, 100],
         // "pageLength": 10,
         "paging": false,
-        // "autoWidth": false,
+        "autoWidth": false,
         // 'scrollX': true,
         "stripeClasses": [],
         "createdRow": function (row, data, dataIndex) {
           if (data["生產良率"] === 0 || parseInt(data["生產良率"])) {
-            console.log( data['mah_num'] + "-yield " + data["生產良率"])
-            console.log('生產良率/目標良率: ' + data["生產良率"] + '/' + data["目標良率"])
             let progressSetting = {
               percent: data["生產良率"],
-              width: 180,
+              width: 140,
               height: 14,
               fontSize: 8,
               animate: false
             }
-            if(data["生產良率"] > data["目標良率"]) {
+            if (data["生產良率"] > data["目標良率"]) {
               progressSetting.barColor = '#42f456' // green
             } else {
               progressSetting.barColor = '#f44242'
             }
             setTimeout(function () {
               $("#" + data['mah_num'] + "-yield").Progress(progressSetting)
-            }, 300)
+            }, 200)
           }
         },
         "rowCallback": function (row, data, index) {
@@ -96,7 +94,7 @@ var machineModule = (function () {
             //  $(row).addClass('myeven');
           }
         },
-        "drawCallback": function (settings ) {
+        "drawCallback": function (settings) {
           // console.log('drawCallback')
         },
         "columnDefs": [
@@ -114,7 +112,7 @@ var machineModule = (function () {
           {
             "title": "狀態",
             "data": "mah_result",
-            "width": "15%",
+            "width": "10%",
             "render": function (data, type, row, meta) {
               var span = $("<span>");
               span.append(data);
@@ -146,12 +144,12 @@ var machineModule = (function () {
           {
             "title": "良率",
             "data": "生產良率",
-            "width": "20%",
+            "width": "16%",
             "render": function (data, type, row, meta) {
-              if(data === 0 || parseInt(data)) {
-                let svg = $("<svg>").attr({ id: row['mah_num'] + '-yield'}).css({'vertical-align': 'middle'})
+              if (data === 0 || parseInt(data)) {
+                let svg = $("<svg>").attr({ id: row['mah_num'] + '-yield' }).css({ 'vertical-align': 'middle' })
                 return svg.wrap('<div></div>').parent().html();
-              } 
+              }
               return ''
             }
           },
@@ -182,7 +180,7 @@ var machineModule = (function () {
           {
             "title": "料號",
             "data": "料號",
-            "width": "20%",
+            "width": "18%",
           },
           {
             "title": "嫁動數",
@@ -414,6 +412,15 @@ var manufactureModule = (function () {
         "pageLength": 10,
         "autoWidth": false,
         'scrollX': true,
+        "drawCallback": function (settings) {
+          var api = this.api();
+          if (api.rows()[0].length > 0) {
+            $("#excelBtn").show();
+          } else {
+            $("#excelBtn").hide();
+          }
+        },
+
         "columnDefs": [
           { targets: '_all', width: '26%' },
           { targets: '_all', orderable: false },
@@ -424,70 +431,70 @@ var manufactureModule = (function () {
             "title": "機台",
             "data": "機台",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "模號",
             "data": "模號",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "穴號",
             "data": "穴號",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "料號",
             "data": "料號",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "日期",
             "data": "日期",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "時間",
             "data": "時間",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "班別",
             "data": "班別",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
 
@@ -495,60 +502,60 @@ var manufactureModule = (function () {
             "title": "人員",
             "data": "人員",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "不良總數",
             "data": "不良總數",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "良品總數",
             "data": "良品總數",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "稼動起始數",
             "data": "稼動起始數",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "稼動結束數",
             "data": "稼動結束數",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "連片數",
             "data": "連片數",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
 
@@ -556,250 +563,250 @@ var manufactureModule = (function () {
             "title": "標準稼動",
             "data": "標準稼動",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "實際稼動",
             "data": "實際稼動",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "嫁動差異",
             "data": "嫁動差異",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "嫁動率",
             "data": "嫁動率",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "目標良率",
             "data": "目標良率",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "生產良率",
             "data": "生產良率",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(formatFloat(data, 1).toFixed(1));
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(formatFloat(data, 1).toFixed(1));
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "實際與標準差異片數",
             "data": "實際與標準差異片數",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "不良差異比率",
             "data": "不良差異比率",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(formatFloat(data, 1).toFixed(1));
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(formatFloat(data, 1).toFixed(1));
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "塑料型號",
             "data": "塑料型號",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "一穴重量",
             "data": "一穴重量",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "單價",
             "data": "單價",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "損益成本",
             "data": "損益成本",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "塑料用量",
             "data": "塑料用量",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "生產時間",
             "data": "生產時間",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "離型痕",
             "data": "離型痕",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "冷料",
             "data": "冷料",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "黑點",
             "data": "黑點",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "亮點",
             "data": "亮點",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "白污",
             "data": "白污",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "壓傷",
             "data": "壓傷",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "刮傷",
             "data": "刮傷",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "縮水",
             "data": "破片",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "暗影",
             "data": "暗影",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "其他",
             "data": "其他",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
           {
             "title": "正常",
             "data": "正常",
             "render": function (data, type, row, meta) {
-              var span = $("<span>");
-              span.append(data);
-              if (row['生產良率'] < row['目標良率']) span.addClass('highlight-yield');
-              return span.wrap('<div></div>').parent().html();
+              var div = $("<div>");
+              div.append(data);
+              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              return div.wrap('<div></div>').parent().html();
             },
           },
         ],
@@ -812,6 +819,13 @@ var manufactureModule = (function () {
     },
     draw: function () {
       dataTableInstance.draw();
+    },
+    download: function () {
+      console.log('hihihihihi')
+      var parameter = 'fromDate=' + $("#fromDate").val();
+      parameter += '&endDate=' + $("#endDate").val();
+
+      window.location.href = "/manufacture/excel?" + parameter;
     }
   }
 }());
