@@ -25,6 +25,7 @@
 
   <!-- Custom Theme Style -->
   <link href="../build/css/custom.min.css" rel="stylesheet">
+
 </head>
 
 <body class="nav-md">
@@ -105,6 +106,42 @@
       </div>
       <!-- /top navigation -->
 
+      <!-- js若擺在前面,會影響navigation -->
+      <!-- jQuery -->
+      <script src="../vendors/jquery/dist/jquery.min.js"></script>
+      <!-- Bootstrap -->
+      <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+
+      <!-- FastClick -->
+      <script src="../vendors/fastclick/lib/fastclick.js"></script>
+      <!-- NProgress -->
+      <script src="../vendors/nprogress/nprogress.js"></script>
+      <!-- Chart.js -->
+      <script src="../vendors/Chart.js/dist/Chart.min.js"></script>
+      <!-- jQuery Sparklines -->
+      <script src="../vendors/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
+      <!-- easy-pie-chart -->
+      <script src="../vendors/jquery.easy-pie-chart/dist/jquery.easypiechart.min.js"></script>
+      <!-- bootstrap-progressbar -->
+      <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+      <!-- iCheck -->
+      <script src="../vendors/iCheck/icheck.min.js"></script>
+      <!-- Datatables -->
+      <script src="../vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+      <script src="../vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+      <script src="https://cdn.rawgit.com/ashl1/datatables-rowsgroup/fbd569b8768155c7a9a62568e66a64115887d7d0/dataTables.rowsGroup.js"></script>
+      <!-- bootstrap-datetimepicker -->
+      <script src="../vendors/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+      <!-- momentjs -->
+      <script src="../vendors/moment/min/moment.min.js"></script>
+
+      <!-- Custom Theme Scripts -->
+      <script src="../build/js/custom.min.js"></script>
+      <script src="../build/js/epoch.js"></script>
+
+      <!-- jquery progress -->
+      <script src="../build/js/jquery.progress.js"></script>
+
       <!-- page content -->
       {{{body}}}
       <!-- /page content -->
@@ -120,54 +157,13 @@
       <!-- /footer content -->
     </div>
   </div>
-
-  <!-- jQuery -->
-  <script src="../vendors/jquery/dist/jquery.min.js"></script>
-  <!-- Bootstrap -->
-  <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-  <!-- FastClick -->
-  <script src="../vendors/fastclick/lib/fastclick.js"></script>
-  <!-- NProgress -->
-  <script src="../vendors/nprogress/nprogress.js"></script>
-  <!-- Chart.js -->
-  <script src="../vendors/Chart.js/dist/Chart.min.js"></script>
-  <!-- jQuery Sparklines -->
-  <script src="../vendors/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
-  <!-- easy-pie-chart -->
-  <script src="../vendors/jquery.easy-pie-chart/dist/jquery.easypiechart.min.js"></script>
-  <!-- bootstrap-progressbar -->
-  <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
-  <!-- iCheck -->
-  <script src="../vendors/iCheck/icheck.min.js"></script>
-  <!-- Datatables -->
-  <script src="../vendors/datatables.net/js/jquery.dataTables.min.js"></script>
-  <script src="../vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-  <script src="https://cdn.rawgit.com/ashl1/datatables-rowsgroup/fbd569b8768155c7a9a62568e66a64115887d7d0/dataTables.rowsGroup.js"></script>
-  <!-- bootstrap-datetimepicker -->
-  <script src="../vendors/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-  <!-- momentjs -->
-  <script src="../vendors/moment/min/moment.min.js"></script>
-
-  <!-- Custom Theme Scripts -->
-  <script src="../build/js/custom.min.js"></script>
-  <script src="../build/js/epoch.js"></script>
-
-  <!-- jquery progress -->
-  <script src="../build/js/jquery.progress.js"></script>
-
+  
 
   <script>
     $(document).ready(function () {
       {{#if isMachine}}
       // machineModule.fetchData();
       machineModule.build();
-      var progress = $("#container").Progress({
-        percent: 20,
-        width: 50,
-        height: 14,
-        fontSize: 8,
-        animate: false
-      });
       {{else if isMold}}
       moldModule.build();
       {{else if isManufacture}}

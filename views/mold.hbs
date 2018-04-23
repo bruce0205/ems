@@ -1,96 +1,188 @@
 <style>
-    td.details-control {
-        background: url('../build/images/plus.png') no-repeat center center;
-        background-size: 14px 14px;
-        cursor: pointer;
-    }
+  td.details-control {
+    background: url('../build/images/plus.png') no-repeat center center;
+    background-size: 14px 14px;
+    cursor: pointer;
+  }
 
-    tr.shown td.details-control {
-        background: url('../build/images/minus.png') no-repeat center center;
-        background-size: 14px 14px;
-    }
+  tr.shown td.details-control {
+    background: url('../build/images/minus.png') no-repeat center center;
+    background-size: 14px 14px;
+  }
 </style>
 
-<div class="right_col" role="main">
-    <div class="">
-        <div class="page-title">
-            <div class="title_left">
-                <h3>模具管理
-                    <small></small>
-                </h3>
-            </div>
-        </div>
+<script src="../build/js/vue.min.js"></script>
 
-        <div class="clearfix"></div>
-
-        <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel">
-                    <div class="x_title">
-                        <h2>各機種對應之模具資訊
-                        </h2>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <p class="text-muted font-13 m-b-30">
-
-                        </p>
-                        <table id="moldTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                            <thead></thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div id="app" class="right_col" role="main">
+  <div class="">
+    <div class="page-title">
+      <div class="title_left">
+        <h3>模具管理
+          <small></small>
+        </h3>
+      </div>
     </div>
 
-    <button style="display: none;" type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm">Small modal</button>
+    <div class="clearfix"></div>
 
-    <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-sm" style="width: 500px">
-            <div class="modal-content" style="top:100px">
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>各機種對應之模具資訊
+            </h2>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <p class="text-muted font-13 m-b-30">
 
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h4 id="modalTitle" class="modal-title">mvs_die01 登錄更換記錄</h4>
-                </div>
-                <div class="modal-body">
-                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">User</label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="first-name" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">更換時間</label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="last-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Threshold</label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="last-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Alarm %</label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="last-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-
-            </div>
+            </p>
+            <table id="moldTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
+
+  <button style="display: block;" type="button" class="btn btn-primary" onclick="showModal()">Small modal</button>
+
+  <div id="changeMoldModal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="width: 500px">
+      <div class="modal-content" style="top:100px">
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 id="modalTitle" class="modal-title">mvs_die01 登錄更換記錄</h4>
+        </div>
+        <div class="modal-body">
+          <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">User</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="text" id="first-name" required="required" class="form-control col-md-7 col-xs-12">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">零件料號</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="text" id="last-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Counter數</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="text" id="last-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">更換時間</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="text" id="last-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Threshold</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="text" id="last-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Alarm %</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="text" id="last-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="saveMold()">Save changes</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div id="testModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="width: 500px">
+      <div class="modal-content" style="top:100px">
+
+        <div class="modal-header">
+          <button type="button" class="close" onclick='closeModal()' aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 id="modalTitle" class="modal-title">${pn_type} 登錄更換記錄</h4>
+        </div>
+        <div class="modal-body">
+          <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">User</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="text" v-model="username" class="form-control col-md-7 col-xs-12">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">零件料號</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="text" v-model="pn" class="form-control col-md-7 col-xs-12">${pn}
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Counter</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="text" v-model="pn_count" class="form-control col-md-7 col-xs-12">
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" onclick="closeModal()">Close</button>
+          <button type="button" class="btn btn-primary" onclick="saveModal()">Save changes</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
 </div>
+<script>
+  function saveMold() {
+    console.log('aa')
+    $('#changeMoldModal').modal('toggle');
+    moldModule.reloadShownRow();
+  }
+  let data = {
+    mvs_pn: '',
+    mvs_mold: '',
+    mvs_hole1: '',
+    mvs_hole2: '',
+    pn_type: 'mvs_die01',
+    username: 'Jason Huang',
+    pn: 'LLK15-001-62A01',
+    pn_date: '2017-12-13',
+    pn_count: '2205672',
+    threshold: 30000000,
+    alarm: 90
+  }
+  let vm = new Vue({
+    delimiters: ['${', '}'],
+    el: '#testModal',
+    data,
+  });
+
+  function closeModal() {
+    $("#testModal").modal('hide');
+  }
+  function showModal() {
+    // TODO 取得threshold & alarm
+    $("#testModal").modal('show');
+  }
+  function saveModal() {
+    console.log(vm.$data);
+    $("#testModal").modal('hide');
+  }
+</script>

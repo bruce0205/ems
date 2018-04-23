@@ -28,7 +28,7 @@ module.exports = (app, db) => {
   router.get('/ajax/second', function (req, res, next) {
     console.log(req.query);
     db.query(`
-      select pn_type, pn,replace(convert(varchar, pn_date, 111), '/','-') as pn_date, pn_count from GetMoldCount(:pn,:mold) 
+      select pn_type, pn,replace(convert(varchar, pn_date, 111), '/','-') as pn_date, pn_count from GetMoldCount(:pn, :mold) 
       `, {
         replacements: { pn: req.query.pn, mold: req.query.mold },
         raw: false, // Set this to true if you don't have a model definition for your query.

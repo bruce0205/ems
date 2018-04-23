@@ -14,7 +14,6 @@ var machineModule = (function () {
         return response.json();
       }).then((data) => {
         data.forEach((item, index) => {
-          console.log(item);
           machineModule.render(item);
         });
       }).catch((err) => {
@@ -29,7 +28,6 @@ var machineModule = (function () {
       return li.append(p.append(iconSpan).append(nameSpan));
     },
     render: function (item) {
-      console.log('mah_num: ' + item['mah_num']);
       var containerDiv = $("[name='machineDiv']");
       var outerDiv = $('<div>').addClass('col-md-3 col-xs-12 widget widget_tally_box');
       var innerDiv = $('<div>').addClass('x_panel fixed_height_300');
@@ -236,9 +234,10 @@ var machineModule = (function () {
 }());
 
 var moldModule = (function () {
+  let dataTableInstance;
   return {
-    format: function (datatableRow, data) {
-      var url = `/mold/ajax/second?pn=${data.mvs_pn}&mold=${data.mvs_mold}`; // data 為 queryString
+    format: function (datatableRow, rowData, rowIndex) {
+      var url = `/mold/ajax/second?pn=${rowData.mvs_pn}&mold=${rowData.mvs_mold}`; // data 為 queryString
 
       var thStyle = {
         'border': '1px solid #7ecbfe',
@@ -287,6 +286,7 @@ var moldModule = (function () {
           let changeButton = $('<button>').addClass('btn btn-info btn-xs').attr({ "id": `changeButton_${index}`, "data-toggle": "modal", "data-target": ".bs-example-modal-sm" }).append('Change'); // add click event
           let historyButton = $('<button>').addClass('btn btn-warning btn-xs').append('View'); // add click event
 
+          // TODO 改用vue
           changeButton.on('click', () => $("#modalTitle").html(`${item["pn_type"]} 登錄更換記錄`));
 
           contentTr.append($('<td>').css(tdStyle).append(item["pn_type"]))
@@ -302,8 +302,11 @@ var moldModule = (function () {
         console.error(err);
       });
     },
+    getInstance: function () {
+      return dataTableInstance;
+    },
     build: function () {
-      var table = $('#moldTable').DataTable({
+      dataTableInstance = $('#moldTable').DataTable({
         "searching": false,
         "ajax": "/mold/ajax/first",
         "lengthMenu": [10, 20, 50, 75, 100],
@@ -349,19 +352,32 @@ var moldModule = (function () {
       // Add event listener for opening and closing details
       $('#moldTable tbody').on('click', 'td.details-control', function () {
         var tr = $(this).closest('tr');
-        var row = table.row(tr);
+        var row = dataTableInstance.row(tr);
+        var rowIndex = dataTableInstance.row(tr).index();
 
         if (row.child.isShown()) {
           // This row is already open - close it
           row.child.hide();
           tr.removeClass('shown');
-        }
-        else {
+        } else {
+          // close other row
+          let shownRowIndex = moldModule.getInstance().row($("tr.shown")).index();
+          if (shownRowIndex > -1) {
+            moldModule.getInstance().row(shownRowIndex).child.hide();
+            $("tr.shown").removeClass('shown');
+          }
           // Open this row
-          moldModule.format(row, row.data());
+          moldModule.format(row, row.data(), rowIndex);
           tr.addClass('shown');
         }
       });
+    },
+    reloadShownRow: function () {
+      let tr = $("tr.shown")
+      if (tr.length) {
+        tr.find('td.details-control').click();
+        tr.find('td.details-control').click();
+      }
     }
   }
 }());
@@ -821,7 +837,6 @@ var manufactureModule = (function () {
       dataTableInstance.draw();
     },
     download: function () {
-      console.log('hihihihihi')
       var parameter = 'fromDate=' + $("#fromDate").val();
       parameter += '&endDate=' + $("#endDate").val();
 

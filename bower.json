@@ -2,10 +2,9 @@
   "name": "ems",
   "homepage": "",
   "authors": [
-    "Bruce Hsu",
-    "Christian Esperar"
+    "Bruce Hsu"
   ],
-  "description": "ems dashboard",
+  "description": "epoch dashboard",
   "keywords": [
     "css",
     "js",

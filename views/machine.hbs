@@ -3,19 +3,24 @@
   td {
     white-space: nowrap;
   }
-  .sType{
+
+  .sType {
     background-color: #f9f9f9;
   }
+
   .tType {
-    background-color:#EDEDED;
+    background-color: #EDEDED;
   }
+
   .highlight-yield {
     color: #FF6347;
     font-weight: bolder;
   }
-  .dt-head-center {text-align: center;}
-</style>
 
+  .dt-head-center {
+    text-align: center;
+  }
+</style>
 <div class="right_col" role="main">
   <div class="">
     <div class="page-title">
@@ -26,16 +31,25 @@
       </div>
 
       <div class="title_right">
-        <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+        <div class="col-md-6 col-sm-6 col-xs-12 form-group pull-right top_search">
           <div class="form-inline">
-            <div class="checkbox">
+            <label for="" style="margin-right: 10px">Auto Refresh</label>
+            <div class="radio">
               <label>
-                <input type="checkbox" class="flat" checked="checked"> filter 1
+                <input name="autoRefresh" type="radio" value="-1" class="flat">
+                <span style="margin-left: 5px; margin-right: 5px">NA</span>
               </label>
             </div>
-            <div class="checkbox">
+            <div class="radio">
               <label>
-                <input type="checkbox" class="flat"> filter 2
+                <input name="autoRefresh" type="radio" value="30000" class="flat">
+                <span style="margin-left: 5px; margin-right: 5px">30s</span>
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input name="autoRefresh" type="radio" value="60000" class="flat">
+                <span style="margin-left: 5px; margin-right: 5px">60s</span>
               </label>
             </div>
           </div>
@@ -76,3 +90,32 @@
     </div>
   </div>
 </div>
+<script>
+  let timer
+  function autoRefresh(duration) {
+    timer = setTimeout(function () {
+      let url = window.location.href;
+      if (url.indexOf('autoRefreshDuration') > -1) {
+        url = url.substr(0, url.indexOf('?')) + '?autoRefreshDuration=' + duration
+      } else {
+        url += '?autoRefreshDuration=' + duration
+      }
+      window.location.href = url;
+    }, duration);
+  }
+  $(document).ready(function () {
+    let duration = '{{autoRefreshDuration}}';
+    $("[name='autoRefresh']").filter("[value='" + duration + "']").iCheck('check')
+    autoRefresh(duration);
+
+    $("input[name='autoRefresh']").on('ifChecked', function (event) {
+      console.log('autoRefresh changed: ' + $("[name='autoRefresh']:checked").val())
+      clearTimeout(timer)
+      if ($("[name='autoRefresh']:checked").val() > 0) {
+        autoRefresh($("[name='autoRefresh']:checked").val());
+      }
+    });
+
+  });
+
+</script>
