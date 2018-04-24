@@ -33,7 +33,7 @@ router.post('/', function (req, res, next) {
     const token = jwt.sign(payload, CONFIG.secret, tokenOptions);
 
     let cookieOptions = {
-      maxAge: 1000 * 60 * 240, // would expire after 120 minutes
+      maxAge: 1000 * 60 * 240, // would expire after 240 minutes
       httpOnly: true, // The cookie only accessible by the web server
       // signed: true // Indicates if the cookie should be signed
     }

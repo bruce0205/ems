@@ -128,8 +128,8 @@
   let data = {
     mvs_pn: '',
     mvs_mold: '',
-    mvs_hole1: '',
-    mvs_hole2: '',
+    mvs_hole1: null,
+    mvs_hole2: null,
     offLine: false,
     pn_type: '',
     username: 'Jason Huang',
@@ -155,11 +155,14 @@
     // TODO step 1: get counter & threshold & alarm
 
     // step 2: data binding
-    vm.pn = data.pn
-    vm.pn_type = data.pn_type
     vm.mvs_pn = data.mvs_pn
     vm.mvs_mold = data.mvs_mold
+    vm.mvs_hole1 = data.mvs_hole2
+    vm.mvs_hole2 = data.mvs_hole2
+    vm.pn = data.pn
+    vm.pn_type = data.pn_type
     vm.pn_count = data.pn_count
+
 
     // step 3: check offLine
     $('#offLine').iCheck({
@@ -181,16 +184,52 @@
   }
   function saveMold() {
     // step 1: get data
-    console.log($('#datetimepicker1').data("DateTimePicker").date().format('YYYY-MM-DD HH:mm:ss'));
-    console.log(vm.$data)
+    // console.log($('#datetimepicker1').data("DateTimePicker").date().format('YYYY-MM-DD HH:mm:ss'));
+    // console.log(vm.$data)
+
     // step 2: call update api
+    let body = {
+      mvs_pn: vm.$data.mvs_pn.trim(),
+      mvs_mold: vm.$data.mvs_mold.trim(),
+      mvs_hole1: vm.$data.mvs_hole1,
+      mvs_hole2: vm.$data.mvs_hole2,
+      mvs_type: vm.$data.pn_type.trim(),
+      mvs_component: vm.$data.pn.trim(),
+      mvs_update_datetime: $('#datetimepicker1').data("DateTimePicker").date().format('YYYY-MM-DD HH:mm:ss'),
+      mvs_update_count: vm.$data.pn_count,
+      mvs_update_user: vm.$data.username
+    }
+    if (vm.$data.offLine) {
+      body.mvs_component = 'NA';
+      body.mvs_update_count = null;
+    }
+    console.log(body)
+    console.log('body: ' + JSON.stringify(body))
+    var url = '/mold/record';
+    fetch(url, {
+      method: 'POST',
+      credentials: "same-origin",
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify(body)
+    }).then((response) => {
+      return response.json();
+    }).then((data) => {
+      if (data.status === 200) {
+        notify('更新成功', 'success');
+      } else {
+        notify('更新失敗', 'danger');
+      }
+    }).catch((err) => {
+      console.error(err);
+    });
     // step 3: ui reload
     $("#testModal").modal('hide');
     moldModule.reloadShownRow();
   }
 
   function toggleOffLine(event) {
-    console.log('toggleOffLine')
     if ($("#offLine").prop('checked')) {
       vm.pn_count = 0;
       vm.threshold = 0;

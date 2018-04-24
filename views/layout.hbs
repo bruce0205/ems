@@ -135,14 +135,22 @@
       <!-- momentjs -->
       <script src="../vendors/moment/min/moment.min.js"></script>
 
-      <!-- Custom Theme Scripts -->
-      <script src="../build/js/custom.min.js"></script>
-      <script src="../build/js/epoch.js"></script>
-
       <!-- jquery progress -->
       <script src="../build/js/jquery.progress.js"></script>
 
       <script src="../build/js/bootstrap-notify.min.js"></script>
+
+
+      <!-- Custom Theme Scripts -->
+      <script src="../build/js/custom.min.js"></script>
+      <script src="../build/js/epoch.js"></script>
+      {{#if isMachine}}
+      <script src="../build/js/machineModule.js"></script>
+      {{else if isMold}}
+      <script src="../build/js/moldModule.js"></script>
+      {{else if isManufacture}}
+      <script src="../build/js/manufactureModule.js"></script>
+      {{/if}}
 
       <!-- page content -->
       {{{body}}}

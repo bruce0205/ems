@@ -46,6 +46,29 @@ module.exports = (app, db) => {
     });
   });
 
+  router.post('/record', function (req, res, next) {
+    console.log(req.body)
+    db.query(`
+      InsertMold_sp
+      @mvs_pn='${req.body.mvs_pn}',
+      @mvs_mold='${req.body.mvs_mold}',
+      @mvs_hole1=${req.body.mvs_hole1},
+      @mvs_hole2=${req.body.mvs_hole2}, 
+      @mvs_type='${req.body.mvs_type}',
+      @mvs_component='${req.body.mvs_component}',
+      @mvs_update_datetime='${req.body.mvs_update_datetime}',
+      @mvs_update_count=${req.body.mvs_update_count},
+      @mvs_update_user='${req.body.mvs_update_user}'
+    `, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        res.send({ status: 200 });
+      }).catch(err => {
+        res.send({ status: 500 });
+      });
+  });
+
   app.use('/mold', router);
 }
 
