@@ -64,20 +64,6 @@ module.exports = (app, db) => {
           ws.cell(1, index + 1).string(value).style(headerStyle);
         })
 
-        // data.forEach(function (row, index) {
-        //   let cells = R.values(row)
-        //   console.log(row)
-        //   ws.cell(index + 2, 1).string(row['機台']).style(cellStyle);
-        //   ws.cell(index + 2, 2).string(row['模號']).style(cellStyle);
-        //   ws.cell(index + 2, 3).string(row['穴號']).style(cellStyle);
-        //   ws.cell(index + 2, 4).string(row['料號']).style(cellStyle);
-        //   ws.cell(index + 2, 5).string(row['日期']).style(cellStyle);
-        //   ws.cell(index + 2, 6).string(row['時間']).style(cellStyle);
-        //   ws.cell(index + 2, 7).string(row['班別']).style(cellStyle);
-        //   ws.cell(index + 2, 8).string(row['人員']).style(cellStyle);
-        //   ws.cell(index + 2, 9).string(row['不良總數'].toString()).style(cellStyle);
-        // });
-
         data.forEach(function (row, i) {
           let cells = R.values(row)
           cells.forEach(function (cell, j) {
@@ -95,42 +81,26 @@ module.exports = (app, db) => {
       });
   });
 
-  router.get('/excelTest', function (req, res) {
-    var wb = new xl.Workbook();
-
-    // Add Worksheets to the workbook
-    var ws = wb.addWorksheet('Sheet 1');
-    var ws2 = wb.addWorksheet('Sheet 2');
-
-    // Create a reusable style
-    var style = wb.createStyle({
-      font: {
-        color: '#FF0800',
-        size: 12
-      },
-      numberFormat: '$#,##0.00; ($#,##0.00); -'
-    });
-
-    // Set value of cell A1 to 100 as a number type styled with paramaters of style
-    ws.cell(1, 1).number(100).style(style);
-
-    // Set value of cell B1 to 300 as a number type styled with paramaters of style
-    ws.cell(1, 2).number(200).style(style);
-
-    // Set value of cell C1 to a formula styled with paramaters of style
-    ws.cell(1, 3).formula('A1 + B1').style(style);
-
-    // Set value of cell A2 to 'string' styled with paramaters of style
-    ws.cell(2, 1).string('string').style(style);
-
-    // Set value of cell A3 to true as a boolean type styled with paramaters of style but with an adjustment to the font size.
-    ws.cell(3, 1).bool(true).style(style).style({ font: { size: 14 } });
-
-    wb.write('ExcelFile.xlsx', res);
-    // var result = nodeExcel.execute(conf);
-    // res.setHeader('Content-Type', 'application/vnd.openxmlformats');
-    // res.setHeader("Content-Disposition", "attachment; filename=" + "Report.xlsx");
-    // res.end(result, 'binary');
+  router.put('/counter', function (req, res, next) {
+    console.log(req.body)
+    db.query(`
+      updateCounter_sp
+      @user_name = '${req.body.userName}',
+      @user_shift = '${req.body.userShift}',
+      @mah_num = '${req.body.mahNum}',
+      @user_sdate = '${req.body.userSdate}',
+      @user_stime = '${req.body.userStime}',
+      @user_etime = '${req.body.userEtime}',
+      @scount = '${req.body.scount}',
+      @ecount = '${req.body.ecount}'
+    `, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        res.send({ status: 200 });
+      }).catch(err => {
+        res.send({ status: 500 });
+      });
   });
 
   app.use('/manufacture', router);

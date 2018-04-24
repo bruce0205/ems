@@ -5,9 +5,7 @@ var testingData = require('../data/machine.json');
 
 module.exports = (app, db) => {
   router.get('/', function (req, res, next) {
-
     const autoRefreshDuration = req.query.autoRefreshDuration > 0 ? req.query.autoRefreshDuration : 60000
-    console.log(`autoRefreshDuration: ${autoRefreshDuration}`)
     res.render('machine', {
       isMachine: true,
       layout: 'layout',

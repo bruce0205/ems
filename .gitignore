@@ -2,3 +2,5 @@ node_modules/
 public/vendors
 backup/
 output/
+logs/
+.vscode/

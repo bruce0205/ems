@@ -10,8 +10,9 @@
     background-size: 14px 14px;
   }
 </style>
-
+<link href="../build/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 <script src="../build/js/vue.min.js"></script>
+<script src="../build/js/bootstrap-datetimepicker.min.js"></script>
 
 <div id="app" class="right_col" role="main">
   <div class="">
@@ -47,76 +48,18 @@
     </div>
   </div>
 
-  <button style="display: block;" type="button" class="btn btn-primary" onclick="showModal()">Small modal</button>
-
-  <div id="changeMoldModal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-sm" style="width: 500px">
-      <div class="modal-content" style="top:100px">
-
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-          <h4 id="modalTitle" class="modal-title">mvs_die01 登錄更換記錄</h4>
-        </div>
-        <div class="modal-body">
-          <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
-            <div class="form-group">
-              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">User</label>
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <input type="text" id="first-name" required="required" class="form-control col-md-7 col-xs-12">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">零件料號</label>
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <input type="text" id="last-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Counter數</label>
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <input type="text" id="last-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">更換時間</label>
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <input type="text" id="last-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Threshold</label>
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <input type="text" id="last-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Alarm %</label>
-              <div class="col-md-6 col-sm-6 col-xs-12">
-                <input type="text" id="last-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12">
-              </div>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="saveMold()">Save changes</button>
-        </div>
-
-      </div>
-    </div>
-  </div>
+  <button style="display: none;" type="button" class="btn btn-primary" onclick="showModal()">Small modal</button>
 
   <div id="testModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-sm" style="width: 500px">
-      <div class="modal-content" style="top:100px">
+    <div class="modal-dialog modal-sm" style="width: 520px">
+      <div class="modal-content" style="top:60px">
 
         <div class="modal-header">
-          <button type="button" class="close" onclick='closeModal()' aria-label="Close">
+          <button type="button" class="close" onclick='closeMoldModal()' aria-label="Close">
             <span aria-hidden="true">×</span>
           </button>
-          <h4 id="modalTitle" class="modal-title">${pn_type} 登錄更換記錄</h4>
+          <h4 style="font-weight: bolder">登錄更換記錄</h4>
+          <h5 style="font-weight: bolder" class="modal-title">${mvs_pn} -> ${mvs_mold} -> ${pn_type}</h5>
         </div>
         <div class="modal-body">
           <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
@@ -129,20 +72,52 @@
             <div class="form-group">
               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">零件料號</label>
               <div class="col-md-6 col-sm-6 col-xs-12">
-                <input type="text" v-model="pn" class="form-control col-md-7 col-xs-12">${pn}
+                <div class="form-inline">
+                  <div class="checkbox">
+                    <label>
+                      <input id="offLine" type="checkbox" class="flat" v-model="offLine"> 下線
+                    </label>
+                  </div>
+                </div>
+                <input v-if="offLine === false" type="text" v-model="pn" style="margin-top: 5px" class="form-control col-md-7 col-xs-12">
+
+              </div>
+            </div>
+            <div class="form-group" v-if="offLine === false">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Counter數</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="number" v-model="pn_count" class="form-control col-md-7 col-xs-12">
               </div>
             </div>
             <div class="form-group">
-              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Counter</label>
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">更換時間</label>
               <div class="col-md-6 col-sm-6 col-xs-12">
-                <input type="text" v-model="pn_count" class="form-control col-md-7 col-xs-12">
+
+                <div class='input-group date' id='datetimepicker1'>
+                  <input type='text' class="form-control" />
+                  <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-th"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group" v-if="offLine === false">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Threshold</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="number" v-model="threshold" class="form-control col-md-7 col-xs-12">
+              </div>
+            </div>
+            <div class="form-group" v-if="offLine === false">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Alarm %</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <input type="number" v-model="alarm" class="form-control col-md-7 col-xs-12">
               </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" onclick="closeModal()">Close</button>
-          <button type="button" class="btn btn-primary" onclick="saveModal()">Save changes</button>
+          <button type="button" class="btn btn-default" onclick="closeMoldModal()">Close</button>
+          <button type="button" class="btn btn-primary" onclick="saveMold()">Save changes</button>
         </div>
 
       </div>
@@ -150,23 +125,19 @@
   </div>
 </div>
 <script>
-  function saveMold() {
-    console.log('aa')
-    $('#changeMoldModal').modal('toggle');
-    moldModule.reloadShownRow();
-  }
   let data = {
     mvs_pn: '',
     mvs_mold: '',
     mvs_hole1: '',
     mvs_hole2: '',
-    pn_type: 'mvs_die01',
+    offLine: false,
+    pn_type: '',
     username: 'Jason Huang',
-    pn: 'LLK15-001-62A01',
-    pn_date: '2017-12-13',
-    pn_count: '2205672',
-    threshold: 30000000,
-    alarm: 90
+    pn: '',
+    pn_date: '',
+    pn_count: 0,
+    threshold: 0,
+    alarm: 0
   }
   let vm = new Vue({
     delimiters: ['${', '}'],
@@ -174,15 +145,62 @@
     data,
   });
 
-  function closeModal() {
+  function closeMoldModal() {
     $("#testModal").modal('hide');
+    $('#datetimepicker1').data("DateTimePicker").destroy();
+    $('#offLine').iCheck('destroy');
   }
-  function showModal() {
-    // TODO 取得threshold & alarm
+  function showMoldModal(event) {
+    const { data } = event
+    // TODO step 1: get counter & threshold & alarm
+
+    // step 2: data binding
+    vm.pn = data.pn
+    vm.pn_type = data.pn_type
+    vm.mvs_pn = data.mvs_pn
+    vm.mvs_mold = data.mvs_mold
+    vm.pn_count = data.pn_count
+
+    // step 3: check offLine
+    $('#offLine').iCheck({
+      checkboxClass: 'icheckbox_flat-green',
+      radioClass: 'iradio_flat-green'
+    });
+    $("#offLine").on('ifChecked', toggleOffLine);
+    $("#offLine").on('ifUnchecked', toggleOffLine);
+    $('#offLine').iCheck('uncheck')
+
+    // step 4: set current time as default
+    $('#datetimepicker1').datetimepicker({
+      format: 'YYYY-MM-DD HH:mm:ss',
+      date: moment().format('YYYY-MM-DD HH:mm:ss')
+    });
+
+    // step 5: show modal
     $("#testModal").modal('show');
   }
-  function saveModal() {
-    console.log(vm.$data);
+  function saveMold() {
+    // step 1: get data
+    console.log($('#datetimepicker1').data("DateTimePicker").date().format('YYYY-MM-DD HH:mm:ss'));
+    console.log(vm.$data)
+    // step 2: call update api
+    // step 3: ui reload
     $("#testModal").modal('hide');
+    moldModule.reloadShownRow();
   }
+
+  function toggleOffLine(event) {
+    console.log('toggleOffLine')
+    if ($("#offLine").prop('checked')) {
+      vm.pn_count = 0;
+      vm.threshold = 0;
+      vm.alarm = 0;
+    }
+    vm.offLine = !vm.offLine
+  }
+
+  $(document).ready(function () {
+    moldModule.build();
+  });
+
 </script>

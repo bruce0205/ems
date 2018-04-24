@@ -3,13 +3,28 @@ function formatFloat(num, pos) {
   return Math.round(num * size) / size;
 }
 
+function notify(message, type) {
+  $.notify({
+    message: message
+  }, {
+      type: type,
+      delay: 5000,
+      template: '<div data-notify="container" class="col-xs-2 col-sm-2 alert alert-{0}" role="alert">' +
+        '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+        '<span data-notify="title">{1}</span>' +
+        '<span data-notify="message">{2}</span>' +
+        '</div>'
+    });
+}
+
 var machineModule = (function () {
   var dataTableInstance;
   return {
     fetchData: function () {
       var url = '/machine/ajax';
       fetch(url, {
-        method: 'GET'
+        method: 'GET',
+        credentials: "same-origin"
       }).then((response) => {
         return response.json();
       }).then((data) => {
@@ -276,18 +291,23 @@ var moldModule = (function () {
       table.append(thead.append(tr1));
 
       fetch(url, {
-        method: 'GET'
+        method: 'GET',
+        credentials: "same-origin"
       }).then((response) => {
         return response.json();
       }).then((data) => {
         var tbody = $('<tbody>');
         data.forEach((item, index) => {
           let contentTr = $('<tr>');
-          let changeButton = $('<button>').addClass('btn btn-info btn-xs').attr({ "id": `changeButton_${index}`, "data-toggle": "modal", "data-target": ".bs-example-modal-sm" }).append('Change'); // add click event
+          let changeButton = $('<button>').addClass('btn btn-info btn-xs').attr({ "id": `changeButton_${index}` }).append('Change'); // add click event
           let historyButton = $('<button>').addClass('btn btn-warning btn-xs').append('View'); // add click event
 
           // TODO 改用vue
-          changeButton.on('click', () => $("#modalTitle").html(`${item["pn_type"]} 登錄更換記錄`));
+          let payload = {
+            ...rowData,
+            ...item
+          }
+          changeButton.on('click', payload, showMoldModal);
 
           contentTr.append($('<td>').css(tdStyle).append(item["pn_type"]))
             .append($('<td>').css(tdStyle).append(item["pn"]))
@@ -346,7 +366,7 @@ var moldModule = (function () {
             "width": "23%",
           }
         ],
-        "order": [[1, 'asc']]
+        "order": []
       });
 
       // Add event listener for opening and closing details
@@ -384,6 +404,7 @@ var moldModule = (function () {
 
 var manufactureModule = (function () {
   var dataTableInstance;
+  var self = this;
   return {
     init: function (fromDate, endDate) {
       if (fromDate) {
@@ -406,6 +427,8 @@ var manufactureModule = (function () {
       $("#searchBtn").on('click', function () {
         manufactureModule.destroy();
         manufactureModule.build();
+        manufactureModule.makeCellEditable();
+        manufactureModule.cellClickCallback();
       });
     },
     getInstance: function () {
@@ -426,7 +449,7 @@ var manufactureModule = (function () {
         },
         "lengthMenu": [10, 20, 50, 75, 100],
         "pageLength": 10,
-        "autoWidth": false,
+        // "autoWidth": false,
         'scrollX': true,
         "drawCallback": function (settings) {
           var api = this.api();
@@ -436,7 +459,6 @@ var manufactureModule = (function () {
             $("#excelBtn").hide();
           }
         },
-
         "columnDefs": [
           { targets: '_all', width: '26%' },
           { targets: '_all', orderable: false },
@@ -549,7 +571,9 @@ var manufactureModule = (function () {
             "data": "稼動起始數",
             "render": function (data, type, row, meta) {
               var div = $("<div>");
-              div.append(data);
+              var i = $("<i>").css({ "margin-right": "4px" });
+              i.addClass("fa fa-edit")
+              div.append(i).append(data);
               if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
               return div.wrap('<div></div>').parent().html();
             },
@@ -559,7 +583,9 @@ var manufactureModule = (function () {
             "data": "稼動結束數",
             "render": function (data, type, row, meta) {
               var div = $("<div>");
-              div.append(data);
+              var i = $("<i>").css({ "margin-right": "4px" });
+              i.addClass("fa fa-edit")
+              div.append(i).append(data);
               if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
               return div.wrap('<div></div>').parent().html();
             },
@@ -832,15 +858,118 @@ var manufactureModule = (function () {
     },
     destroy: function () {
       dataTableInstance.destroy();
+      dataTableInstance.table().MakeCellsEditable("destroy");
     },
     draw: function () {
       dataTableInstance.draw();
+    },
+    initComplete: function (settings, json) {
+      console.log('DataTables has finished its initialisation.');
+    },
+    drawCallback: function (settings) {
+      console.log('DataTables has redrawn the table');
     },
     download: function () {
       var parameter = 'fromDate=' + $("#fromDate").val();
       parameter += '&endDate=' + $("#endDate").val();
 
       window.location.href = "/manufacture/excel?" + parameter;
+    },
+    makeCellEditable: function () {
+      dataTableInstance.table().MakeCellsEditable({
+        "onUpdate": manufactureModule.cellUpdateCallback,
+        "inputCss": 'my-input-class',
+        "columns": [10, 11],
+        "allowNulls": {
+          "columns": [3],
+          "errorClass": 'error'
+        },
+        "confirmationButton": { // could also be true
+          "confirmCss": 'my-confirm-class',
+          "cancelCss": 'my-cancel-class'
+        },
+        "inputTypes": [
+          {
+            "column": 10,
+            "type": "text",
+            "options": null
+          },
+          {
+            "column": 11,
+            "type": "text",
+            "options": null
+          },
+          {
+            "column": 0,
+            "type": "text",
+            "options": null
+          },
+          {
+            "column": 1,
+            "type": "list",
+            "options": [
+              { "value": "1", "display": "Beaty" },
+              { "value": "2", "display": "Doe" },
+              { "value": "3", "display": "Dirt" }
+            ]
+          },
+          {
+            "column": 2,
+            "type": "datepicker", // requires jQuery UI: http://http://jqueryui.com/download/
+            "options": {
+              "icon": "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif" // Optional
+            }
+          }
+        ]
+      });
+    },
+    cellUpdateCallback: function (updatedCell, updatedRow, oldValue) {
+      // console.log(updatedCell.index());
+      // console.log("The new value for the cell is: " + updatedCell.data());
+      // console.log("The old value for that cell was: " + oldValue);
+      console.log(updatedRow.data());
+
+      let scount = updatedCell.data();
+      let ecount = updatedCell.data();
+      if (updatedCell.index().column === 10) ecount = updatedRow.data()['稼動結束數'];
+      if (updatedCell.index().column === 11) scount = updatedRow.data()['稼動起始數'];
+
+      var url = '/manufacture/counter';
+      fetch(url, {
+        method: 'PUT',
+        credentials: "same-origin",
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        }),
+        body: JSON.stringify({
+          userName: updatedRow.data()['人員'],
+          userShift: updatedRow.data()['班別'],
+          mahNum: updatedRow.data()['機台'],
+          userSdate: updatedRow.data()['日期'],
+          userEtime: updatedRow.data()['user_etime'],
+          userStime: updatedRow.data()['user_stime'],
+          scount: scount,
+          ecount: ecount
+        })
+      }).then((response) => {
+        return response.json();
+      }).then((data) => {
+        console.log(data)
+        if (data.status === 200) {
+          notify('更新成功', 'success');
+        } else {
+          notify('更新失敗', 'danger');
+        }
+      }).catch((err) => {
+        console.error(err);
+      });
+    },
+    cellClickCallback: function () {
+      $(dataTableInstance.body()).on('click', 'td', function () {
+        console.log('cellClickCallback')
+        // manufactureModule.draw();
+        dataTableInstance.columns.adjust();
+      })
     }
   }
 }());
