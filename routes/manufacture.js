@@ -85,12 +85,12 @@ module.exports = (app, db) => {
     console.log(req.body)
     db.query(`
       updateCounter_sp
-      @user_name = '${req.body.userName}',
-      @user_shift = '${req.body.userShift}',
-      @mah_num = '${req.body.mahNum}',
-      @user_sdate = '${req.body.userSdate}',
-      @user_stime = '${req.body.userStime}',
-      @user_etime = '${req.body.userEtime}',
+      @user_name = '${req.body.user_name}',
+      @user_shift = '${req.body.user_shift}',
+      @mah_num = '${req.body.mah_num}',
+      @user_sdate = '${req.body.user_sdate}',
+      @user_stime = '${req.body.user_stime}',
+      @user_etime = '${req.body.user_etime}',
       @scount = '${req.body.scount}',
       @ecount = '${req.body.ecount}'
     `, {
