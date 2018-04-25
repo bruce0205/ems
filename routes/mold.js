@@ -3,6 +3,7 @@ var Sequelize = require('sequelize');
 var router = express.Router();
 var testingFisrtData = require('../data/moldFirst.json');
 var testingSecondData = require('../data/moldSecond.json');
+var logger = require('../lib/logger.js');
 
 module.exports = (app, db) => {
   router.get('/', function (req, res, next) {
@@ -12,7 +13,7 @@ module.exports = (app, db) => {
     });
   });
 
-  router.get('/ajax/first', function (req, res, next) {
+  router.get('/api/header', function (req, res, next) {
     db.query(`
         select mvs_pn, mvs_mold, mvs_hole1, mvs_hole2 from MOLD_MVS
       `, {
@@ -25,7 +26,8 @@ module.exports = (app, db) => {
       });
   });
 
-  router.get('/ajax/second', function (req, res, next) {
+  router.get('/api/detail', function (req, res, next) {
+    logger.info('mold.api.detail() api invoke')
     db.query(`
       select pn_type, pn,convert(varchar, pn_date, 120) as pn_date, pn_count from GetMoldCount(:pn, :mold) 
       `, {

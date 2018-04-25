@@ -34,10 +34,10 @@ var manufactureModule = (function () {
       dataTableInstance = $('#manufactureTable').DataTable({
         "searching": false,
         "ajax": {
-          "url": "/manufacture/ajax",
+          "url": "/manufacture/api/data",
           "data": function (d) {
-            d.fromDate = $("#fromDate").val();
-            d.endDate = $("#endDate").val();
+            d.err_sdate = $("#fromDate").val();
+            d.err_edate = $("#endDate").val();
             d.mafNum = $("#mafNum").val();
             d.mafPn = $("#mafPn").val();
             return d
@@ -523,7 +523,7 @@ var manufactureModule = (function () {
       // console.log(updatedCell.index());
       // console.log("The new value for the cell is: " + updatedCell.data());
       // console.log("The old value for that cell was: " + oldValue);
-      console.log(updatedRow.data());
+      // console.log(updatedRow.data());
 
       let scount = updatedCell.data();
       let ecount = updatedCell.data();
@@ -550,7 +550,6 @@ var manufactureModule = (function () {
       }).then((response) => {
         return response.json();
       }).then((data) => {
-        console.log(data)
         if (data.status === 200) {
           notify('更新成功', 'success');
         } else {
@@ -562,7 +561,6 @@ var manufactureModule = (function () {
     },
     cellClickCallback: function () {
       $(dataTableInstance.body()).on('click', 'td', function () {
-        console.log('cellClickCallback')
         // manufactureModule.draw();
         dataTableInstance.columns.adjust();
       })

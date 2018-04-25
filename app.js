@@ -1,22 +1,22 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-// var logger = require('./lib/logger');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var hbs = require('hbs');
-var db = require('./config/database.js');
-var auth = require('./lib/auth');
+const express = require('express');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+// const logger = require('./lib/logger');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const hbs = require('hbs');
+const db = require('./config/database.js');
+const auth = require('./lib/auth');
 
-var index = require('./routes/index');
-var users = require('./routes/users');
-var machine = require('./routes/machine');
-var mold = require('./routes/mold');
-var manufacture = require('./routes/manufacture');
-var login = require('./routes/login');
+const index = require('./routes/index');
+const users = require('./routes/users');
+const machine = require('./routes/machine');
+const mold = require('./routes/mold');
+const manufacture = require('./routes/manufacture');
+const login = require('./routes/login');
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

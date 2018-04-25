@@ -2,7 +2,7 @@ var moldModule = (function () {
     let dataTableInstance;
     return {
       format: function (datatableRow, rowData, rowIndex) {
-        var url = `/mold/ajax/second?pn=${rowData.mvs_pn}&mold=${rowData.mvs_mold}`; // data 為 queryString
+        var url = `/mold/api/detail?pn=${rowData.mvs_pn}&mold=${rowData.mvs_mold}`; // data 為 queryString
   
         var thStyle = {
           'border': '1px solid #7ecbfe',
@@ -78,7 +78,7 @@ var moldModule = (function () {
       build: function () {
         dataTableInstance = $('#moldTable').DataTable({
           "searching": false,
-          "ajax": "/mold/ajax/first",
+          "ajax": "/mold/api/header",
           "lengthMenu": [10, 20, 50, 75, 100],
           "pageLength": 10,
           "autoWidth": false,

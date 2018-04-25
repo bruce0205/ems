@@ -1,7 +1,6 @@
 var express = require('express');
 var Sequelize = require('sequelize');
 var router = express.Router();
-var testingData = require('../data/machine.json');
 
 module.exports = (app, db) => {
   router.get('/', function (req, res, next) {
@@ -13,7 +12,7 @@ module.exports = (app, db) => {
     });
   });
 
-  router.get('/ajax', function (req, res, next) {
+  router.get('/api/data', function (req, res, next) {
     db.query(`
         GetMFGRealtime_sp
       `, {

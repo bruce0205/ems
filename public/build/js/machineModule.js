@@ -2,7 +2,7 @@ var machineModule = (function () {
     var dataTableInstance;
     return {
       fetchData: function () {
-        var url = '/machine/ajax';
+        var url = '/machine/api/data';
         fetch(url, {
           method: 'GET',
           credentials: "same-origin"
@@ -48,7 +48,7 @@ var machineModule = (function () {
         dataTableInstance = $('#machineTable').DataTable({
           "searching": false,
           "ajax": {
-            "url": "/machine/ajax",
+            "url": "/machine/api/data",
             "data": function (d) {
               return d
             }

@@ -1,0 +1,19 @@
+{
+    "apps": [
+        {
+            "name": "epoch",
+            "script": "./bin/www",
+            "watch": ["routes", "app.js"],
+            "env_dev": {
+                "NODE_ENV": "dev"
+            },
+            "env_test": {
+                "NODE_ENV": "test"
+            },
+            "env_prod": {
+                "NODE_ENV": "prod"
+            },
+            "exec_mode": "fork"
+        }
+    ]
+}

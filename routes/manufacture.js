@@ -15,11 +15,11 @@ module.exports = (app, db) => {
     });
   });
 
-  router.get('/ajax', function (req, res, next) {
+  router.get('/api/data', function (req, res, next) {
     db.query(`
       GetMFGHistory_sp
-      @err_sdate = '${req.query.fromDate}',
-      @err_edate = '${req.query.endDate}',
+      @err_sdate = '${req.query.err_sdate}',
+      @err_edate = '${req.query.err_edate}',
       @Target_Alarm = 1
     `, {
         raw: false, // Set this to true if you don't have a model definition for your query.
@@ -82,7 +82,6 @@ module.exports = (app, db) => {
   });
 
   router.put('/counter', function (req, res, next) {
-    console.log(req.body)
     db.query(`
       updateCounter_sp
       @user_name = '${req.body.user_name}',
