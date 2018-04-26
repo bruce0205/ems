@@ -29,13 +29,45 @@ module.exports = (app, db) => {
   router.get('/api/detail', function (req, res, next) {
     logger.info('mold.api.detail() api invoke')
     db.query(`
-      select pn_type, pn,convert(varchar, pn_date, 120) as pn_date, pn_count from GetMoldCount(:pn, :mold) 
+        select pn_type, pn,convert(varchar, pn_date, 120) as pn_date, pn_count from GetMoldCount(:pn, :mold) 
       `, {
-        replacements: { pn: req.query.pn, mold: req.query.mold },
+        replacements: {
+          pn: req.query.pn,
+          mold: req.query.mold
+        },
         raw: false, // Set this to true if you don't have a model definition for your query.
         type: Sequelize.QueryTypes.SELECT
       }).then(data => {
         res.send(data);
+      }).catch(err => {
+        console.error(err);
+      });
+  });
+
+  router.get('/api/history', function (req, res, next) {
+    console.log(req.query)
+    let hole1Operator = (req.query.mvs_hole1) ? '=' : 'is';
+    let hole2Operator = (req.query.mvs_hole2) ? '=' : 'is';
+    db.query(`
+      select convert(varchar, mvs_update_datetime, 120) as mvs_update_datetime,mvs_update_count,mvs_update_user from MOLD_HISTORY
+      where mvs_pn = :mvs_pn
+      and mvs_mold = :mvs_mold
+      and mvs_hole1 ${hole1Operator} :mvs_hole1
+      and mvs_hole2 ${hole2Operator} :mvs_hole2
+      and mvs_type = :mvs_type
+      order by mvs_update_datetime desc
+      `, {
+        replacements: {
+          mvs_pn: req.query.mvs_pn,
+          mvs_mold: req.query.mvs_mold,
+          mvs_hole1: (req.query.mvs_hole1 ? req.query.mvs_hole1 : null),
+          mvs_hole2: (req.query.mvs_hole2 ? req.query.mvs_hole2 : null),
+          mvs_type: req.query.mvs_type
+        },
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        res.send({ data });
       }).catch(err => {
         console.error(err);
       });
@@ -52,15 +84,15 @@ module.exports = (app, db) => {
     console.log(req.body)
     db.query(`
       InsertMold_sp
-      @mvs_pn=:mvs_pn,
-      @mvs_mold=:mvs_mold,
-      @mvs_hole1=:mvs_hole1,
-      @mvs_hole2=:mvs_hole2, 
-      @mvs_type=:mvs_type,
-      @mvs_component=:mvs_component,
-      @mvs_update_datetime=:mvs_update_datetime,
-      @mvs_update_count=:mvs_update_count,
-      @mvs_update_user=:mvs_update_user
+      @mvs_pn = :mvs_pn,
+      @mvs_mold = :mvs_mold,
+      @mvs_hole1 = :mvs_hole1,
+      @mvs_hole2 = :mvs_hole2, 
+      @mvs_type = :mvs_type,
+      @mvs_component = :mvs_component,
+      @mvs_update_datetime = :mvs_update_datetime,
+      @mvs_update_count = :mvs_update_count,
+      @mvs_update_user = :mvs_update_user
     `, {
         raw: false, // Set this to true if you don't have a model definition for your query.
         replacements: {

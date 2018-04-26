@@ -49,8 +49,29 @@
   </div>
 
   <button style="display: none;" type="button" class="btn btn-primary" onclick="showModal()">Small modal</button>
+  <div id="historyModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-sm" style="width: 520px">
+      <div class="modal-content" style="top:60px">
+        <div class="modal-header">
+          <button type="button" class="close" onclick='closeMoldHistoryModal()' aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 style="font-weight: bolder">檢視更換記錄</h4>
+        </div>
+        <div class="modal-body">
+          <table id="moldHistoryTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" onclick="closeMoldHistoryModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <div id="testModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div id="testModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-sm" style="width: 520px">
       <div class="modal-content" style="top:60px">
 
@@ -124,7 +145,17 @@
     </div>
   </div>
 </div>
+
 <script>
+  function showMoldHistoryModal(event) {
+    moldModule.destroyHistory();
+    moldModule.buildHistory(event.data);
+    $("#historyModal").modal('show');
+  }
+  function closeMoldHistoryModal() {
+    $("#historyModal").modal('hide');
+  }
+
   let data = {
     mvs_pn: '',
     mvs_mold: '',
@@ -150,6 +181,7 @@
     $('#datetimepicker1').data("DateTimePicker").destroy();
     $('#offLine').iCheck('destroy');
   }
+
   function showMoldModal(event) {
     const { data } = event
     // TODO step 1: get counter & threshold & alarm
@@ -163,7 +195,6 @@
     vm.pn_type = data.pn_type
     vm.pn_count = data.pn_count
 
-
     // step 3: check offLine
     $('#offLine').iCheck({
       checkboxClass: 'icheckbox_flat-green',
@@ -171,8 +202,12 @@
     });
     $("#offLine").on('ifChecked', toggleOffLine);
     $("#offLine").on('ifUnchecked', toggleOffLine);
-    $('#offLine').iCheck('uncheck')
-
+    if (data.pn.indexOf('NA') === -1) {
+      $('#offLine').iCheck('uncheck');
+    } else {
+      $('#offLine').iCheck('check');
+    }
+    
     // step 4: set current time as default
     $('#datetimepicker1').datetimepicker({
       format: 'YYYY-MM-DD HH:mm:ss',
@@ -182,6 +217,7 @@
     // step 5: show modal
     $("#testModal").modal('show');
   }
+
   function saveMold() {
     // step 1: get data
     // console.log($('#datetimepicker1').data("DateTimePicker").date().format('YYYY-MM-DD HH:mm:ss'));
