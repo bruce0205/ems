@@ -20,7 +20,7 @@ module.exports = (app, db) => {
       GetMFGHistory_sp
       @err_sdate = '${req.query.err_sdate}',
       @err_edate = '${req.query.err_edate}',
-      @Target_Alarm = 1
+      @Target_Alarm = 0
     `, {
         raw: false, // Set this to true if you don't have a model definition for your query.
         type: Sequelize.QueryTypes.SELECT
@@ -36,7 +36,7 @@ module.exports = (app, db) => {
       GetMFGHistory_sp
       @err_sdate = '${req.query.fromDate}',
       @err_edate = '${req.query.endDate}',
-      @Target_Alarm = 1
+      @Target_Alarm = 0
     `, {
         raw: false, // Set this to true if you don't have a model definition for your query.
         type: Sequelize.QueryTypes.SELECT
