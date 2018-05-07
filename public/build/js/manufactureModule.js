@@ -198,7 +198,7 @@ var manufactureModule = (function () {
           },
 
           {
-            "title": "標準稼動",
+            "title": "標準稼動(秒)",
             "data": "標準稼動",
             "render": function (data, type, row, meta) {
               var div = $("<div>");
@@ -208,7 +208,7 @@ var manufactureModule = (function () {
             },
           },
           {
-            "title": "實際稼動",
+            "title": "實際稼動(秒)",
             "data": "實際稼動",
             "render": function (data, type, row, meta) {
               var div = $("<div>");
@@ -218,7 +218,7 @@ var manufactureModule = (function () {
             },
           },
           {
-            "title": "嫁動差異",
+            "title": "嫁動差異(%)",
             "data": "嫁動差異",
             "render": function (data, type, row, meta) {
               var div = $("<div>");
@@ -228,7 +228,7 @@ var manufactureModule = (function () {
             },
           },
           {
-            "title": "嫁動率",
+            "title": "嫁動率(%)",
             "data": "嫁動率",
             "render": function (data, type, row, meta) {
               var div = $("<div>");
@@ -238,7 +238,7 @@ var manufactureModule = (function () {
             },
           },
           {
-            "title": "目標良率",
+            "title": "目標良率(%)",
             "data": "目標良率",
             "render": function (data, type, row, meta) {
               var div = $("<div>");
@@ -248,7 +248,7 @@ var manufactureModule = (function () {
             },
           },
           {
-            "title": "生產良率",
+            "title": "生產良率(%)",
             "data": "生產良率",
             "render": function (data, type, row, meta) {
               var div = $("<div>");

@@ -1,14 +1,26 @@
 <style>
-  td.details-control {
+  td.sts-details-control {
     background: url('../build/images/plus.png') no-repeat center center;
     background-size: 14px 14px;
     cursor: pointer;
   }
 
-  tr.shown td.details-control {
+  tr.sts-shown td.sts-details-control {
     background: url('../build/images/minus.png') no-repeat center center;
     background-size: 14px 14px;
   }
+
+  td.mvs-details-control {
+    background: url('../build/images/plus.png') no-repeat center center;
+    background-size: 14px 14px;
+    cursor: pointer;
+  }
+
+  tr.mvs-shown td.mvs-details-control {
+    background: url('../build/images/minus.png') no-repeat center center;
+    background-size: 14px 14px;
+  }
+
 </style>
 <link href="../build/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 <script src="../build/js/vue.min.js"></script>
@@ -157,6 +169,7 @@
   }
 
   let data = {
+    triggerType: '',
     mvs_pn: '',
     mvs_mold: '',
     mvs_hole1: null,
@@ -187,6 +200,7 @@
     // TODO step 1: get counter & threshold & alarm
 
     // step 2: data binding
+    vm.triggerType = data.triggerType
     vm.mvs_pn = data.mvs_pn
     vm.mvs_mold = data.mvs_mold
     vm.mvs_hole1 = data.mvs_hole1
@@ -225,6 +239,7 @@
 
     // step 2: call update api
     let body = {
+      triggerType: vm.$data.triggerType,
       mvs_pn: vm.$data.mvs_pn.trim(),
       mvs_mold: vm.$data.mvs_mold.trim(),
       mvs_hole1: vm.$data.mvs_hole1,
@@ -239,7 +254,7 @@
       body.mvs_component = 'NA';
       body.mvs_update_count = null;
     }
-    var url = '/mold/record';
+    var url = '/mold/api/record';
     fetch(url, {
       method: 'POST',
       credentials: "same-origin",
@@ -260,7 +275,7 @@
     });
     // step 3: ui reload
     $("#testModal").modal('hide');
-    moldModule.reloadShownRow();
+    moldModule.reloadShownRow(vm.$data.triggerType);
   }
 
   function toggleOffLine(event) {

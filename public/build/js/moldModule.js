@@ -2,8 +2,8 @@ var moldModule = (function () {
   let dataTableInstance;
   let historyDataTableInstance;
   return {
-    format: function (datatableRow, rowData, rowIndex) {
-      var url = `/mold/api/detail?pn=${rowData.mvs_pn}&mold=${rowData.mvs_mold}`; // data 為 queryString
+    format: function (datatableRow, rowData, rowIndex, triggerType) {
+      var url = `/mold/api/detail?pn=${rowData.mvs_pn}&mold=${rowData.mvs_mold}&triggerType=${triggerType}`; // data 為 queryString
 
       var thStyle = {
         'border': '1px solid #7ecbfe',
@@ -56,7 +56,8 @@ var moldModule = (function () {
           // TODO 改用vue
           let payload = {
             ...rowData,
-            ...item
+            ...item,
+            triggerType
           }
           changeButton.on('click', payload, showMoldModal);
           historyButton.on('click', payload, showMoldHistoryModal);
@@ -91,64 +92,180 @@ var moldModule = (function () {
         ],
         "columns": [
           {
-            "className": 'details-control',
+            "title": "可動側",
+            "className": 'mvs-details-control text-center',
             "orderable": false,
             "data": null,
-            "width": "8%",
+            "width": "6%",
+            "defaultContent": ''
+          },
+          {
+            "title": "固定側",
+            "className": 'sts-details-control text-center',
+            "orderable": false,
+            "data": null,
+            "width": "6%",
             "defaultContent": ''
           },
           {
             "title": "mvs_pn",
             "data": "mvs_pn",
-            "width": "23%",
+            "width": "22%",
           },
           {
             "title": "mvs_mold",
             "data": "mvs_mold",
-            "width": "23%",
+            "width": "22%",
           },
           {
             "title": "mvs_hole1",
             "data": "mvs_hole1",
-            "width": "23%",
+            "width": "22%",
           },
           {
             "title": "mvs_hole2",
             "data": "mvs_hole2",
-            "width": "23%",
+            "width": "22%",
           }
         ],
         "order": []
       });
 
-      // Add event listener for opening and closing details
-      $('#moldTable tbody').on('click', 'td.details-control', function () {
+      $('#moldTable tbody').on('click', 'td.mvs-details-control', function () {
+        var tr = $(this).closest('tr');
+        moldModule.toggleDetail(tr, 'mvs');
+      });
+
+      $('#moldTable tbody').on('click', 'td.sts-details-control', function () {
+        var tr = $(this).closest('tr');
+        moldModule.toggleDetail(tr, 'sts');
+      });
+
+      /*
+      $('#moldTable tbody').on('click', 'td.mvs-details-control', function () {
         var tr = $(this).closest('tr');
         var row = dataTableInstance.row(tr);
         var rowIndex = dataTableInstance.row(tr).index();
 
-        if (row.child.isShown()) {
+        let triggerType = 'mvs';
+        let shownClassName = `${triggerType}-shown`;
+        let otherShownClassName = 'sts-shown';
+
+        let shownFlag = tr.hasClass(shownClassName);
+        let otherShownFlag = tr.hasClass(otherShownClassName);
+
+        console.log('has mvs-shown: ' + tr.hasClass('mvs-shown'));
+        console.log('has sts-shown: ' + tr.hasClass('sts-shown'));
+
+        if (shownFlag) {
           // This row is already open - close it
           row.child.hide();
-          tr.removeClass('shown');
+          tr.removeClass(shownClassName);
+
         } else {
           // close other row
-          let shownRowIndex = moldModule.getInstance().row($("tr.shown")).index();
+          let shownRowIndex = moldModule.getInstance().row($("tr." + shownClassName)).index();
           if (shownRowIndex > -1) {
             moldModule.getInstance().row(shownRowIndex).child.hide();
-            $("tr.shown").removeClass('shown');
+            $("tr." + shownClassName).removeClass(shownClassName);
           }
+
+          let otherShownRowIndex = moldModule.getInstance().row($("tr." + otherShownClassName)).index();
+          if (otherShownRowIndex > -1) {
+            moldModule.getInstance().row(otherShownRowIndex).child.hide();
+            $("tr." + otherShownClassName).removeClass(otherShownClassName);
+          }
+
           // Open this row
-          moldModule.format(row, row.data(), rowIndex);
-          tr.addClass('shown');
+          moldModule.format(row, row.data(), rowIndex, triggerType);
+          tr.addClass(shownClassName);
         }
       });
+
+      $('#moldTable tbody').on('click', 'td.sts-details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = dataTableInstance.row(tr);
+        var rowIndex = dataTableInstance.row(tr).index();
+
+        let triggerType = 'sts';
+        let shownClassName = `${triggerType}-shown`;
+        let otherShownClassName = 'mvs-shown';
+
+        let shownFlag = tr.hasClass(shownClassName);
+        let otherShownFlag = tr.hasClass(otherShownClassName);
+
+        console.log('has mvs-shown: ' + tr.hasClass('mvs-shown'));
+        console.log('has sts-shown: ' + tr.hasClass('sts-shown'));
+
+        if (shownFlag) {
+          // This row is already open - close it
+          row.child.hide();
+          tr.removeClass(shownClassName);
+
+        } else {
+          // close other row
+          let shownRowIndex = moldModule.getInstance().row($("tr." + shownClassName)).index();
+          if (shownRowIndex > -1) {
+            moldModule.getInstance().row(shownRowIndex).child.hide();
+            $("tr." + shownClassName).removeClass(shownClassName);
+          }
+
+          let otherShownRowIndex = moldModule.getInstance().row($("tr." + otherShownClassName)).index();
+          if (otherShownRowIndex > -1) {
+            moldModule.getInstance().row(otherShownRowIndex).child.hide();
+            $("tr." + otherShownClassName).removeClass(otherShownClassName);
+          }
+
+          // Open this row
+          moldModule.format(row, row.data(), rowIndex, triggerType);
+          tr.addClass(shownClassName);
+        }
+      });
+      */
     },
-    reloadShownRow: function () {
-      let tr = $("tr.shown")
+    toggleDetail: function (tr, triggerType) {
+      var row = dataTableInstance.row(tr);
+      var rowIndex = dataTableInstance.row(tr).index();
+
+      //let triggerType = 'sts';
+      let shownClassName = `${triggerType}-shown`;
+      let otherShownClassName = triggerType === 'mvs' ? 'sts-shown' : 'mvs-shown';
+
+      let shownFlag = tr.hasClass(shownClassName);
+      let otherShownFlag = tr.hasClass(otherShownClassName);
+
+      console.log('has mvs-shown: ' + tr.hasClass('mvs-shown'));
+      console.log('has sts-shown: ' + tr.hasClass('sts-shown'));
+
+      if (shownFlag) {
+        // This row is already open - close it
+        row.child.hide();
+        tr.removeClass(shownClassName);
+
+      } else {
+        // close other row
+        let shownRowIndex = moldModule.getInstance().row($("tr." + shownClassName)).index();
+        if (shownRowIndex > -1) {
+          moldModule.getInstance().row(shownRowIndex).child.hide();
+          $("tr." + shownClassName).removeClass(shownClassName);
+        }
+
+        let otherShownRowIndex = moldModule.getInstance().row($("tr." + otherShownClassName)).index();
+        if (otherShownRowIndex > -1) {
+          moldModule.getInstance().row(otherShownRowIndex).child.hide();
+          $("tr." + otherShownClassName).removeClass(otherShownClassName);
+        }
+
+        // Open this row
+        moldModule.format(row, row.data(), rowIndex, triggerType);
+        tr.addClass(shownClassName);
+      }
+    },
+    reloadShownRow: function (triggerType) {
+      let tr = $("tr." + triggerType + "-shown")
       if (tr.length) {
-        tr.find('td.details-control').click();
-        tr.find('td.details-control').click();
+        tr.find('td.' + triggerType + '-details-control').click();
+        tr.find('td.' + triggerType + '-details-control').click();
       }
     },
     buildHistory: function (payload) {
@@ -159,6 +276,7 @@ var moldModule = (function () {
         "ajax": {
           "url": "/mold/api/history",
           "data": function (d) {
+            d.triggerType = payload.triggerType;
             d.mvs_pn = payload.mvs_pn;
             d.mvs_mold = payload.mvs_mold;
             d.mvs_hole1 = payload.mvs_hole1;
