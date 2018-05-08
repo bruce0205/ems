@@ -213,11 +213,11 @@
         });
       },
       setConfig: function (pn) {
-        var url = `/mold/api/config?mvs_pn=${pn}`;
-        url += `&mvs_mold=${vm.$data.mvs_mold}`;
-        url += `&mvs_hole1=${vm.$data.mvs_hole1}`;
-        url += `&mvs_hole2=${vm.$data.mvs_hole2}`;
-        url += `&mvs_type=${vm.$data.pn_type}`;
+        var url = `/mold/api/config?mvs_component=${pn}`;
+        // url += `&mvs_mold=${vm.$data.mvs_mold}`;
+        // url += `&mvs_hole1=${vm.$data.mvs_hole1}`;
+        // url += `&mvs_hole2=${vm.$data.mvs_hole2}`;
+        // url += `&mvs_type=${vm.$data.pn_type}`;
 
         fetch(url, {
           method: 'GET',
@@ -226,8 +226,13 @@
           return response.json();
         }).then((data) => {
           console.log(data);
-          this.threshold = 34567
-          this.alarm = 78
+          if (data.length === 0) {
+            this.threshold = 0
+            this.alarm = 0
+          } else {
+            this.threshold = data[0]['mvs_threshold']
+            this.alarm = data[0]['mvs_alarm_pect']
+          }
         }).catch((err) => {
           console.error(err);
         });

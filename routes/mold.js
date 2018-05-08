@@ -113,18 +113,10 @@ module.exports = (app, db) => {
 
     db.query(`
         select mvs_threshold,mvs_alarm_pect from mold_conf
-        where mvs_pn = :mvs_pn
-        and mvs_mold = :mvs_mold
-        and mvs_hole1 = :mvs_hole1
-        and mvs_hole2 = :mvs_hole2
-        and mvs_type = :mvs_type
+        where mvs_component = :mvs_component
       `, {
         replacements: {
-          mvs_pn: req.query.mvs_pn,
-          mvs_mold: req.query.mvs_mold,
-          mvs_hole1: (req.query.mvs_hole1 ? req.query.mvs_hole1 : null),
-          mvs_hole2: (req.query.mvs_hole2 ? req.query.mvs_hole2 : null),
-          mvs_type: req.query.mvs_type
+          mvs_component: req.query.mvs_component
         },
         raw: false, // Set this to true if you don't have a model definition for your query.
         type: Sequelize.QueryTypes.SELECT
