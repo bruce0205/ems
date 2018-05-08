@@ -20,7 +20,6 @@
     background: url('../build/images/minus.png') no-repeat center center;
     background-size: 14px 14px;
   }
-
 </style>
 <link href="../build/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 <script src="../build/js/vue.min.js"></script>
@@ -164,6 +163,7 @@
     moldModule.buildHistory(event.data);
     $("#historyModal").modal('show');
   }
+
   function closeMoldHistoryModal() {
     $("#historyModal").modal('hide');
   }
@@ -191,14 +191,43 @@
       pnInput: _.debounce(function (e) {
         let filterKey = e.target.value;
         console.log(`filterKey: ${filterKey}`);
-
-        // TODO 1-1 call /mold/api/counter
-        this.pn_count = 12345
-
-        // TODO 2-1 call /modl/api/config
-        this.threshold = 34567
-        this.alarm = 78
-      }, 500)
+        this.setCounter(filterKey);
+        this.setConfig(filterKey);
+      }, 500),
+      setCounter: function (pn) {
+        var url = `/mold/api/counter?mvs_component=${pn}&triggerType=${vm.$data.triggerType}`;
+        fetch(url, {
+          method: 'GET',
+          credentials: "same-origin"
+        }).then((response) => {
+          return response.json();
+        }).then((data) => {
+          console.log(data);
+          this.pn_count = 12345;
+        }).catch((err) => {
+          console.error(err);
+        });
+      },
+      setConfig: function (pn) {
+        var url = `/mold/api/config?mvs_pn=${filterKey}`;
+        url += `&mvs_mold=${vm.$data.mvs_mold}`;
+        url += `&mvs_hole1=${vm.$data.mvs_hole1}`;
+        url += `&mvs_hole2=${vm.$data.mvs_hole2}`;
+        url += `&mvs_type=${vm.$data.pn_type}`;
+        
+        fetch(url, {
+          method: 'GET',
+          credentials: "same-origin"
+        }).then((response) => {
+          return response.json();
+        }).then((data) => {
+          console.log(data);
+          this.threshold = 34567
+          this.alarm = 78
+        }).catch((err) => {
+          console.error(err);
+        });
+      }
     }
   });
 
@@ -234,7 +263,7 @@
     } else {
       $('#offLine').iCheck('check');
     }
-    
+
     // step 4: set current time as default
     $('#datetimepicker1').datetimepicker({
       format: 'YYYY-MM-DD HH:mm:ss',
