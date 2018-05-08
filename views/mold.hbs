@@ -192,7 +192,7 @@
         let filterKey = e.target.value;
         console.log(`filterKey: ${filterKey}`);
         this.setCounter(filterKey);
-        // this.setConfig(filterKey);
+        this.setConfig(filterKey);
       }, 500),
       setCounter: function (pn) {
         var url = `/mold/api/counter?mvs_component=${pn}&triggerType=${vm.$data.triggerType}`;
@@ -203,7 +203,11 @@
           return response.json();
         }).then((data) => {
           console.log(data);
-          this.pn_count = 12345;
+          if (data.length === 0) {
+            this.pn_count = 0;
+          } else {
+            this.pn_count = data[0][`${vm.$data.triggerType}_update_count`];
+          }
         }).catch((err) => {
           console.error(err);
         });
