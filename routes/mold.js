@@ -93,7 +93,7 @@ module.exports = (app, db) => {
 
     db.query(`
         select top(1) ${triggerType}_update_count from ${tableName}
-        where ${triggerType}_component = @mvs_component
+        where ${triggerType}_component = :mvs_component
         order by ${triggerType}_update_datetime desc
       `, {
         replacements: {
@@ -113,11 +113,11 @@ module.exports = (app, db) => {
 
     db.query(`
         select mvs_threshold,mvs_alarm_pect from mold_conf
-        where mvs_pn = @mvs_pn
-        and mvs_mold = @mvs_mold
-        and mvs_hole1 = @mvs_hole1
-        and mvs_hole2 = @mvs_hole2
-        and mvs_type = @mvs_type
+        where mvs_pn = :mvs_pn
+        and mvs_mold = :mvs_mold
+        and mvs_hole1 = :mvs_hole1
+        and mvs_hole2 = :mvs_hole2
+        and mvs_type = :mvs_type
       `, {
         replacements: {
           mvs_pn: req.query.mvs_pn,
