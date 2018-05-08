@@ -83,11 +83,55 @@ module.exports = (app, db) => {
       });
   });
 
-  router.get('/origin', function (req, res, next) {
-    res.render('moldorigin', {
-      title: 'Express',
-      layout: 'layout',
-    });
+  router.get('/api/counter', function (req, res, next) {
+    logger.info('mold.api.counter() api invoke')
+
+    let triggerType = req.query.triggerType;
+    let tableName = `mold_${triggerType}_history`;
+    console.log(`tableName: ${tableName}`);
+
+    db.query(`
+        select top(1) ${triggerType}_update_count from ${tableName}
+        where ${triggerType}_component = @mvs_component
+        order by ${triggerType}_update_datetime desc
+      `, {
+        replacements: {
+          mvs_component: req.query.mvs_component
+        },
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        res.send(data);
+      }).catch(err => {
+        console.error(err);
+      });
+  });
+
+  router.get('/api/config', function (req, res, next) {
+    logger.info('mold.api.config() api invoke')
+
+    db.query(`
+        select mvs_threshold,mvs_alarm_pect from mold_conf
+        where mvs_pn = @mvs_pn
+        and mvs_mold = @mvs_mold
+        and mvs_hole1 = @mvs_hole1
+        and mvs_hole2 = @mvs_hole2
+        and mvs_type = @mvs_type
+      `, {
+        replacements: {
+          mvs_pn: req.query.mvs_pn,
+          mvs_mold: req.query.mvs_mold,
+          mvs_hole1: (req.query.mvs_hole1 ? req.query.mvs_hole1 : null),
+          mvs_hole2: (req.query.mvs_hole2 ? req.query.mvs_hole2 : null),
+          mvs_type: req.query.mvs_type
+        },
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        res.send(data);
+      }).catch(err => {
+        console.error(err);
+      });
   });
 
   router.post('/api/record', function (req, res, next) {

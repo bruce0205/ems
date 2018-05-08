@@ -112,7 +112,7 @@
                     </label>
                   </div>
                 </div>
-                <input v-if="offLine === false" type="text" v-model="pn" style="margin-top: 5px" class="form-control col-md-7 col-xs-12">
+                <input v-if="offLine === false" type="text" v-on:input="pnInput" v-model="pn" style="margin-top: 5px" class="form-control col-md-7 col-xs-12">
 
               </div>
             </div>
@@ -187,6 +187,19 @@
     delimiters: ['${', '}'],
     el: '#testModal',
     data,
+    methods: {
+      pnInput: _.debounce(function (e) {
+        let filterKey = e.target.value;
+        console.log(`filterKey: ${filterKey}`);
+
+        // TODO 1-1 call /mold/api/counter
+        this.pn_count = 12345
+
+        // TODO 2-1 call /modl/api/config
+        this.threshold = 34567
+        this.alarm = 78
+      }, 500)
+    }
   });
 
   function closeMoldModal() {
