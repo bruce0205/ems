@@ -85,6 +85,7 @@ module.exports = (app, db) => {
 
   router.get('/api/counter', function (req, res, next) {
     logger.info('mold.api.counter() api invoke')
+    console.log(req.query)
 
     let triggerType = req.query.triggerType;
     let tableName = `mold_${triggerType}_history`;

@@ -209,12 +209,12 @@
         });
       },
       setConfig: function (pn) {
-        var url = `/mold/api/config?mvs_pn=${filterKey}`;
+        var url = `/mold/api/config?mvs_pn=${pn}`;
         url += `&mvs_mold=${vm.$data.mvs_mold}`;
         url += `&mvs_hole1=${vm.$data.mvs_hole1}`;
         url += `&mvs_hole2=${vm.$data.mvs_hole2}`;
         url += `&mvs_type=${vm.$data.pn_type}`;
-        
+
         fetch(url, {
           method: 'GET',
           credentials: "same-origin"
