@@ -61,14 +61,27 @@ module.exports = (app, db) => {
         let titles = R.keys(data[0])
 
         titles.forEach(function (value, index) {
-          ws.cell(1, index + 1).string(value).style(headerStyle);
+          let adjustValue = value
+          if (index === 13) adjustValue = '標準稼動(秒)';
+          if (index === 16) adjustValue = '實際稼動(秒)';
+          if (index === 17) adjustValue = '嫁動差異(%)';
+          if (index === 18) adjustValue = '嫁動率(%)';
+          if (index === 19) adjustValue = '目標良率(%)';
+          if (index === 20) adjustValue = '生產良率(%)';
+
+          ws.cell(1, index + 1).string(adjustValue).style(headerStyle);
         })
 
+        const numberColumnIndex = [8, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 35, 37, 38, 39, 40];
         data.forEach(function (row, i) {
           let cells = R.values(row)
           cells.forEach(function (cell, j) {
-            if (cell) {
-              ws.cell(i + 2, j + 1).string(cell.toString()).style(cellStyle);
+            if (cell === 0 || cell) {
+              if (R.contains(j, numberColumnIndex)) {
+                ws.cell(i + 2, j + 1).number(cell).style(cellStyle);
+              } else {
+                ws.cell(i + 2, j + 1).string(cell.toString()).style(cellStyle);
+              }
             } else {
               ws.cell(i + 2, j + 1).string('').style(cellStyle);
             }

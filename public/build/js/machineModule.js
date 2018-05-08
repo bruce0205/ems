@@ -63,7 +63,7 @@ var machineModule = (function () {
           if (data["生產良率"] === 0 || parseInt(data["生產良率"])) {
             console.log(data['mah_num'] + '/' + data["生產良率"])
             let progressSetting = {
-              percent: data["生產良率"],
+              percent: formatFloat(data["生產良率"], 1).toFixed(1),
               width: 140,
               height: 14,
               fontSize: 8,
