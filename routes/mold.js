@@ -32,7 +32,7 @@ module.exports = (app, db) => {
     console.log(`functionName: ${functionName}`)
 
     db.query(`
-        select pn_type, pn,convert(varchar, pn_date, 120) as pn_date, pn_count from ${functionName}(:pn, :mold) 
+        select pn_type, pn,convert(varchar, pn_date, 120) as pn_date, pn_count from ${functionName}(:pn, :mold)
       `, {
         replacements: {
           pn: req.query.pn,
@@ -58,7 +58,7 @@ module.exports = (app, db) => {
     db.query(`
       select convert(varchar, ${triggerType}_update_datetime, 120) as mvs_update_datetime,
       ${triggerType}_update_count as mvs_update_count,
-      ${triggerType}_update_user as mvs_update_user 
+      ${triggerType}_update_user as mvs_update_user
       from ${tableName}
       where ${triggerType}_pn = :mvs_pn
       and ${triggerType}_mold = :mvs_mold
@@ -137,7 +137,7 @@ module.exports = (app, db) => {
       @${req.body.triggerType}_pn = :mvs_pn,
       @${req.body.triggerType}_mold = :mvs_mold,
       @${req.body.triggerType}_hole1 = :mvs_hole1,
-      @${req.body.triggerType}_hole2 = :mvs_hole2, 
+      @${req.body.triggerType}_hole2 = :mvs_hole2,
       @${req.body.triggerType}_type = :mvs_type,
       @${req.body.triggerType}_component = :mvs_component,
       @${req.body.triggerType}_update_datetime = :mvs_update_datetime,
@@ -166,4 +166,3 @@ module.exports = (app, db) => {
 
   app.use('/mold', router);
 }
-
