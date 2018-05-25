@@ -6,7 +6,7 @@ var manufactureModule = (function () {
       if (fromDate) {
         $("#fromDate").val(fromDate);
       } else {
-        $("#fromDate").val(moment().subtract(14, 'days').format("YYYY-MM-DD"));
+        $("#fromDate").val(moment().subtract(3, 'days').format("YYYY-MM-DD"));
       }
 
       if (endDate) {

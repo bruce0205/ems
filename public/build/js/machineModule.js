@@ -120,7 +120,7 @@ var machineModule = (function () {
                   img.attr({ "src": "./build/images/green.png" }).css({ 'margin-right': '4px' })
                 } else if (data === '生產完畢') { // green
                   img.attr({ "src": "./build/images/green.png" }).css({ 'margin-right': '4px' })
-                } else if (data === '異常') { // red
+                } else if (data === '異常'　|| data === '機台異常') { // red
                   img.attr({ "src": "./build/images/red.png" }).css({ 'margin-right': '4px' })
                 } else if (data === '停機') { // blue
                   img.attr({ "src": "./build/images/blue.png" }).css({ 'margin-right': '4px' })
