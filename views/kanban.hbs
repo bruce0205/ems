@@ -1,0 +1,256 @@
+<style>
+  span.unselected-font,
+  p.unselected-font {
+    color: gray;
+  }
+
+  span.selected-font,
+  p.selected-font {
+    color: #fff;
+  }
+
+  span.ccc {
+    color: #fff;
+  }
+</style>
+
+<script src="./vendors/jquery-knob/dist/jquery.knob.min.js"></script>
+<script src="../build/js/vue.min.js"></script>
+
+<div id="app">
+  <div class="right_col" role="main">
+    <div class="page-title">
+      <div class="title_left">
+        <h3>生產管理看板
+        </h3>
+      </div>
+
+      <div class="title_right">
+        <div class="col-md-3 col-sm-3 col-xs-12 form-group pull-right top_search">
+          <label for="" style="margin-right: 10px">2018/06/12 12:34:56</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-sm-6 col-xs-12 form-group top_search">
+      <button v-for="status in statusList" type="button" class="btn btn-xs" v-bind:style="getButtonStyle(status.backgroundColor)"
+        @click="filter(status.text)">${status.text}</button>
+    </div>
+    <div class="clearfix"></div>
+    <hr>
+
+    <div class="row">
+      <!-- loop start -->
+      <div class="col-md-4" v-for="machine in machines">
+        <div class="x_panel" v-bind:style="getPanelStyle(machine.backgroundColor, machine.isSelected)">
+          <div class="x_title">
+            <span :class="{'selected-font': machine.isSelected, 'unselected-font': !machine.isSelected}" style="font-weight: bolder">機台：</span>
+            <span :class="{'selected-font': machine.isSelected, 'unselected-font': !machine.isSelected}">${machine.mah_num}</span>
+            <br>
+            <span :class="{'selected-font': machine.isSelected, 'unselected-font': !machine.isSelected}" style="font-weight: bolder;">料號：</span>
+            <span :class="{'selected-font': machine.isSelected, 'unselected-font': !machine.isSelected}">${machine.pn}</span>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-md-3">
+              <p :class="{'selected-font': machine.isSelected, 'unselected-font': !machine.isSelected}">OEE</p>
+              <input :id="machine.mah_num+'-'+machine.pn+'-'+'OEE'" class="knob" data-width="50" data-height="50" data-angleOffset=90 data-linecap=round
+                data-fgColor="gray" value="20" readonly>
+            </div>
+            <div class="col-md-3">
+              <p :class="{'selected-font': machine.isSelected, 'unselected-font': !machine.isSelected}">Available</p>
+              <input :id="machine.mah_num+'-'+machine.pn+'-'+'AVA'" style="cursor: pointer" class="knob" data-width="50" data-height="50"
+                data-angleOffset=90 data-linecap=round data-fgColor="gray" :value="machine.AVA" @click="locationRedirect('available',machine.mah_num)"
+                readonly>
+            </div>
+            <div class="col-md-3">
+              <p :class="{'selected-font': machine.isSelected, 'unselected-font': !machine.isSelected}">Performance</p>
+              <input :id="machine.mah_num+'-'+machine.pn+'-'+'PER'" style="cursor: pointer" class="knob" data-width="50" data-height="50"
+                data-angleOffset=90 data-linecap=round data-fgColor="gray" :value="machine.PER" @click="locationRedirect('performance',machine.mah_num)"
+                readonly>
+            </div>
+            <div class="col-md-3">
+              <p :class="{'selected-font': machine.isSelected, 'unselected-font': !machine.isSelected}">Quality</p>
+              <input :id="machine.mah_num+'-'+machine.pn+'-'+'QUA'" style="cursor: pointer" class="knob" data-width="50" data-height="50"
+                data-angleOffset=90 data-linecap=round data-fgColor="gray" :value="machine.QUA" @click="locationRedirect('quality',machine.mah_num)"
+                readonly>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- loop end -->
+    </div>
+  </div>
+</div>
+
+
+<script>
+  let data = {
+    machines: [
+      {
+        "mah_num": "T1",
+        "status": "準備中",
+        "pn": "ASDFASDFASDFASDF",
+        "AVA": "81",
+        "PER": "86",
+        "QUA": "80",
+        "isSelected": false,
+        "backgroundColor": "#019623",
+        "fontColor": "#6AD8B4"
+      },
+      {
+        "mah_num": "T2",
+        "status": "檢驗中",
+        "pn": "AAAAAAAAAA-BB",
+        "AVA": "82",
+        "PER": "87",
+        "QUA": "85",
+        "isSelected": false,
+        "backgroundColor": "#cd41f4"
+      },
+      {
+        "mah_num": "T3",
+        "status": "生產中",
+        "pn": "IIIIIIIIIII-AA",
+        "AVA": "83",
+        "PER": "88",
+        "QUA": "90",
+        "isSelected": false,
+        "backgroundColor": "#2849ed"
+      },
+      {
+        "mah_num": "T4",
+        "status": "處理中",
+        "pn": "ZXVZXCVZXCVZXCV",
+        "AVA": "91",
+        "PER": "95",
+        "QUA": "90",
+        "isSelected": false,
+        "backgroundColor": "#965301"
+      },
+      {
+        "mah_num": "T5",
+        "status": "待機中",
+        "pn": "FGHFGHFGHFG",
+        "AVA": "92",
+        "PER": "96",
+        "QUA": "95",
+        "isSelected": false,
+        "backgroundColor": "#f0ad4e"
+      },
+      {
+        "mah_num": "T6",
+        "status": "停機中",
+        "pn": "QWEQWEQWEQWE",
+        "AVA": "93",
+        "PER": "97",
+        "QUA": "100",
+        "isSelected": false,
+        "backgroundColor": "#ff1a1a"
+      }, {
+        "mah_num": "T1",
+        "status": "準備中",
+        "pn": "AAAAAAAAAA",
+        "AVA": "81",
+        "PER": "86",
+        "QUA": "80",
+        "isSelected": false,
+        "backgroundColor": "#019623",
+        "fontColor": "#6AD8B4"
+      }, {
+        "mah_num": "T3",
+        "status": "生產中",
+        "pn": "KKKKKKKKKKKK",
+        "AVA": "83",
+        "PER": "88",
+        "QUA": "90",
+        "isSelected": false,
+        "backgroundColor": "#2849ed"
+      },
+    ],
+    statusList: [
+      {
+        text: '準備中',
+        backgroundColor: '#019623' // green
+      },
+      {
+        text: '檢驗中',
+        backgroundColor: '#cd41f4' // purple
+      },
+      {
+        text: '生產中',
+        backgroundColor: '#2849ed' // blue
+      }, {
+        text: '處理中',
+        backgroundColor: '#965301' // brown
+      }, {
+        text: '待機中',
+        backgroundColor: '#f0ad4e' // orange
+      } , {
+        text: '停機中',
+        backgroundColor: '#ff1a1a' // red
+      }
+    ],
+    selectedStatus: ''
+  }
+  let vm = new Vue({
+    delimiters: ['${', '}'],
+    el: '#app',
+    data,
+    methods: {
+      makeAllUnselect() {
+
+      },
+      filter(status) {
+        console.log(status)
+        const selectedKnobColor = "#6AD8B4"
+        const unselectedKnobColor = "gray"
+
+        // step 1: disable 原先selected Status
+        if (this.selectedStatus) {
+          this.machines.forEach((item, index) => {
+            if (item.status === this.selectedStatus) {
+              item.isSelected = false
+              this.changeKnobColor(item.mah_num, item.pn, 'OEE', unselectedKnobColor)
+              this.changeKnobColor(item.mah_num, item.pn, 'PER', unselectedKnobColor)
+              this.changeKnobColor(item.mah_num, item.pn, 'AVA', unselectedKnobColor)
+              this.changeKnobColor(item.mah_num, item.pn, 'QUA', unselectedKnobColor)
+            }
+          })
+        }
+
+        // step 2: enable 新的
+        this.machines.forEach((item, index) => {
+          if (item.status === status) {
+            item.isSelected = true
+            this.changeKnobColor(item.mah_num, item.pn, 'OEE', selectedKnobColor)
+            this.changeKnobColor(item.mah_num, item.pn, 'PER', selectedKnobColor)
+            this.changeKnobColor(item.mah_num, item.pn, 'AVA', selectedKnobColor)
+            this.changeKnobColor(item.mah_num, item.pn, 'QUA', selectedKnobColor)
+          }
+        })
+
+        this.selectedStatus = status
+      },
+      changeKnobColor(mah_num, pn, dataType, color) {
+        $("#" + mah_num + "-" + pn + "-" + dataType).trigger('configure', { "inputColor": color })
+        $("#" + mah_num + "-" + pn + "-" + dataType).trigger('configure', { "fgColor": color })
+      },
+      getButtonStyle(backgroundColor) {
+        return {
+          'color': '#fff',
+          'background-color': backgroundColor
+        }
+      },
+      getPanelStyle(backgroundColor, isSelected) {
+        return {
+          'background-color': isSelected ? backgroundColor : '#595553'
+        }
+      },
+      locationRedirect(dataType, mahNum) {
+        window.location.href = 'kanban?dataType=' + dataType + '&mah_num=' + mahNum
+      }
+    },
+    computed: {}
+  })
+</script>
