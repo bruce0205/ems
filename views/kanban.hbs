@@ -27,7 +27,7 @@
 
       <div class="title_right">
         <div class="col-md-3 col-sm-3 col-xs-12 form-group pull-right top_search">
-          <label for="" style="margin-right: 10px">2018/06/12 12:34:56</label>
+          <label for="" style="margin-right: 10px">${now}</label>
         </div>
       </div>
     </div>
@@ -55,7 +55,7 @@
             <div class="col-md-3">
               <p :class="{'selected-font': machine.isSelected, 'unselected-font': !machine.isSelected}">OEE</p>
               <input :id="machine.mah_num+'-'+machine.pn+'-'+'OEE'" class="knob" data-width="50" data-height="50" data-angleOffset=90 data-linecap=round
-                data-fgColor="gray" value="20" readonly>
+                data-fgColor="gray" :value="machine.OEE" readonly>
             </div>
             <div class="col-md-3">
               <p :class="{'selected-font': machine.isSelected, 'unselected-font': !machine.isSelected}">Available</p>
@@ -85,121 +85,43 @@
 
 
 <script>
-  let data = {
-    machines: [
-      {
-        "mah_num": "T1",
-        "status": "準備中",
-        "pn": "ASDFASDFASDFASDF",
-        "AVA": "81",
-        "PER": "86",
-        "QUA": "80",
-        "isSelected": false,
-        "backgroundColor": "#019623",
-        "fontColor": "#6AD8B4"
-      },
-      {
-        "mah_num": "T2",
-        "status": "檢驗中",
-        "pn": "AAAAAAAAAA-BB",
-        "AVA": "82",
-        "PER": "87",
-        "QUA": "85",
-        "isSelected": false,
-        "backgroundColor": "#cd41f4"
-      },
-      {
-        "mah_num": "T3",
-        "status": "生產中",
-        "pn": "IIIIIIIIIII-AA",
-        "AVA": "83",
-        "PER": "88",
-        "QUA": "90",
-        "isSelected": false,
-        "backgroundColor": "#2849ed"
-      },
-      {
-        "mah_num": "T4",
-        "status": "處理中",
-        "pn": "ZXVZXCVZXCVZXCV",
-        "AVA": "91",
-        "PER": "95",
-        "QUA": "90",
-        "isSelected": false,
-        "backgroundColor": "#965301"
-      },
-      {
-        "mah_num": "T5",
-        "status": "待機中",
-        "pn": "FGHFGHFGHFG",
-        "AVA": "92",
-        "PER": "96",
-        "QUA": "95",
-        "isSelected": false,
-        "backgroundColor": "#f0ad4e"
-      },
-      {
-        "mah_num": "T6",
-        "status": "停機中",
-        "pn": "QWEQWEQWEQWE",
-        "AVA": "93",
-        "PER": "97",
-        "QUA": "100",
-        "isSelected": false,
-        "backgroundColor": "#ff1a1a"
-      }, {
-        "mah_num": "T1",
-        "status": "準備中",
-        "pn": "AAAAAAAAAA",
-        "AVA": "81",
-        "PER": "86",
-        "QUA": "80",
-        "isSelected": false,
-        "backgroundColor": "#019623",
-        "fontColor": "#6AD8B4"
-      }, {
-        "mah_num": "T3",
-        "status": "生產中",
-        "pn": "KKKKKKKKKKKK",
-        "AVA": "83",
-        "PER": "88",
-        "QUA": "90",
-        "isSelected": false,
-        "backgroundColor": "#2849ed"
-      },
-    ],
-    statusList: [
-      {
-        text: '準備中',
-        backgroundColor: '#019623' // green
-      },
-      {
-        text: '檢驗中',
-        backgroundColor: '#cd41f4' // purple
-      },
-      {
-        text: '生產中',
-        backgroundColor: '#2849ed' // blue
-      }, {
-        text: '處理中',
-        backgroundColor: '#965301' // brown
-      }, {
-        text: '待機中',
-        backgroundColor: '#f0ad4e' // orange
-      } , {
-        text: '停機中',
-        backgroundColor: '#ff1a1a' // red
-      }
-    ],
-    selectedStatus: ''
-  }
+
   let vm = new Vue({
     delimiters: ['${', '}'],
     el: '#app',
-    data,
+    data: {
+      selectedStatus: '',
+      machines: [],
+      statusList: [],
+    },
+    beforeCreated() {
+
+    },
+    created() {
+      this.fetchData()
+
+    },
+    mounted() {
+      console.log('aa')
+    },
     methods: {
       makeAllUnselect() {
 
+      },
+      fetchData() {
+        var url = `/kanban/api/data`;
+        fetch(url, {
+          method: 'GET',
+          credentials: "same-origin"
+        }).then((response) => {
+          return response.json();
+        }).then((data) => {
+          console.log(data);
+          this.machines = data.machines
+          this.statusList = data.statusList
+        }).catch((err) => {
+          console.error(err);
+        });
       },
       filter(status) {
         console.log(status)
@@ -233,8 +155,9 @@
         this.selectedStatus = status
       },
       changeKnobColor(mah_num, pn, dataType, color) {
-        $("#" + mah_num + "-" + pn + "-" + dataType).trigger('configure', { "inputColor": color })
-        $("#" + mah_num + "-" + pn + "-" + dataType).trigger('configure', { "fgColor": color })
+        console.log('aa')
+        $("[id='" + mah_num + "-" + pn + "-" + dataType + "']").trigger('configure', { "inputColor": color })
+        $("[id='" + mah_num + "-" + pn + "-" + dataType + "']").trigger('configure', { "fgColor": color })
       },
       getButtonStyle(backgroundColor) {
         return {
@@ -251,6 +174,14 @@
         window.location.href = 'kanban?dataType=' + dataType + '&mah_num=' + mahNum
       }
     },
-    computed: {}
+    computed: {
+      now() {
+        return moment().format("YYYY-MM-DD HH:mm:ss")
+      }
+    }
   })
+
+  setTimeout(function () {
+    init_knob()
+  }, 200)
 </script>
