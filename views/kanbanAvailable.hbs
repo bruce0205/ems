@@ -90,7 +90,7 @@
           <div class="row">
             <div class="col-md-12 text-center">
               <h1>Availability</h1>
-              <input class="knob" data-width="150" data-height="150" data-angleOffset=90 data-linecap=round data-fgColor="#26B99A" value="20"
+              <input class="knob" data-width="150" data-height="150" data-angleOffset=90 data-linecap=round data-fgColor="#26B99A" :value="knob"
                 readonly>
             </div>
 
@@ -108,77 +108,102 @@
 
 
 <script>
-  if ($("#availableLineChart").length) {
-    var ctx = document.getElementById('availableLineChart').getContext('2d');
-    var availableLineChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6',],
-        datasets: [{
-          label: '時間稼動率',
-          data: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
-          backgroundColor: "#4286f4", // blue
-          borderColor: "#4286f4",
-          fill: false,
-          lineTension: 0.3
-        }, {
-          label: '目標稼動率',
-          data: [98, 98, 98, 98, 96, 98, 96, 98, 98, 98, 98, 96],
-          backgroundColor: "#f44141", // red
-          borderColor: "#f44141",
-          fill: false,
-          lineTension: 0.3
-        }]
-      },
-      options: {
-        legend: {
-          display: true,
-          position: 'bottom'
-        },
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true,
-              callback: function (value, index, values) {
-                return value + '%';
-              },
-              stepSize: 20
+  let data = {
+    "mah_num": "T1",
+    "status": "準備中",
+    "pn": "AAAAAAAAAA",
+    "knob": "98"
+  }
+
+  let vm = new Vue({
+    delimiters: ['${', '}'],
+    el: '#app',
+    data,
+    created() {
+      // api fetch data
+    },
+    mounted() {
+      this.buildLine()
+      this.buildBar()
+    },
+    methods: {
+      buildLine() {
+        if ($("#availableLineChart").length) {
+          var ctx = document.getElementById('availableLineChart').getContext('2d');
+          var availableLineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6',],
+              datasets: [{
+                label: '時間稼動率',
+                data: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
+                backgroundColor: "#4286f4", // blue
+                borderColor: "#4286f4",
+                fill: false,
+                lineTension: 0.3
+              }, {
+                label: '目標稼動率',
+                data: [98, 98, 98, 98, 96, 98, 96, 98, 98, 98, 98, 96],
+                backgroundColor: "#f44141", // red
+                borderColor: "#f44141",
+                fill: false,
+                lineTension: 0.3
+              }]
             },
-            gridLines: {
-              display: true
+            options: {
+              legend: {
+                display: true,
+                position: 'bottom'
+              },
+              scales: {
+                yAxes: [{
+                  ticks: {
+                    beginAtZero: true,
+                    callback: function (value, index, values) {
+                      return value + '%';
+                    },
+                    stepSize: 20
+                  },
+                  gridLines: {
+                    display: true
+                  }
+                }]
+              }
             }
-          }]
+          });
         }
-      }
-    });
-  }
-
-  if ($("#availableBarChart").length) {
-    var ctx = document.getElementById("availableBarChart");
-    var availableBarChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ["檢驗中", "處理中", "準備中", "待機中", "停機中"],
-        datasets: [{
-          label: '累積目標產量',
-          backgroundColor: "#f44141", // red
-          data: [71, 68, 50, 38, 32, 22, 10]
-        }]
       },
+      buildBar() {
+        if ($("#availableBarChart").length) {
+          var ctx = document.getElementById("availableBarChart");
+          var availableBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: ["檢驗中", "處理中", "準備中", "待機中", "停機中"],
+              datasets: [{
+                label: '累積目標產量',
+                backgroundColor: "#f44141", // red
+                data: [71, 68, 50, 38, 32, 22, 10]
+              }]
+            },
 
-      options: {
-        legend: {
-          display: false,
-          position: 'bottom'
-        },
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true
+            options: {
+              legend: {
+                display: false,
+                position: 'bottom'
+              },
+              scales: {
+                yAxes: [{
+                  ticks: {
+                    beginAtZero: true
+                  }
+                }]
+              }
             }
-          }]
+          });
         }
       }
-    });
-  }
+    }
+  })
+
 </script>
