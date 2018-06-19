@@ -1,9 +1,10 @@
 <style>
   .title {
     font-weight: 300;
-    display: inline-block;
+    display: block;
     padding-bottom: 5px;
     position: relative;
+    font-weight: bolder;
   }
 
   .title:before {
@@ -40,7 +41,7 @@
 
       <div class="title_right">
         <div class="col-md-3 col-sm-3 col-xs-12 form-group pull-right top_search">
-          <label for="" style="margin-right: 10px">2018/06/12 12:34:56</label>
+          <label for="" style="margin-right: 10px">${now}</label>
         </div>
       </div>
     </div>
@@ -52,31 +53,31 @@
         <div class="x_panel">
           <div class="row">
             <div class="col-md-4">
-              <h2>機台：S2</h2>
+              <h2>機台：${mahnum}</h2>
             </div>
             <div class="col-md-4">
-              <h2>模號：M1</h2>
+              <h2>模號：${mold}</h2>
             </div>
             <div class="col-md-4">
               <h2>
-                <span class="label label-primary">生產中</span>
+                <span class="label label-primary">${status}</span>
               </h2>
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6">
-              <h2>料號：abceddfgfgfg</h2>
+            <div class="col-md-8">
+              <h2>料號：${pn}</h2>
             </div>
           </div>
           <div class="row">
             <div class="col-md-6">
-              <h2>嫁動秒數：28</h2>
+              <h2>嫁動秒數：${real_cytime}</h2>
             </div>
           </div>
           <div class="row">
             <div class="col-md-6">
-              <h2 class="title">產出累積時間：2000</h2>
-              <h2 class="title">損失累積時間：60</h2>
+              <h2 class="title">產出累積時間：${output_count}</h2>
+              <h2 class="title">損失累積時間：${loss_count}</h2>
             </div>
           </div>
         </div>
@@ -94,7 +95,7 @@
           <div class="row">
             <div class="col-md-12 text-center">
               <h1>Performance</h1>
-              <input class="knob" data-width="150" data-height="150" data-angleOffset=90 data-linecap=round data-fgColor="#26B99A" :value="knob"
+              <input class="knob" data-width="150" data-height="150" data-angleOffset=90 data-linecap=round data-fgColor="#26B99A" :value="Performance"
                 readonly>
             </div>
 
@@ -112,10 +113,14 @@
 
 <script>
   let data = {
-    "mah_num": "T1",
-    "status": "準備中",
-    "pn": "AAAAAAAAAA",
-    "knob": "89"
+    "mahnum": "",
+    "mold": "",
+    "status": "",
+    "pn": "",
+    "Performance": 0,
+    "real_cytime": 0,
+    "output_count": 0,
+    "loss_count": 0
   }
   let vm = new Vue({
     delimiters: ['${', '}'],
@@ -123,12 +128,39 @@
     data,
     created() {
       // api fetch data
+      this.fetchData()
+      setTimeout(function () {
+        init_knob()
+      }, 200)
     },
     mounted() {
       this.buildLine()
       this.buildBar()
     },
     methods: {
+      fetchData() {
+        var url = `/kanban/api/performance/data?mah_num={{mah_num}}`;
+        fetch(url, {
+          method: 'GET',
+          credentials: "same-origin"
+        }).then((response) => {
+          return response.json();
+        }).then((data) => {
+          console.log(data)
+          if (data.length) {
+            this.mahnum = data[0].mahnum
+            this.pn = data[0].pn
+            this.mold = data[0].mold
+            this.status = data[0].status
+            this.Performance = data[0].Performance
+            this.real_cytime = data[0].real_cytime
+            this.output_count = data[0].output_count
+            this.loss_count = data[0].loss_count
+          }
+        }).catch((err) => {
+          console.error(err);
+        });
+      },
       buildLine() {
         if ($("#performanceLineChart").length) {
           var ctx = document.getElementById('performanceLineChart').getContext('2d');
@@ -194,6 +226,11 @@
             }
           });
         }
+      }
+    },
+    computed: {
+      now() {
+        return moment().format("YYYY-MM-DD HH:mm:ss")
       }
     }
   })

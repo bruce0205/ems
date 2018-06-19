@@ -1,9 +1,10 @@
 <style>
   .title {
     font-weight: 300;
-    display: inline-block;
+    display: block;
     padding-bottom: 5px;
     position: relative;
+    font-weight: bolder;
   }
 
   .title:before {
@@ -41,7 +42,7 @@
 
         <div class="title_right">
           <div class="col-md-3 col-sm-3 col-xs-12 form-group pull-right top_search">
-            <label for="" style="margin-right: 10px">2018/06/12 12:34:56</label>
+            <label for="" style="margin-right: 10px">${now}</label>
           </div>
         </div>
       </div>
@@ -53,26 +54,26 @@
           <div class="x_panel">
             <div class="row">
               <div class="col-md-4">
-                <h2>機台：S2</h2>
+                <h2>機台：${mahnum}</h2>
               </div>
               <div class="col-md-4">
-                <h2>模號：M1</h2>
+                <h2>模號：${mold}</h2>
               </div>
               <div class="col-md-4">
                 <h2>
-                  <span class="label label-primary">生產中</span>
+                  <span class="label label-primary">${status}</span>
                 </h2>
               </div>
             </div>
             <div class="row">
-              <div class="col-md-6">
-                <h2>嫁動秒數：28</h2>
+              <div class="col-md-8">
+                <h2>料號：${pn}</h2>
               </div>
             </div>
             <div class="row">
               <div class="col-md-6">
-                <h2 class="title">生產時間：2000</h2>
-                <h2 class="title">損失時間：60</h2>
+                <h2 class="title">生產時間：${UpToNow_Interval}</h2>
+                <h2 class="title">損失時間：${Loss_Interval}</h2>
               </div>
             </div>
           </div>
@@ -90,7 +91,7 @@
           <div class="row">
             <div class="col-md-12 text-center">
               <h1>Availability</h1>
-              <input class="knob" data-width="150" data-height="150" data-angleOffset=90 data-linecap=round data-fgColor="#26B99A" :value="knob"
+              <input class="knob" data-width="150" data-height="150" data-angleOffset=90 data-linecap=round data-fgColor="#26B99A" :value="Availability"
                 readonly>
             </div>
 
@@ -109,10 +110,13 @@
 
 <script>
   let data = {
-    "mah_num": "T1",
-    "status": "準備中",
-    "pn": "AAAAAAAAAA",
-    "knob": "98"
+    "mahnum": "",
+    "mold": "",
+    "status": "",
+    "pn": "",
+    "Availability": 0,
+    "Loss_Interval": 0,
+    "UpToNow_Interval": 0
   }
 
   let vm = new Vue({
@@ -121,12 +125,38 @@
     data,
     created() {
       // api fetch data
+      this.fetchData()
+      setTimeout(function () {
+        init_knob()
+      }, 200)
     },
     mounted() {
       this.buildLine()
       this.buildBar()
     },
     methods: {
+      fetchData() {
+        var url = `/kanban/api/available/data?mah_num={{mah_num}}`;
+        fetch(url, {
+          method: 'GET',
+          credentials: "same-origin"
+        }).then((response) => {
+          return response.json();
+        }).then((data) => {
+          console.log(data)
+          if (data.length) {
+            this.mahnum = data[0].mahnum
+            this.pn = data[0].pn
+            this.mold = data[0].mold
+            this.status = data[0].status
+            this.Availability = data[0].Availability
+            this.Loss_Interval = data[0].Loss_Interval
+            this.UpToNow_Interval = data[0].UpToNow_Interval
+          }
+        }).catch((err) => {
+          console.error(err);
+        });
+      },
       buildLine() {
         if ($("#availableLineChart").length) {
           var ctx = document.getElementById('availableLineChart').getContext('2d');
@@ -183,7 +213,7 @@
               datasets: [{
                 label: '累積目標產量',
                 backgroundColor: "#f44141", // red
-                data: [71, 68, 50, 38, 32, 22, 10]
+                data: [71, 68, 50, 38, 32]
               }]
             },
 
@@ -202,6 +232,11 @@
             }
           });
         }
+      }
+    },
+    computed: {
+      now() {
+        return moment().format("YYYY-MM-DD HH:mm:ss")
       }
     }
   })

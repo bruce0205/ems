@@ -99,7 +99,9 @@
     },
     created() {
       this.fetchData()
-
+      setTimeout(function () {
+        init_knob()
+      }, 200)
     },
     mounted() {
       console.log('aa')
@@ -116,7 +118,6 @@
         }).then((response) => {
           return response.json();
         }).then((data) => {
-          console.log(data);
           this.machines = data.machines
           this.statusList = data.statusList
         }).catch((err) => {
@@ -181,7 +182,4 @@
     }
   })
 
-  setTimeout(function () {
-    init_knob()
-  }, 200)
 </script>

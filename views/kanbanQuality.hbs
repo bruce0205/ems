@@ -1,9 +1,10 @@
 <style>
   .title {
     font-weight: 300;
-    display: inline-block;
+    display: block;
     padding-bottom: 5px;
     position: relative;
+    font-weight: bolder;
   }
 
   .title:before {
@@ -40,7 +41,7 @@
 
       <div class="title_right">
         <div class="col-md-3 col-sm-3 col-xs-12 form-group pull-right top_search">
-          <label for="" style="margin-right: 10px">2018/06/12 12:34:56</label>
+          <label for="" style="margin-right: 10px">${now}</label>
         </div>
       </div>
     </div>
@@ -52,34 +53,34 @@
         <div class="x_panel">
           <div class="row">
             <div class="col-md-4">
-              <h2>機台：S2</h2>
+              <h2>機台：${mahnum}</h2>
             </div>
             <div class="col-md-4">
-              <h2>模號：M1</h2>
+              <h2>模號：${mold}</h2>
             </div>
             <div class="col-md-4">
               <h2>
-                <span class="label label-primary">生產中</span>
+                <span class="label label-primary">${status}</span>
               </h2>
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6">
-              <h2>料號：abceddfgfgfg</h2>
+            <div class="col-md-8">
+              <h2>料號：${pn}</h2>
             </div>
           </div>
           <div class="row">
             <div class="col-md-6">
-              <h2>穴位：L3-1、L3-2</h2>
+              <h2>穴位：${user_hole}</h2>
             </div>
             <div class="col-md-6">
-              <h2>人員：周敏、張素潔</h2>
+              <h2>人員：${user_name}</h2>
             </div>
           </div>
           <div class="row">
             <div class="col-md-6">
-              <h2 class="title">良品數量：2000</h2>
-              <h2 class="title">不良品數量：60</h2>
+              <h2 class="title">良品數量：${Normal_count}</h2>
+              <h2 class="title">不良品數量：${AbNormal_count}</h2>
             </div>
           </div>
         </div>
@@ -97,7 +98,7 @@
           <div class="row">
             <div class="col-md-12 text-center">
               <h1>Quality</h1>
-              <input class="knob" data-width="150" data-height="150" data-angleOffset=90 data-linecap=round data-fgColor="#26B99A" :value="knob"
+              <input class="knob" data-width="150" data-height="150" data-angleOffset=90 data-linecap=round data-fgColor="#26B99A" :value="Quality"
                 readonly>
             </div>
 
@@ -115,10 +116,15 @@
 
 <script>
   let data = {
-    "mah_num": "T1",
-    "status": "準備中",
-    "pn": "AAAAAAAAAA",
-    "knob": "95"
+    "mahnum": "",
+    "mold": "",
+    "status": "",
+    "pn": "",
+    "user_name": "",
+    "user_hole": "",
+    "Quality": 0,
+    "Normal_count": 0,
+    "AbNormal_count": 0
   }
   let vm = new Vue({
     delimiters: ['${', '}'],
@@ -126,12 +132,40 @@
     data,
     created() {
       // api fetch data
+      this.fetchData()
+      setTimeout(function () {
+        init_knob()
+      }, 200)
     },
     mounted() {
       this.buildLine()
       this.buildBar()
     },
     methods: {
+      fetchData() {
+        var url = `/kanban/api/quality/data?mah_num={{mah_num}}`;
+        fetch(url, {
+          method: 'GET',
+          credentials: "same-origin"
+        }).then((response) => {
+          return response.json();
+        }).then((data) => {
+          console.log(data)
+          if (data.length) {
+            this.mahnum = data[0].mahnum
+            this.pn = data[0].pn
+            this.mold = data[0].mold
+            this.status = data[0].status
+            this.user_hole = data[0].user_hole
+            this.user_name = data[0].user_name
+            this.Quality = data[0].Quality
+            this.Normal_count = data[0].Normal_count
+            this.AbNormal_count = data[0].AbNormal_count
+          }
+        }).catch((err) => {
+          console.error(err);
+        });
+      },
       buildLine() {
         if ($("#availibilityLineChart").length) {
           var ctx = document.getElementById('availibilityLineChart').getContext('2d');
@@ -254,6 +288,11 @@
           });
 
         }
+      }
+    },
+    computed: {
+      now() {
+        return moment().format("YYYY-MM-DD HH:mm:ss")
       }
     }
   })

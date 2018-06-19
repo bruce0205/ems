@@ -32,7 +32,7 @@ module.exports = (app, db) => {
     console.log(`functionName: ${functionName}`)
 
     db.query(`
-        select pn_type, pn,convert(varchar, pn_date, 120) as pn_date, pn_count from ${functionName}(:pn, :mold)
+        select pn_type, pn_type_name, pn,convert(varchar, pn_date, 120) as pn_date, pn_count from ${functionName}(:pn, :mold)
       `, {
         replacements: {
           pn: req.query.pn,

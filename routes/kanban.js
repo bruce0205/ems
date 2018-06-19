@@ -6,13 +6,16 @@ const R = require('ramda');
 module.exports = (app, db) => {
   router.get('/', function (req, res, next) {
     let view = 'kanban'
+    let data = {
+      isKanban: true,
+      layout: 'layout'
+    }
     if (req.query.dataType === 'available') view = 'kanbanAvailable'
     if (req.query.dataType === 'performance') view = 'kanbanPerformance'
     if (req.query.dataType === 'quality') view = 'kanbanQuality'
-    res.render(view, {
-      isKanban: true,
-      layout: 'layout',
-    });
+    if (req.query.mah_num) data.mah_num = req.query.mah_num
+
+    res.render(view, data);
   });
 
   router.get('/api/data', function (req, res, next) {
@@ -76,6 +79,45 @@ module.exports = (app, db) => {
         console.error(err);
       });
   });
+
+  router.get('/api/available/data', function (req, res, next) {
+    db.query(`
+      select mahnum, mold, pn, status, UpToNow_Interval, Loss_Interval,Availability from GetOEE_A_fn('${req.query.mah_num}')
+  `, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        res.send(data);
+      }).catch(err => {
+        console.error(err);
+      });
+  })
+
+  router.get('/api/performance/data', function (req, res, next) {
+    db.query(`
+      select mahnum,mold,pn,status,real_cytime,output_count,loss_count,Performance from GetOEE_P_fn('${req.query.mah_num}')
+  `, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        res.send(data);
+      }).catch(err => {
+        console.error(err);
+      });
+  })
+
+  router.get('/api/quality/data', function (req, res, next) {
+    db.query(`
+      select mahnum,mold,pn,status,user_hole,user_name,Normal_count,AbNormal_count,Quality from GetOEE_Q_fn('${req.query.mah_num}')
+  `, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        res.send(data);
+      }).catch(err => {
+        console.error(err);
+      });
+  })
 
   app.use('/kanban', router);
 }

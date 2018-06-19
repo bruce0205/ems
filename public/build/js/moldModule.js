@@ -34,6 +34,7 @@ var moldModule = (function () {
       var tr1 = $('<tr>');
 
       tr1.append($('<th>').css(thStyle).append('pn_type'))
+        .append($('<th>').css(thStyle).append('pn_type_name'))
         .append($('<th>').css(thStyle).append('pn'))
         .append($('<th>').css(thStyle).append('pn_date'))
         .append($('<th>').css(thStyle).append('pn_count'))
@@ -63,6 +64,7 @@ var moldModule = (function () {
           historyButton.on('click', payload, showMoldHistoryModal);
 
           contentTr.append($('<td>').css(tdStyle).append(item["pn_type"]))
+            .append($('<td>').css(tdStyle).append(item["pn_type_name"]))
             .append($('<td>').css(tdStyle).append(item["pn"]))
             .append($('<td>').css(tdStyle).append(item["pn_date"]))
             .append($('<td>').css(tdStyle).append(item["pn_count"]))
