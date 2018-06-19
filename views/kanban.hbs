@@ -99,12 +99,11 @@
     },
     created() {
       this.fetchData()
+    },
+    mounted() {
       setTimeout(function () {
         init_knob()
       }, 200)
-    },
-    mounted() {
-      console.log('aa')
     },
     methods: {
       makeAllUnselect() {

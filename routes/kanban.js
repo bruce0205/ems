@@ -119,5 +119,17 @@ module.exports = (app, db) => {
       });
   })
 
+  router.get('/api/quality/errorData', function (req, res, next) {
+    db.query(`
+      select * from GetOEE_Q_ErrorList_fn('${req.query.mah_num}')
+  `, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        res.send(data);
+      }).catch(err => {
+        console.error(err);
+      });
+  })
   app.use('/kanban', router);
 }

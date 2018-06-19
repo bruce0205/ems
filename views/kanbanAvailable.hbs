@@ -126,11 +126,11 @@
     created() {
       // api fetch data
       this.fetchData()
+    },
+    mounted() {
       setTimeout(function () {
         init_knob()
       }, 200)
-    },
-    mounted() {
       this.buildLine()
       this.buildBar()
     },
