@@ -136,6 +136,7 @@
     created() {
       // api fetch data
       this.fetchData()
+      this.fetchErrorData()
     },
     mounted() {
       setTimeout(function () {
@@ -279,7 +280,8 @@
                   position: "left",
                   id: "y-axis-count",
                   ticks: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    stepSize: 1
                   }
                 }, {
                   position: "right",

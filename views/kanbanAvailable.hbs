@@ -116,7 +116,9 @@
     "pn": "",
     "Availability": 0,
     "Loss_Interval": 0,
-    "UpToNow_Interval": 0
+    "UpToNow_Interval": 0,
+    label: [],
+    interval: [],
   }
 
   let vm = new Vue({
@@ -126,6 +128,7 @@
     created() {
       // api fetch data
       this.fetchData()
+      this.fetchStatusData()
     },
     mounted() {
       setTimeout(function () {
@@ -143,7 +146,6 @@
         }).then((response) => {
           return response.json();
         }).then((data) => {
-          console.log(data)
           if (data.length) {
             this.mahnum = data[0].mahnum
             this.pn = data[0].pn
@@ -153,6 +155,20 @@
             this.Loss_Interval = data[0].Loss_Interval
             this.UpToNow_Interval = data[0].UpToNow_Interval
           }
+        }).catch((err) => {
+          console.error(err);
+        });
+      },
+      fetchStatusData() {
+        var url = `/kanban/api/available/statusData?mah_num={{mah_num}}`;
+        fetch(url, {
+          method: 'GET',
+          credentials: "same-origin"
+        }).then((response) => {
+          return response.json();
+        }).then((data) => {
+          this.label = data.label
+          this.interval = data.interval
         }).catch((err) => {
           console.error(err);
         });
@@ -209,14 +225,13 @@
           var availableBarChart = new Chart(ctx, {
             type: 'bar',
             data: {
-              labels: ["檢驗中", "處理中", "準備中", "待機中", "停機中"],
+              labels: this.label,
               datasets: [{
-                label: '累積目標產量',
+                label: 'Interval',
                 backgroundColor: "#f44141", // red
-                data: [71, 68, 50, 38, 32]
+                data: this.interval
               }]
             },
-
             options: {
               legend: {
                 display: false,
@@ -225,7 +240,11 @@
               scales: {
                 yAxes: [{
                   ticks: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    stepSize: 10,
+                    callback: function (value, index, values) {
+                      return value + ' 分';
+                    }
                   }
                 }]
               }
