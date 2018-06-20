@@ -121,12 +121,20 @@ module.exports = (app, db) => {
 
   router.get('/api/quality/errorData', function (req, res, next) {
     db.query(`
-      select * from GetOEE_Q_ErrorList_fn('${req.query.mah_num}')
+      select Err_name, Err_count,Err_pert from GetOEE_Q_ErrorList_fn('${req.query.mah_num}') where Err_name!='正常'
   `, {
         raw: false, // Set this to true if you don't have a model definition for your query.
         type: Sequelize.QueryTypes.SELECT
       }).then(data => {
-        res.send(data);
+        let label = []
+        let count = []
+        let percentage = []
+        data.forEach(obj => {
+          label.push(obj.Err_name)
+          count.push(obj.Err_count)
+          percentage.push(obj.Err_pert)
+        });
+        res.send({ label, count, percentage });
       }).catch(err => {
         console.error(err);
       });

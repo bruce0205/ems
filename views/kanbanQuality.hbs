@@ -124,7 +124,10 @@
     "user_hole": "",
     "Quality": 0,
     "Normal_count": 0,
-    "AbNormal_count": 0
+    "AbNormal_count": 0,
+    label: [],
+    count: [],
+    percentage: []
   }
   let vm = new Vue({
     delimiters: ['${', '}'],
@@ -161,6 +164,24 @@
             this.Quality = data[0].Quality
             this.Normal_count = data[0].Normal_count
             this.AbNormal_count = data[0].AbNormal_count
+          }
+        }).catch((err) => {
+          console.error(err);
+        });
+      },
+      fetchErrorData() {
+        var url = `/kanban/api/quality/errorData?mah_num={{mah_num}}`;
+        fetch(url, {
+          method: 'GET',
+          credentials: "same-origin"
+        }).then((response) => {
+          return response.json();
+        }).then((data) => {
+          console.log(data)
+          if (data.length) {
+            this.label = data.label
+            this.count = data.count
+            this.percentage = data.percentage
           }
         }).catch((err) => {
           console.error(err);
@@ -216,35 +237,21 @@
         if ($("#performanceBarChart").length) {
 
           var chartData = {
-            labels: ['毛絲', '壓傷', '刮傷', '白污', '亮點', '其他'],
+            labels: this.label,
             datasets: [{
               type: 'line',
-              id: "y-axis-1",
+              id: "y-axis-per",
               label: 'Error Percentage',
-              data: [
-                6,
-                5,
-                4,
-                3,
-                2,
-                1
-              ],
+              data: this.percentage,
               backgroundColor: '#9df441', // green
               borderColor: "#9df441",
               fill: false,
               lineTension: 0.3
             }, {
               type: 'bar',
-              id: "y-axis-0",
+              id: "y-axis-count",
               label: 'Error Count',
-              data: [
-                12,
-                10,
-                8,
-                6,
-                4,
-                2
-              ],
+              data: this.count,
               backgroundColor: "#ff3236" // red
             }]
 
@@ -270,13 +277,15 @@
               scales: {
                 yAxes: [{
                   position: "left",
-                  id: "y-axis-0",
+                  id: "y-axis-count",
+                  ticks: {
+                    beginAtZero: true
+                  }
                 }, {
                   position: "right",
-                  id: "y-axis-1",
+                  id: "y-axis-per",
                   ticks: {
                     max: 10,
-                    min: 0,
                     beginAtZero: true,
                     callback: function (value, index, values) {
                       return value + '%';
