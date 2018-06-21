@@ -5,10 +5,12 @@ const R = require('ramda');
 
 module.exports = (app, db) => {
   router.get('/', function (req, res, next) {
+    const autoRefreshDuration = req.query.autoRefreshDuration > 0 ? req.query.autoRefreshDuration : 60000
     let view = 'kanban'
     let data = {
       isKanban: true,
-      layout: 'layout'
+      layout: 'layout',
+      autoRefreshDuration: autoRefreshDuration
     }
     if (req.query.dataType === 'available') view = 'kanbanAvailable'
     if (req.query.dataType === 'performance') view = 'kanbanPerformance'

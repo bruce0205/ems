@@ -36,6 +36,23 @@
       <button v-for="status in statusList" type="button" class="btn btn-xs" v-bind:style="getButtonStyle(status.backgroundColor)"
         @click="filter(status.text)">${status.text}</button>
     </div>
+    <div class="col-md-6 col-sm-6 col-xs-12 form-group top_search">
+      <div class="form-inline pull-right">
+        <label for="" style="margin-right: 10px">Auto Refresh</label>
+        <div class="radio">
+          <label>
+            <input name="autoRefresh" type="radio" value="-1" class="flat">
+            <span style="margin-left: 5px; margin-right: 5px">NA</span>
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="autoRefresh" type="radio" value="60000" class="flat">
+            <span style="margin-left: 5px; margin-right: 5px">60s</span>
+          </label>
+        </div>
+      </div>
+    </div>
     <div class="clearfix"></div>
     <hr>
 
@@ -103,7 +120,7 @@
     mounted() {
       setTimeout(function () {
         init_knob()
-      }, 200)
+      }, 300)
     },
     methods: {
       makeAllUnselect() {
@@ -180,5 +197,31 @@
       }
     }
   })
+
+  let timer
+  function autoRefresh(duration) {
+    timer = setTimeout(function () {
+      let url = window.location.href;
+      if (url.indexOf('autoRefreshDuration') > -1) {
+        url = url.substr(0, url.indexOf('?')) + '?autoRefreshDuration=' + duration
+      } else {
+        url += '?autoRefreshDuration=' + duration
+      }
+      window.location.href = url;
+    }, duration);
+  }
+  $(document).ready(function () {
+    let duration = '{{autoRefreshDuration}}';
+    $("[name='autoRefresh']").filter("[value='" + duration + "']").iCheck('check')
+    autoRefresh(duration);
+
+    $("input[name='autoRefresh']").on('ifChecked', function (event) {
+      console.log('autoRefresh changed: ' + $("[name='autoRefresh']:checked").val())
+      clearTimeout(timer)
+      if ($("[name='autoRefresh']:checked").val() > 0) {
+        autoRefresh($("[name='autoRefresh']:checked").val());
+      }
+    });
+  });
 
 </script>
