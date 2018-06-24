@@ -363,7 +363,11 @@
   async function saveMold() {
     // TODO step 1: check duplcate component
     let result = await vm.checkComponent()
-    if(!result) return false
+    if (!result) {
+      let triggerType = vm.$data.triggerType
+      notify(`模具零件料號重覆, ${triggerType}_pn, ${triggerType}_mold, ${triggerType}_hole1, ${triggerType}_hole2, pn_type`, 'danger');
+      return false
+    }
     // step 2: call update api
     let body = {
       triggerType: vm.$data.triggerType,
