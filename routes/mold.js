@@ -47,40 +47,57 @@ module.exports = (app, db) => {
       });
   });
 
-  router.get('/api/history', function (req, res, next) {
-    console.log(req.query)
-    let hole1Operator = (req.query.mvs_hole1) ? '=' : 'is';
-    let hole2Operator = (req.query.mvs_hole2) ? '=' : 'is';
+  router.get('/api/history/:historyType', function (req, res, next) {
+
     let triggerType = req.query.triggerType;
     let tableName = `mold_${triggerType}_history`;
 
+    let replacements = {}
+    let sql = `
+      select
+      ${triggerType}_pn trigger_pn,
+      ${triggerType}_mold trigger_mold,
+      ${triggerType}_component trigger_component,
+      tn.pn_type_name,
+      convert(varchar, ${triggerType}_update_datetime, 120) as update_datetime,
+      ${triggerType}_update_count as update_count,
+      ${triggerType}_update_user as update_user
+      from ${tableName} his left join MOLD_PN_TYPE_NAME tn on tn.pn_type = his.${triggerType}_type
+      where 1=1
+    `
 
-    db.query(`
-      select convert(varchar, ${triggerType}_update_datetime, 120) as mvs_update_datetime,
-      ${triggerType}_update_count as mvs_update_count,
-      ${triggerType}_update_user as mvs_update_user
-      from ${tableName}
-      where ${triggerType}_pn = :mvs_pn
-      and ${triggerType}_mold = :mvs_mold
-      and ${triggerType}_hole1 ${hole1Operator} :mvs_hole1
-      and ${triggerType}_hole2 ${hole2Operator} :mvs_hole2
-      and ${triggerType}_type = :mvs_type
-      order by ${triggerType}_update_datetime desc
-      `, {
-        replacements: {
-          mvs_pn: req.query.mvs_pn,
-          mvs_mold: req.query.mvs_mold,
-          mvs_hole1: (req.query.mvs_hole1 ? req.query.mvs_hole1 : null),
-          mvs_hole2: (req.query.mvs_hole2 ? req.query.mvs_hole2 : null),
-          mvs_type: req.query.mvs_type
-        },
-        raw: false, // Set this to true if you don't have a model definition for your query.
-        type: Sequelize.QueryTypes.SELECT
-      }).then(data => {
-        res.send({ data });
-      }).catch(err => {
-        console.error(err);
-      });
+    if (req.params.historyType === 'assembly') {
+      sql += `
+        and ${triggerType}_pn = :trigger_pn
+        and ${triggerType}_mold = :trigger_mold
+        and ${triggerType}_type = :trigger_type
+      `
+      replacements = {
+        trigger_pn: req.query.trigger_pn,
+        trigger_mold: req.query.trigger_mold,
+        trigger_type: req.query.trigger_type
+      }
+    } else if (req.params.historyType === 'component') {
+      sql += `
+        and ${triggerType}_component = :trigger_component
+      `
+      replacements = {
+        trigger_pn: req.query.trigger_pn,
+        trigger_mold: req.query.trigger_mold,
+        trigger_component: req.query.trigger_component
+      }
+    }
+    sql += `order by ${triggerType}_update_datetime desc`
+
+    db.query(sql, {
+      replacements: replacements,
+      raw: false, // Set this to true if you don't have a model definition for your query.
+      type: Sequelize.QueryTypes.SELECT
+    }).then(data => {
+      res.send({ data });
+    }).catch(err => {
+      console.error(err);
+    });
   });
 
   router.get('/api/counter', function (req, res, next) {
@@ -112,11 +129,37 @@ module.exports = (app, db) => {
     logger.info('mold.api.config() api invoke')
 
     db.query(`
-        select mvs_threshold,mvs_alarm_pect from mold_conf
-        where mvs_component = :mvs_component
+        select threshold, alarm_pect from mold_conf
+        where component = :component
       `, {
         replacements: {
-          mvs_component: req.query.mvs_component
+          component: req.query.component
+        },
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        res.send(data);
+      }).catch(err => {
+        console.error(err);
+      });
+  });
+
+  router.get('/api/component/check', function (req, res, next) {
+    let triggerType = req.query.triggerType;
+    db.query(`
+        select
+        mc.${triggerType}_pn as trigger_pn,
+        mc.${triggerType}_mold trigger_mold,
+        mc.${triggerType}_hole1 trigger_hole1,
+        mc.${triggerType}_hole2 trigger_hole2,
+        pn_type
+        from MOLD_${triggerType} m
+        CROSS APPLY GetMoldCount_${triggerType}(m.${triggerType}_pn,m.${triggerType}_mold) mc
+        where 1=1
+        and mc.pn = :component
+      `, {
+        replacements: {
+          component: req.query.component
         },
         raw: false, // Set this to true if you don't have a model definition for your query.
         type: Sequelize.QueryTypes.SELECT
@@ -128,9 +171,7 @@ module.exports = (app, db) => {
   });
 
   router.post('/api/record', function (req, res, next) {
-    console.log(req.body)
     let spName = `InsertMold_${req.body.triggerType}_sp`;
-    console.log(`spName: ${spName}`);
 
     db.query(`
       ${spName}
@@ -155,6 +196,30 @@ module.exports = (app, db) => {
           mvs_update_datetime: req.body.mvs_update_datetime,
           mvs_update_count: req.body.mvs_update_count,
           mvs_update_user: req.body.mvs_update_user
+        },
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        res.send({ status: 200 });
+      }).catch(err => {
+        res.send({ status: 500 });
+      });
+  });
+
+  router.post('/api/config', function (req, res, next) {
+    console.log(req.body)
+    let spName = `UpdateMoldConf_sp`;
+
+    db.query(`
+      ${spName}
+      @component = :component,
+      @threshold = :threshold,
+      @alarm_pect = :alarm
+    `, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        replacements: {
+          component: req.body.component,
+          threshold: req.body.threshold,
+          alarm: req.body.alarm,
         },
         type: Sequelize.QueryTypes.SELECT
       }).then(data => {
