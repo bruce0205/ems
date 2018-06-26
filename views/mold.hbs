@@ -138,24 +138,13 @@
             <div class="form-group" v-if="offLine === false">
               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Threshold</label>
               <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="input-group">
-                  <input class="form-control" type="number" v-model="threshold" size="40">
-                  <span class="input-group-btn">
-                    <button type="button" @click="saveConfig(true)" class="btn btn-default ig-mid-btn" style="margin-right:0px">Save</button>
-                  </span>
-                </div>
-                <!-- /input-group -->
+                <input class="form-control" type="number" v-model="threshold" size="40">
               </div>
             </div>
             <div class="form-group" v-if="offLine === false">
               <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Alarm %</label>
               <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="input-group">
-                  <input class="form-control" type="number" v-model="alarm">
-                  <span class="input-group-btn">
-                    <button type="button" @click="saveConfig(true)" class="btn btn-default ig-mid-btn" style="margin-right:0px">Save</button>
-                  </span>
-                </div>
+                <input class="form-control" type="number" v-model="alarm">
               </div>
             </div>
           </form>
@@ -365,7 +354,8 @@
     let result = await vm.checkComponent()
     if (!result) {
       let triggerType = vm.$data.triggerType
-      notify(`模具零件料號重覆, ${triggerType}_pn, ${triggerType}_mold, ${triggerType}_hole1, ${triggerType}_hole2, pn_type`, 'danger');
+      // notify(`模具零件料號重覆, ${triggerType}_pn, ${triggerType}_mold, ${triggerType}_hole1, ${triggerType}_hole2, pn_type`, 'danger');
+      notify(`模具零件料號重覆, ${this.mvs_pn}, ${this.mvs_mold}, ${this.mvs_hole1}, ${this.mvs_hole2}, ${this.pn_type}`, 'danger');
       return false
     }
     // step 2: call update api
