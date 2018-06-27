@@ -132,7 +132,7 @@ module.exports = (app, db) => {
         let count = []
         let percentage = []
         data.forEach(obj => {
-          label.push(obj.Err_name)
+          label.push(obj.Err_name.trim())
           count.push(obj.Err_count)
           percentage.push(obj.Err_pert)
         });

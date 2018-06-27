@@ -253,19 +253,23 @@
           });
         }
       },
-      buildBar() {
+      async buildBar () {
         if ($("#performanceBarChart").length) {
-          console.log('111111111')
-          console.log(this.label)
-          console.log(this.count)
-          console.log(this.percentage)
+
+          let url = `/kanban/api/quality/errorData?mah_num={{mah_num}}`;
+          let option = {
+            method: 'GET',
+            credentials: "same-origin"
+          }
+          const response = await fetch(url, option)
+          const json = await response.json()
           var chartData = {
-            labels: this.label,
+            labels: json.label,
             datasets: [{
               type: 'line',
               id: "y-axis-per",
               label: 'Error Percentage',
-              data: this.percentage,
+              data: json.percentage,
               backgroundColor: '#9df441', // green
               borderColor: "#9df441",
               fill: false,
@@ -274,7 +278,7 @@
               type: 'bar',
               id: "y-axis-count",
               label: 'Error Count',
-              data: this.count,
+              data: json.count,
               backgroundColor: "#ff3236" // red
             }]
 
