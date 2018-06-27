@@ -154,7 +154,7 @@
     data,
     created() {
       // api fetch data
-      // this.fetchData()
+      this.fetchData()
     },
     mounted() {
       setTimeout(function () {
@@ -292,17 +292,13 @@
             data: chartData,
             options: {
               responsive: true,
-              legend: {
-                display: false,
-                position: 'bottom'
-              },
               title: {
                 display: false,
                 text: 'Chart.js Combo Bar Line Chart'
               },
               tooltips: {
                 mode: 'label', //index or label
-                intersect: true
+                // intersect: true
               },
               scales: {
                 yAxes: [{

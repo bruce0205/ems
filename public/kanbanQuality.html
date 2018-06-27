@@ -608,7 +608,7 @@
         labels: ['毛絲', '壓傷', '刮傷', '白污', '亮點', '其他'],
         datasets: [{
           type: 'line',
-          id: 'y-axis-count',
+          id: 'y-axis-per',
           label: '百分比',
           data: [0, 1, 1, 0, 0, 0],
           backgroundColor: 'rgba(92,184,92,0.75)', // green
@@ -617,7 +617,7 @@
           lineTension: 0.3
         }, {
           type: 'bar',
-          id: 'y-axis-per',
+          id: 'y-axis-count',
           label: '數量',
           data: [18, 31, 31, 4, 0, 4],
           backgroundColor: "rgba(217,83,79,0.75)" // red
@@ -632,7 +632,7 @@
           options: {
             responsive: true,
             title: {
-              display: true,
+              display: false,
               text: 'Chart.js Combo Bar Line Chart'
             },
             tooltips: {
