@@ -159,9 +159,9 @@
     mounted() {
       setTimeout(function () {
         init_knob()
-      }, 200)
+      }, 300)
+      this.fetchErrorData()
       this.buildLine()
-      this.buildBar()
     },
     methods: {
       fetchData() {
@@ -201,7 +201,7 @@
             this.label = data.label
             this.count = data.count
             this.percentage = data.percentage
-            this.fetchErrorData()
+            this.buildBar()
           }
         }).catch((err) => {
           console.error(err);
