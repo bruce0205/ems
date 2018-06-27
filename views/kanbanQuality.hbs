@@ -160,7 +160,7 @@
       setTimeout(function () {
         init_knob()
       }, 300)
-      this.fetchErrorData()
+      this.buildBar()
       this.buildLine()
     },
     methods: {
@@ -253,7 +253,7 @@
           });
         }
       },
-      async buildBar () {
+      async buildBar() {
         if ($("#performanceBarChart").length) {
 
           let url = `/kanban/api/quality/errorData?mah_num={{mah_num}}`;
@@ -263,26 +263,29 @@
           }
           const response = await fetch(url, option)
           const json = await response.json()
+
           var chartData = {
             labels: json.label,
             datasets: [{
               type: 'line',
               id: "y-axis-per",
-              label: 'Error Percentage',
+              label: '百分比',
               data: json.percentage,
-              backgroundColor: '#9df441', // green
-              borderColor: "#9df441",
+              backgroundColor: 'rgba(92,184,92,0.75)', // green
+              borderColor: "rgba(92,184,92,0.75)",
               fill: false,
               lineTension: 0.3
             }, {
               type: 'bar',
               id: "y-axis-count",
-              label: 'Error Count',
+              label: '數量',
               data: json.count,
-              backgroundColor: "#ff3236" // red
+              backgroundColor: "rgba(217,83,79,0.75)" // red
             }]
 
           };
+
+          console.log(chartData.labels)
           var ctx = document.getElementById('performanceBarChart').getContext('2d');
           var myMixedChart = new Chart(ctx, {
             type: 'bar',
@@ -298,7 +301,7 @@
                 text: 'Chart.js Combo Bar Line Chart'
               },
               tooltips: {
-                mode: 'index',
+                mode: 'label', //index or label
                 intersect: true
               },
               scales: {
@@ -306,14 +309,14 @@
                   position: "left",
                   id: "y-axis-count",
                   ticks: {
-                    beginAtZero: true,
-                    stepSize: 1
+                    // beginAtZero: true,
+                    // stepSize: 1
                   }
                 }, {
                   position: "right",
                   id: "y-axis-per",
                   ticks: {
-                    max: 10,
+                    max: 100,
                     beginAtZero: true,
                     callback: function (value, index, values) {
                       return value + '%';

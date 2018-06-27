@@ -608,31 +608,19 @@
         labels: ['毛絲', '壓傷', '刮傷', '白污', '亮點', '其他'],
         datasets: [{
           type: 'line',
-          label: 'Dataset 1',
-          data: [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6
-          ],
-          backgroundColor: '#9df441', // green
-          borderColor: "#9df441",
+          id: 'y-axis-count',
+          label: '百分比',
+          data: [0, 1, 1, 0, 0, 0],
+          backgroundColor: 'rgba(92,184,92,0.75)', // green
+          borderColor: "rgba(92,184,92,0.75)",
           fill: false,
           lineTension: 0.3
         }, {
           type: 'bar',
-          label: 'Dataset 2',
-          data: [
-            2,
-            4,
-            6,
-            8,
-            10,
-            12
-          ],
-          backgroundColor: "#ff3236" // red
+          id: 'y-axis-per',
+          label: '數量',
+          data: [18, 31, 31, 4, 0, 4],
+          backgroundColor: "rgba(217,83,79,0.75)" // red
         }]
 
       };
@@ -648,8 +636,26 @@
               text: 'Chart.js Combo Bar Line Chart'
             },
             tooltips: {
-              mode: 'index',
-              intersect: true
+              mode: 'label',
+              // intersect: true
+            },
+            scales: {
+              yAxes: [{
+                position: "left",
+                id: "y-axis-count",
+                ticks: {
+                }
+              }, {
+                position: "right",
+                id: "y-axis-per",
+                ticks: {
+                  max: 100,
+                  beginAtZero: true,
+                  callback: function (value, index, values) {
+                    return '' + value + '%';
+                  }
+                }
+              }]
             }
           }
         });
