@@ -255,6 +255,10 @@
       },
       buildBar() {
         if ($("#performanceBarChart").length) {
+          console.log('111111111')
+          console.log(this.label)
+          console.log(this.count)
+          console.log(this.percentage)
           var chartData = {
             labels: this.label,
             datasets: [{
@@ -344,7 +348,7 @@
     autoRefresh(duration);
 
     $("input[name='autoRefresh']").on('ifChecked', function (event) {
-      console.log('autoRefresh changed: ' + $("[name='autoRefresh']:checked").val())
+      // console.log('autoRefresh changed: ' + $("[name='autoRefresh']:checked").val())
       clearTimeout(timer)
       if ($("[name='autoRefresh']:checked").val() > 0) {
         autoRefresh($("[name='autoRefresh']:checked").val());
