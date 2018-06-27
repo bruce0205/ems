@@ -155,7 +155,6 @@
     created() {
       // api fetch data
       this.fetchData()
-      this.fetchErrorData()
     },
     mounted() {
       setTimeout(function () {
@@ -202,6 +201,7 @@
             this.label = data.label
             this.count = data.count
             this.percentage = data.percentage
+            this.fetchErrorData()
           }
         }).catch((err) => {
           console.error(err);
@@ -255,7 +255,6 @@
       },
       buildBar() {
         if ($("#performanceBarChart").length) {
-
           var chartData = {
             labels: this.label,
             datasets: [{
