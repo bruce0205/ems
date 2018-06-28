@@ -268,7 +268,7 @@
             labels: json.label,
             datasets: [{
               type: 'line',
-              id: "y-axis-per",
+              yAxisID: "y-axis-per",
               label: '百分比',
               data: json.percentage,
               backgroundColor: 'rgba(92,184,92,0.75)', // green
@@ -277,7 +277,7 @@
               lineTension: 0.3
             }, {
               type: 'bar',
-              id: "y-axis-count",
+              yAxisID: "y-axis-count",
               label: '數量',
               data: json.count,
               backgroundColor: "rgba(217,83,79,0.75)" // red
@@ -311,7 +311,8 @@
                   position: "right",
                   id: "y-axis-per",
                   ticks: {
-                    max: 100,
+                    max: 30,
+                    // stepSize: 1,
                     beginAtZero: true,
                     callback: function (value, index, values) {
                       return value + '%';

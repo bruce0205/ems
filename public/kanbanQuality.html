@@ -608,16 +608,16 @@
         labels: ['毛絲', '壓傷', '刮傷', '白污', '亮點', '其他'],
         datasets: [{
           type: 'line',
-          id: 'y-axis-per',
+          yAxisID: 'y-axis-per',
           label: '百分比',
-          data: [0, 1, 1, 0, 0, 0],
+          data: [0, 0, 1, 1, 0, 0],
           backgroundColor: 'rgba(92,184,92,0.75)', // green
           borderColor: "rgba(92,184,92,0.75)",
           fill: false,
           lineTension: 0.3
         }, {
           type: 'bar',
-          id: 'y-axis-count',
+          yAxisID: 'y-axis-count',
           label: '數量',
           data: [18, 31, 31, 4, 0, 4],
           backgroundColor: "rgba(217,83,79,0.75)" // red
@@ -649,7 +649,8 @@
                 position: "right",
                 id: "y-axis-per",
                 ticks: {
-                  max: 100,
+                  max: 15,
+                  // stepSize: 1,
                   beginAtZero: true,
                   callback: function (value, index, values) {
                     return '' + value + '%';
