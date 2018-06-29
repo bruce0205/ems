@@ -256,6 +256,7 @@
       async buildBar() {
         if ($("#performanceBarChart").length) {
 
+          // step 1: fetch data
           let url = `/kanban/api/quality/errorData?mah_num={{mah_num}}`;
           let option = {
             method: 'GET',
@@ -285,42 +286,45 @@
 
           };
 
-          console.log(chartData.labels)
-          var ctx = document.getElementById('performanceBarChart').getContext('2d');
-          var myMixedChart = new Chart(ctx, {
+          let options = {
+            responsive: true,
+            title: {
+              display: false,
+              text: 'Chart.js Combo Bar Line Chart'
+            },
+            tooltips: {
+              mode: 'label', //index or label
+              // intersect: true
+            },
+            scales: scales
+          }
+          let scales = {
+            yAxes: [{
+              position: "left",
+              id: "y-axis-count",
+              ticks: {
+                beginAtZero: true
+              }
+            }, {
+              position: "right",
+              id: "y-axis-per",
+              ticks: {
+                max: json.maxPercentage,
+                // stepSize: 1,
+                beginAtZero: true,
+                callback: function (value, index, values) {
+                  return value + '%';
+                },
+              }
+            }]
+          }
+
+          // step: build chart
+          const ctx = document.getElementById('performanceBarChart').getContext('2d');
+          const myMixedChart = new Chart(ctx, {
             type: 'bar',
             data: chartData,
-            options: {
-              responsive: true,
-              title: {
-                display: false,
-                text: 'Chart.js Combo Bar Line Chart'
-              },
-              tooltips: {
-                mode: 'label', //index or label
-                // intersect: true
-              },
-              scales: {
-                yAxes: [{
-                  position: "left",
-                  id: "y-axis-count",
-                  ticks: {
-                    beginAtZero: true
-                  }
-                }, {
-                  position: "right",
-                  id: "y-axis-per",
-                  ticks: {
-                    max: 10,
-                    // stepSize: 1,
-                    beginAtZero: true,
-                    callback: function (value, index, values) {
-                      return value + '%';
-                    },
-                  }
-                }]
-              }
-            }
+            options: options
           });
 
         }

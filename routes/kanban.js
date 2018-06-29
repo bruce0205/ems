@@ -131,12 +131,15 @@ module.exports = (app, db) => {
         let label = []
         let count = []
         let percentage = []
+        let maxPercentage = 0
         data.forEach(obj => {
           label.push(obj.Err_name.trim())
           count.push(obj.Err_count)
           percentage.push(obj.Err_pert)
+          if (obj.Err_per > maxPercentage) maxPercentage = obj.Err_per
         });
-        res.send({ label, count, percentage });
+        maxPercentage += 10
+        res.send({ label, count, percentage, maxPercentage });
       }).catch(err => {
         console.error(err);
       });
