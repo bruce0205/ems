@@ -285,19 +285,6 @@
             }]
 
           };
-
-          let options = {
-            responsive: true,
-            title: {
-              display: false,
-              text: 'Chart.js Combo Bar Line Chart'
-            },
-            tooltips: {
-              mode: 'label', //index or label
-              // intersect: true
-            },
-            scales: scales
-          }
           let scales = {
             yAxes: [{
               position: "left",
@@ -318,12 +305,25 @@
               }
             }]
           }
+          let options = {
+            responsive: true,
+            title: {
+              display: false,
+              text: 'Chart.js Combo Bar Line Chart'
+            },
+            tooltips: {
+              mode: 'label', //index or label
+              // intersect: true
+            },
+            scales: scales
+          }
 
           // step: build chart
           const ctx = document.getElementById('performanceBarChart').getContext('2d');
           const myMixedChart = new Chart(ctx, {
             type: 'bar',
             data: chartData,
+            scales: scales,
             options: options
           });
 
