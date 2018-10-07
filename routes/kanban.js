@@ -164,5 +164,71 @@ module.exports = (app, db) => {
       });
   })
 
+  router.get('/api/available/ctData', function (req, res, next) {
+    db.query(`
+      select dataHour, CT_Target, CT_Real,dataDate from GetOEE_A_CT('${req.query.mah_num}')
+  `, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        let label = []
+        let targetData = []
+        let realData = []
+        data.forEach(obj => {
+          label.push(obj.dataHour)
+          realData.push(obj.CT_Real)
+          targetData.push(obj.CT_Target)
+        });
+        res.send({ label, targetData, realData });
+      }).catch(err => {
+        console.error(err);
+      });
+  })
+
+  router.get('/api/quality/yieldData', function (req, res, next) {
+    db.query(`
+      select dataHour, Yield_Target, Yield_Real,dataDate from GetOEE_Q_Yield('${req.query.mah_num}')
+  `, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        let label = []
+        let targetData = []
+        let realData = []
+        data.forEach(obj => {
+          label.push(obj.dataHour)
+          realData.push(obj.Yield_Real)
+          targetData.push(obj.Yield_Target)
+        });
+        res.send({ label, targetData, realData });
+      }).catch(err => {
+        console.error(err);
+      });
+  })
+
+  router.get('/api/performance/ctData', function (req, res, next) {
+    db.query(`
+      select dataHour, Output_Target, Output_Real, Output_Target_Acc, Output_Real_Acc, dataDate from GetOEE_P_CT('${req.query.mah_num}')
+  `, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        let label = []
+        let targetData = []
+        let targetAccData = []
+        let realData = []
+        let realAccData = []
+        data.forEach(obj => {
+          label.push(obj.dataHour)
+          realData.push(obj.Output_Real)
+          targetData.push(obj.Output_Target)
+          realAccData.push(obj.Output_Real_Acc)
+          targetAccData.push(obj.Output_Target_Acc)
+        });
+        res.send({ label, targetData, realData, targetAccData, realAccData });
+      }).catch(err => {
+        console.error(err);
+      });
+  })
   app.use('/kanban', router);
 }

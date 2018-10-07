@@ -134,8 +134,13 @@
     "Availability": 0,
     "Loss_Interval": 0,
     "UpToNow_Interval": 0,
-    label: [],
-    interval: [],
+    statusLabel: [],
+    statusInterval: [],
+    ct: {
+      label: [],
+      targetData: [],
+      realData: []
+    }
   }
 
   let vm = new Vue({
@@ -146,6 +151,7 @@
       // api fetch data
       this.fetchData()
       this.fetchStatusData()
+      this.fetchCtData()
     },
     mounted() {
       setTimeout(function () {
@@ -184,8 +190,23 @@
         }).then((response) => {
           return response.json();
         }).then((data) => {
-          this.label = data.label
-          this.interval = data.interval
+          this.statusLabel = data.label
+          this.statusInterval = data.interval
+        }).catch((err) => {
+          console.error(err);
+        });
+      },
+      fetchCtData() {
+        var url = `/kanban/api/available/ctData?mah_num={{mah_num}}`;
+        fetch(url, {
+          method: 'GET',
+          credentials: "same-origin"
+        }).then((response) => {
+          return response.json();
+        }).then((data) => {
+          this.ct.label = data.label
+          this.ct.targetData = data.targetData
+          this.ct.realData = data.realData
         }).catch((err) => {
           console.error(err);
         });
@@ -196,17 +217,20 @@
           var availableLineChart = new Chart(ctx, {
             type: 'line',
             data: {
-              labels: ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6',],
+              // labels: ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6',],
+              labels: this.ct.label,
               datasets: [{
                 label: '時間稼動率',
-                data: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
+                // data: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
+                data: this.ct.realData,
                 backgroundColor: "#4286f4", // blue
                 borderColor: "#4286f4",
                 fill: false,
                 lineTension: 0.3
               }, {
                 label: '目標稼動率',
-                data: [98, 98, 98, 98, 96, 98, 96, 98, 98, 98, 98, 96],
+                // data: [98, 98, 98, 98, 96, 98, 96, 98, 98, 98, 98, 96],
+                data: this.ct.targetData,
                 backgroundColor: "#f44141", // red
                 borderColor: "#f44141",
                 fill: false,
@@ -242,11 +266,11 @@
           var availableBarChart = new Chart(ctx, {
             type: 'bar',
             data: {
-              labels: this.label,
+              labels: this.statusLabel,
               datasets: [{
                 label: 'Interval',
                 backgroundColor: "#f44141", // red
-                data: this.interval
+                data: this.statusInterval
               }]
             },
             options: {
