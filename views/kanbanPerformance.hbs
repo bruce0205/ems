@@ -161,8 +161,6 @@
       setTimeout(function () {
         init_knob()
       }, 300)
-      this.buildLine()
-      this.buildBar()
     },
     methods: {
       fetchData() {
@@ -201,6 +199,9 @@
           this.ct.realData = data.realData
           this.ct.targetAccData = data.targetAccData
           this.ct.realAccData = data.realAccData
+
+          this.buildLine()
+          this.buildBar()
         }).catch((err) => {
           console.error(err);
         });
