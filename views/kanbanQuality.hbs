@@ -167,7 +167,6 @@
         init_knob()
       }, 300)
       this.buildBar()
-      this.buildLine()
     },
     methods: {
       fetchData() {
@@ -205,6 +204,8 @@
           this.yield.label = data.label
           this.yield.targetData = data.targetData
           this.yield.realData = data.realData
+
+          this.buildLine()
         }).catch((err) => {
           console.error(err);
         });
