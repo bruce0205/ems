@@ -7,7 +7,7 @@
     "stop": "pm2 stop epoch",
     "dev": "pm2 start config/process.json --env=dev",
     "test": "pm2 start config/process.json --env=test",
-    "prod": "pm2 start config/process.json --env=prod"
+    "prod": "cross-env NODE_ENV=prod node ./bin/www"
   },
   "dependencies": {
     "body-parser": "~1.18.2",
