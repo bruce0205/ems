@@ -218,11 +218,11 @@
             type: 'line',
             data: {
               // labels: ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6',],
-              labels: this.ct.label,
+              labels: JSON.parse(JSON.stringify(this.ct.label)),
               datasets: [{
                 label: '時間稼動率',
                 // data: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
-                data: this.ct.realData,
+                data: JSON.parse(JSON.stringify(this.ct.realData)),
                 backgroundColor: "#4286f4", // blue
                 borderColor: "#4286f4",
                 fill: false,
@@ -230,7 +230,7 @@
               }, {
                 label: '目標稼動率',
                 // data: [98, 98, 98, 98, 96, 98, 96, 98, 98, 98, 98, 96],
-                data: this.ct.targetData,
+                data: JSON.parse(JSON.stringify(this.ct.targetData)),
                 backgroundColor: "#f44141", // red
                 borderColor: "#f44141",
                 fill: false,

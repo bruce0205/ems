@@ -212,11 +212,11 @@
             type: 'line',
             data: {
               // labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
-              labels: this.ct.label,
+              labels: JSON.parse(JSON.stringify(this.ct.label)),
               datasets: [{
                 label: '累積目標產量',
                 // data: [1, 4, 7, 10, 13, 16, 19],
-                data: this.ct.targetAccData,
+                data: JSON.parse(JSON.stringify(this.ct.targetAccData)),
                 backgroundColor: "#ff3236", // red
                 borderColor: "#ff3236",
                 fill: false,
@@ -224,7 +224,7 @@
               }, {
                 label: '累積實際產量',
                 // data: [2, 6, 10, 14, 18, 22, 26],
-                data: this.ct.realAccData,
+                data: JSON.parse(JSON.stringify(this.ct.realAccData)),
                 backgroundColor: "#9df441", // green
                 borderColor: "#9df441",
                 fill: false,
@@ -247,17 +247,17 @@
             type: 'bar',
             data: {
               // labels: ["8", "10", "12", "14", "16", "18", "20"],
-              labels: this.ct.label,
+              labels: JSON.parse(JSON.stringify(this.ct.label)),
               datasets: [{
                 label: '目標產量',
                 backgroundColor: "#26B99A",
                 // data: [51, 30, 40, 28, 92, 50, 45]
-                data: this.ct.targetData
+                data: JSON.parse(JSON.stringify(this.ct.targetData))
               }, {
                 label: '實際產量',
                 backgroundColor: "#03586A",
                 // data: [41, 56, 25, 48, 72, 34, 12]
-                data: this.ct.realData
+                data: JSON.parse(JSON.stringify(this.ct.realData))
               }]
             },
 
