@@ -268,8 +268,9 @@
             }
           }
 
-          var ctx = document.getElementById('qualityLineChart').getContext('2d');
-          var qualityLineChart = new Chart(ctx, {
+          console.log('initialize line chart')
+          const ctx = document.getElementById('qualityLineChart').getContext('2d');
+          const qualityLineChart = new Chart(ctx, {
             type: 'line',
             data: chartData,
             options: options
