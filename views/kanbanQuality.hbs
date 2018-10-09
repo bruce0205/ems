@@ -203,8 +203,8 @@
           credentials: "same-origin"
         }
         const response = await fetch(url, option)
-        const data = await response.json()
-        return data
+        const json = await response.json()
+        return json
       },
       async fetchErrorData() {
         let url = `/kanban/api/quality/errorData?mah_num={{mah_num}}`;
