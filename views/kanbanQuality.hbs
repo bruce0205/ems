@@ -161,14 +161,14 @@
     async created() {
       // api fetch data
       this.fetchData()
-      this.yieldPromise = await this.fetchYieldData()
+      await this.fetchYieldData()
     },
-    mounted() {
+    async mounted() {
       setTimeout(function () {
         init_knob()
       }, 300)
       this.buildBar()
-      this.buildLine()
+      await this.buildLine()
     },
     methods: {
       fetchData() {
@@ -179,7 +179,7 @@
         }).then((response) => {
           return response.json();
         }).then((data) => {
-          console.log(data)
+          // console.log(data)
           if (data.length) {
             this.mahnum = data[0].mahnum
             this.pn = data[0].pn
@@ -195,16 +195,17 @@
           console.error(err);
         });
       },
-      fetchYieldData() {
+      async fetchYieldData() {
         let url = `/kanban/api/quality/yieldData?mah_num={{mah_num}}`;
         let option = {
           method: 'GET',
           credentials: "same-origin"
         }
-        return fetch(url, option)
+        this.yieldPromise = fetch(url, option)
       },
       async buildLine() {
-        let data = await this.yieldPromise
+        let response = await this.yieldPromise
+        let data = await response.json()
         console.log(data)
 
         if ($("#qualityLineChart").length) {
@@ -213,11 +214,11 @@
             type: 'line',
             data: {
               // labels: ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6'],
-              labels: JSON.parse(JSON.stringify(this.yield.label)),
+              labels: JSON.parse(JSON.stringify(data.label)),
               datasets: [{
                 label: '生產良率',
                 // data: [90, 92, 89, 90, 92, 91, 94, 95, 92, 91, 89, 94],
-                data: JSON.parse(JSON.stringify(this.yield.realData)),
+                data: JSON.parse(JSON.stringify(data.realData)),
                 backgroundColor: "#4286f4", // blue
                 borderColor: "#4286f4",
                 fill: false,
@@ -225,7 +226,7 @@
               }, {
                 label: '目標良率',
                 // data: [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90],
-                data: JSON.parse(JSON.stringify(this.yield.targetData)),
+                data: JSON.parse(JSON.stringify(data.targetData)),
                 backgroundColor: "#f44141", // red
                 borderColor: "#f44141",
                 fill: false,
