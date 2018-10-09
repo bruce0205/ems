@@ -209,15 +209,17 @@
       async buildLine() {
         if ($("#qualityLineChart").length) {
           console.log('buildLine()')
-          let data = await fetchYieldData()
+          let data
+          data = await this.fetchYieldData()
+          console.log(data)
 
           let chartData = {
             // labels: ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6'],
-            labels: JSON.parse(JSON.stringify(data.label)),
+            labels: data.label,
             datasets: [{
               label: '生產良率',
               // data: [90, 92, 89, 90, 92, 91, 94, 95, 92, 91, 89, 94],
-              data: JSON.parse(JSON.stringify(data.realData)),
+              data: data.realData,
               backgroundColor: "#4286f4", // blue
               borderColor: "#4286f4",
               fill: false,
@@ -225,7 +227,7 @@
             }, {
               label: '目標良率',
               // data: [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90],
-              data: JSON.parse(JSON.stringify(data.targetData)),
+              data: data.targetData,
               backgroundColor: "#f44141", // red
               borderColor: "#f44141",
               fill: false,
