@@ -159,11 +159,13 @@
     el: '#app',
     data,
     async created() {
+      console.log('created()')
       // api fetch data
       this.fetchData()
       await this.fetchYieldData()
     },
     async mounted() {
+      console.log('mounted()')
       setTimeout(function () {
         init_knob()
       }, 300)
@@ -195,15 +197,18 @@
           console.error(err);
         });
       },
-      async fetchYieldData() {
+      fetchYieldData() {
         let url = `/kanban/api/quality/yieldData?mah_num={{mah_num}}`;
         let option = {
           method: 'GET',
           credentials: "same-origin"
         }
+        console.log('start fetchYieldData')
         this.yieldPromise = fetch(url, option)
+        console.log(this.yieldPromise)
       },
       async buildLine() {
+        console.log('buildLine()')
         let response = await this.yieldPromise
         let data = await response.json()
         console.log(data)
