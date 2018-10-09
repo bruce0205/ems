@@ -168,7 +168,7 @@
       setTimeout(function () {
         init_knob()
       }, 300)
-      this.buildBar()
+      this.buildBar2()
       this.buildLine()
     },
     methods: {
@@ -206,13 +206,26 @@
         let data = await response.json()
         return data
       },
+      async fetchErrorData() {
+        let url = `/kanban/api/quality/errorData?mah_num={{mah_num}}`;
+        let option = {
+          method: 'GET',
+          credentials: "same-origin"
+        }
+        const response = await fetch(url, option)
+        const json = await response.json()
+        return json
+      },
       async buildLine() {
         if ($("#qualityLineChart").length) {
           console.log('buildLine()')
+
+          // step 1: fetch data
           let data
           data = await this.fetchYieldData()
           console.log(data)
 
+          // step 2: build chart
           let chartData = {
             // labels: ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6'],
             labels: data.label,
@@ -255,7 +268,6 @@
             }
           }
 
-          // step 2: build chart
           var ctx = document.getElementById('qualityLineChart').getContext('2d');
           var qualityLineChart = new Chart(ctx, {
             type: 'line',
@@ -264,19 +276,16 @@
           });
         }
       },
-      async buildBar() {
-        console.log('buildBar()')
+      async buildBar2() {
         if ($("#qualityBarChart").length) {
+          console.log('buildBar2()')
 
           // step 1: fetch data
-          let url = `/kanban/api/quality/errorData?mah_num={{mah_num}}`;
-          let option = {
-            method: 'GET',
-            credentials: "same-origin"
-          }
-          const response = await fetch(url, option)
-          const json = await response.json()
-          console.log(json)
+          let data
+          data = await this.fetchErrorData()
+          console.log(data)
+
+          // step 2: build chart
           let chartData = {
             labels: json.label,
             datasets: [{
@@ -308,28 +317,104 @@
               // intersect: true
             },
             scales: {
-            yAxes: [{
-              position: "left",
-              id: "y-axis-count",
-              ticks: {
-                beginAtZero: true
-              }
-            }, {
-              position: "right",
-              id: "y-axis-per",
-              ticks: {
-                max: json.maxPercentage,
-                // stepSize: 1,
-                beginAtZero: true,
-                callback: function (value, index, values) {
-                  return value + '%';
-                },
-              }
-            }]
-          }
+              yAxes: [{
+                position: "left",
+                id: "y-axis-count",
+                ticks: {
+                  beginAtZero: true
+                }
+              }, {
+                position: "right",
+                id: "y-axis-per",
+                ticks: {
+                  max: json.maxPercentage,
+                  // stepSize: 1,
+                  beginAtZero: true,
+                  callback: function (value, index, values) {
+                    return value + '%';
+                  },
+                }
+              }]
+            }
           }
 
+          console.log('initialize bar chart')
+          const ctx = document.getElementById('qualityBarChart').getContext('2d');
+          const qualityBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: chartData,
+            options: options
+          });
+
+        }
+      },
+      async buildBar() {
+        console.log('buildBar()')
+        if ($("#qualityBarChart").length) {
+
+          // step 1: fetch data
+          let url = `/kanban/api/quality/errorData?mah_num={{mah_num}}`;
+          let option = {
+            method: 'GET',
+            credentials: "same-origin"
+          }
+          const response = await fetch(url, option)
+          const json = await response.json()
+          console.log(json)
+
           // step 2: build chart
+          let chartData = {
+            labels: json.label,
+            datasets: [{
+              type: 'line',
+              yAxisID: "y-axis-per",
+              label: '百分比',
+              data: json.percentage,
+              backgroundColor: 'rgba(92,184,92,0.75)', // green
+              borderColor: "rgba(92,184,92,0.75)",
+              fill: false,
+              lineTension: 0.3
+            }, {
+              type: 'bar',
+              yAxisID: "y-axis-count",
+              label: '數量',
+              data: json.count,
+              backgroundColor: "rgba(217,83,79,0.75)" // red
+            }]
+
+          }
+          let options = {
+            responsive: true,
+            title: {
+              display: false,
+              text: 'Chart.js Combo Bar Line Chart'
+            },
+            tooltips: {
+              mode: 'label', //index or label
+              // intersect: true
+            },
+            scales: {
+              yAxes: [{
+                position: "left",
+                id: "y-axis-count",
+                ticks: {
+                  beginAtZero: true
+                }
+              }, {
+                position: "right",
+                id: "y-axis-per",
+                ticks: {
+                  max: json.maxPercentage,
+                  // stepSize: 1,
+                  beginAtZero: true,
+                  callback: function (value, index, values) {
+                    return value + '%';
+                  },
+                }
+              }]
+            }
+          }
+
           console.log('initialize bar chart')
           const ctx = document.getElementById('qualityBarChart').getContext('2d');
           const qualityBarChart = new Chart(ctx, {
