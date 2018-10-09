@@ -254,8 +254,6 @@
               }]
             }
           }
-          console.log('rrrr')
-          console.log(chartData.datasets.labels)
 
           // step 2: build chart
           var ctx = document.getElementById('qualityLineChart').getContext('2d');
@@ -267,6 +265,7 @@
         }
       },
       async buildBar() {
+        console.log('buildBar()')
         if ($("#qualityBarChart").length) {
 
           // step 1: fetch data
@@ -277,7 +276,7 @@
           }
           const response = await fetch(url, option)
           const json = await response.json()
-
+          console.log(json)
           let chartData = {
             labels: json.label,
             datasets: [{
@@ -297,8 +296,18 @@
               backgroundColor: "rgba(217,83,79,0.75)" // red
             }]
 
-          };
-          let scales = {
+          }
+          let options = {
+            responsive: true,
+            title: {
+              display: false,
+              text: 'Chart.js Combo Bar Line Chart'
+            },
+            tooltips: {
+              mode: 'label', //index or label
+              // intersect: true
+            },
+            scales: {
             yAxes: [{
               position: "left",
               id: "y-axis-count",
@@ -318,25 +327,14 @@
               }
             }]
           }
-          let options = {
-            responsive: true,
-            title: {
-              display: false,
-              text: 'Chart.js Combo Bar Line Chart'
-            },
-            tooltips: {
-              mode: 'label', //index or label
-              // intersect: true
-            },
-            scales: scales
           }
 
           // step 2: build chart
+          console.log('initialize bar chart')
           const ctx = document.getElementById('qualityBarChart').getContext('2d');
           const qualityBarChart = new Chart(ctx, {
             type: 'bar',
             data: chartData,
-            // scales: scales,
             options: options
           });
 
