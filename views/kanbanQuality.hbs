@@ -147,6 +147,7 @@
     label: [],
     count: [],
     percentage: [],
+    yieldPromise: null,
     yield: {
       label: [],
       targetData: [],
@@ -167,6 +168,7 @@
         init_knob()
       }, 300)
       this.buildBar()
+      this.buildLine()
     },
     methods: {
       fetchData() {
@@ -194,48 +196,22 @@
         });
       },
       fetchYieldData() {
-        var url = `/kanban/api/quality/yieldData?mah_num={{mah_num}}`;
-        fetch(url, {
+        let url = `/kanban/api/quality/yieldData?mah_num={{mah_num}}`;
+        let option = {
           method: 'GET',
           credentials: "same-origin"
-        }).then((response) => {
-          return response.json();
-        }).then((data) => {
-          this.yield.label = data.label
-          this.yield.targetData = data.targetData
-          this.yield.realData = data.realData
-
-          this.buildLine()
-        }).catch((err) => {
-          console.error(err);
-        });
+        }
+        const response = await fetch(url, option)
+        this.yieldPromise = response.json()
       },
-      fetchErrorData() {
-        var url = `/kanban/api/quality/errorData?mah_num={{mah_num}}`;
-        fetch(url, {
-          method: 'GET',
-          credentials: "same-origin"
-        }).then((response) => {
-          return response.json();
-        }).then((data) => {
-          console.log(data)
-          if (data.length) {
-            this.label = data.label
-            this.count = data.count
-            this.percentage = data.percentage
-            this.buildBar()
-          }
-        }).catch((err) => {
-          console.error(err);
-        });
-      },
-      buildLine() {
+      async buildLine() {
+        let data = await this.yieldPromise
         if ($("#qualityLineChart").length) {
           var ctx = document.getElementById('qualityLineChart').getContext('2d');
           var qualityLineChart = new Chart(ctx, {
             type: 'line',
             data: {
-              // labels: ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6',],
+              // labels: ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6'],
               labels: JSON.parse(JSON.stringify(this.yield.label)),
               datasets: [{
                 label: '生產良率',
@@ -343,7 +319,7 @@
             scales: scales
           }
 
-          // step: build chart
+          // step 2: build chart
           const ctx = document.getElementById('performanceBarChart').getContext('2d');
           const myMixedChart = new Chart(ctx, {
             type: 'bar',
