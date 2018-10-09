@@ -202,8 +202,8 @@
           method: 'GET',
           credentials: "same-origin"
         }
-        let response = await fetch(url, option)
-        let data = await response.json()
+        const response = await fetch(url, option)
+        const data = await response.json()
         return data
       },
       async fetchErrorData() {
