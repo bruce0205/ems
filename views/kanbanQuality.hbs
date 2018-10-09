@@ -230,6 +230,7 @@
             // labels: ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6'],
             labels: data.label,
             datasets: [{
+              type: 'line',
               label: '生產良率',
               // data: [90, 92, 89, 90, 92, 91, 94, 95, 92, 91, 89, 94],
               data: data.realData,
@@ -238,6 +239,7 @@
               fill: false,
               lineTension: 0.3
             }, {
+              type: 'line',
               label: '目標良率',
               // data: [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90],
               data: data.targetData,
@@ -346,7 +348,6 @@
             data: chartData,
             options: options
           });
-
         }
       },
       async buildBar() {
