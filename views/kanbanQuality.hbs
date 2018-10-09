@@ -158,19 +158,18 @@
     delimiters: ['${', '}'],
     el: '#app',
     data,
-    async created() {
+    created() {
       console.log('created()')
       // api fetch data
       this.fetchData()
-      await this.fetchYieldData()
     },
-    async mounted() {
+    mounted() {
       console.log('mounted()')
       setTimeout(function () {
         init_knob()
       }, 300)
       this.buildBar()
-      await this.buildLine()
+      this.buildLine()
     },
     methods: {
       fetchData() {
@@ -197,23 +196,20 @@
           console.error(err);
         });
       },
-      fetchYieldData() {
-        // step 1: fetch data
+      async fetchYieldData() {
         let url = `/kanban/api/quality/yieldData?mah_num={{mah_num}}`;
         let option = {
           method: 'GET',
           credentials: "same-origin"
         }
-        console.log('start fetchYieldData')
-        this.yieldPromise = fetch(url, option)
-        console.log(this.yieldPromise)
+        let response = await fetch(url, option)
+        let data = await response.json()
+        return data
       },
       async buildLine() {
         if ($("#qualityLineChart").length) {
           console.log('buildLine()')
-          let response = await this.yieldPromise
-          let data = await response.json()
-          console.log(data)
+          let data = await fetchYieldData()
 
           let chartData = {
             // labels: ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6'],
