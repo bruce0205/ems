@@ -126,7 +126,7 @@
       </div>
       <div class="col-md-6 col-sm-6 col-xs-12">
         <div class="x_panel">
-          <canvas id="performanceBarChart"></canvas>
+          <canvas id="qualityBarChart"></canvas>
         </div>
       </div>
     </div>
@@ -254,6 +254,8 @@
               }]
             }
           }
+          console.log('rrrr')
+          console.log(chartData.datasets.labels)
 
           // step 2: build chart
           var ctx = document.getElementById('qualityLineChart').getContext('2d');
@@ -265,7 +267,7 @@
         }
       },
       async buildBar() {
-        if ($("#performanceBarChart").length) {
+        if ($("#qualityBarChart").length) {
 
           // step 1: fetch data
           let url = `/kanban/api/quality/errorData?mah_num={{mah_num}}`;
@@ -330,7 +332,7 @@
           }
 
           // step 2: build chart
-          const ctx = document.getElementById('performanceBarChart').getContext('2d');
+          const ctx = document.getElementById('qualityBarChart').getContext('2d');
           const qualityBarChart = new Chart(ctx, {
             type: 'bar',
             data: chartData,
