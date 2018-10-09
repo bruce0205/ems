@@ -158,10 +158,10 @@
     delimiters: ['${', '}'],
     el: '#app',
     data,
-    created() {
+    async created() {
       // api fetch data
       this.fetchData()
-      this.fetchYieldData()
+      this.yieldPromise = await this.fetchYieldData()
     },
     mounted() {
       setTimeout(function () {
@@ -201,11 +201,12 @@
           method: 'GET',
           credentials: "same-origin"
         }
-        const response = await fetch(url, option)
-        this.yieldPromise = response.json()
+        return fetch(url, option)
       },
       async buildLine() {
         let data = await this.yieldPromise
+        console.log(data)
+
         if ($("#qualityLineChart").length) {
           var ctx = document.getElementById('qualityLineChart').getContext('2d');
           var qualityLineChart = new Chart(ctx, {
