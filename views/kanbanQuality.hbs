@@ -168,7 +168,7 @@
       setTimeout(function () {
         init_knob()
       }, 300)
-      this.buildBar2()
+      // this.buildBar2()
       this.buildLine()
     },
     methods: {
@@ -227,13 +227,13 @@
 
           // step 2: build chart
           let chartData = {
-            // labels: ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6'],
-            labels: data.label,
+            labels: ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6'],
+            // labels: json.label,
             datasets: [{
               type: 'line',
               label: '生產良率',
-              // data: [90, 92, 89, 90, 92, 91, 94, 95, 92, 91, 89, 94],
-              data: data.realData,
+              data: [90, 92, 89, 90, 92, 91, 94, 95, 92, 91, 89, 94],
+              // data: json.realData,
               backgroundColor: "#4286f4", // blue
               borderColor: "#4286f4",
               fill: false,
@@ -241,8 +241,8 @@
             }, {
               type: 'line',
               label: '目標良率',
-              // data: [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90],
-              data: data.targetData,
+              data: [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90],
+              // data: json.targetData,
               backgroundColor: "#f44141", // red
               borderColor: "#f44141",
               fill: false,
