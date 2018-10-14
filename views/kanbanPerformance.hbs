@@ -155,12 +155,13 @@
     created() {
       // api fetch data
       this.fetchData()
-      this.fetchCtData()
     },
     mounted() {
       setTimeout(function () {
         init_knob()
       }, 300)
+      this.buildLine()
+      this.buildBar()
     },
     methods: {
       fetchData() {
@@ -186,95 +187,124 @@
           console.error(err);
         });
       },
-      fetchCtData() {
-        var url = `/kanban/api/performance/ctData?mah_num={{mah_num}}`;
-        fetch(url, {
+      async fetchCtData() {
+        let url = `/kanban/api/performance/ctData?mah_num={{mah_num}}`;
+        let options = {
           method: 'GET',
           credentials: "same-origin"
-        }).then((response) => {
-          return response.json();
-        }).then((data) => {
-          this.ct.label = data.label
-          this.ct.targetData = data.targetData
-          this.ct.realData = data.realData
-          this.ct.targetAccData = data.targetAccData
-          this.ct.realAccData = data.realAccData
-
-          this.buildLine()
-          this.buildBar()
-        }).catch((err) => {
-          console.error(err);
-        });
+        }
+        let json = {
+          label: [],
+          targetData: [],
+          realData: [],
+          targetAccData: [],
+          realAccData: []
+        }
+        try {
+          const response = await fetch(url, options)
+          json = response.json()
+        } catch (err) {
+          console.error(err)
+        } finally {
+          return json
+        }
       },
-      buildLine() {
+      async buildLine() {
         if ($("#performanceLineChart").length) {
-          var ctx = document.getElementById('performanceLineChart').getContext('2d');
-          var performanceLineChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-              // labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
-              labels: JSON.parse(JSON.stringify(this.ct.label)),
-              datasets: [{
-                label: '累積目標產量',
-                // data: [1, 4, 7, 10, 13, 16, 19],
-                data: JSON.parse(JSON.stringify(this.ct.targetAccData)),
-                backgroundColor: "#ff3236", // red
-                borderColor: "#ff3236",
-                fill: false,
-                lineTension: 0.3
-              }, {
-                label: '累積實際產量',
-                // data: [2, 6, 10, 14, 18, 22, 26],
-                data: JSON.parse(JSON.stringify(this.ct.realAccData)),
-                backgroundColor: "#9df441", // green
-                borderColor: "#9df441",
-                fill: false,
-                lineTension: 0.3
-              }]
-            },
-            options: {
-              legend: {
-                display: true,
-                position: 'bottom'
-              }
+          console.log('buildLine()')
+
+          // step 1: fetch data
+          let json = {}
+          json = await this.fetchCtData()
+          /*
+          json.label = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+          json.targetAccData = [1, 4, 7, 10, 13, 16, 19]
+          json.realAccData = [2, 6, 10, 14, 18, 22, 26]
+          */
+          console.log(json)
+
+          // step 2: build chart
+          let chartData = {
+            labels: json.label,
+            datasets: [{
+              label: '累積目標產量',
+              data: json.targetAccData,
+              backgroundColor: "#ff3236", // red
+              borderColor: "#ff3236",
+              fill: false,
+              lineTension: 0.3
+            }, {
+              label: '累積實際產量',
+              data: json.realAccData,
+              backgroundColor: "#9df441", // green
+              borderColor: "#9df441",
+              fill: false,
+              lineTension: 0.3
+            }]
+          }
+          let options = {
+            legend: {
+              display: true,
+              position: 'bottom'
             }
+          }
+
+          console.log('initialize line chart')
+          const ctx = document.getElementById('performanceLineChart').getContext('2d');
+          const performanceLineChart = new Chart(ctx, {
+            type: 'line',
+            data: chartData,
+            options: options
           });
         }
       },
-      buildBar() {
+      async buildBar() {
         if ($("#performanceBarChart").length) {
-          var ctx = document.getElementById("performanceBarChart");
-          var performanceBarChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-              // labels: ["8", "10", "12", "14", "16", "18", "20"],
-              labels: JSON.parse(JSON.stringify(this.ct.label)),
-              datasets: [{
-                label: '目標產量',
-                backgroundColor: "#26B99A",
-                // data: [51, 30, 40, 28, 92, 50, 45]
-                data: JSON.parse(JSON.stringify(this.ct.targetData))
-              }, {
-                label: '實際產量',
-                backgroundColor: "#03586A",
-                // data: [41, 56, 25, 48, 72, 34, 12]
-                data: JSON.parse(JSON.stringify(this.ct.realData))
-              }]
-            },
+          console.log('buildBar()')
 
-            options: {
-              legend: {
-                display: true,
-                position: 'bottom'
-              },
-              scales: {
-                yAxes: [{
-                  ticks: {
-                    beginAtZero: true
-                  }
-                }]
-              }
+          // step 1: fetch data
+          let json = {}
+          json = await this.fetchCtData()
+          /*
+          json.label = ["8", "10", "12", "14", "16", "18", "20"]
+          json.targetData = [51, 30, 40, 28, 92, 50, 45]
+          json.realData = [41, 56, 25, 48, 72, 34, 12]
+          */
+          console.log(json)
+
+          // step 2: build chart
+          let chartData = {
+            labels: json.label,
+            datasets: [{
+              label: '目標產量',
+              backgroundColor: "#26B99A",
+              data: json.targetData
+            }, {
+              label: '實際產量',
+              backgroundColor: "#03586A",
+              data: json.realData
+            }]
+          }
+          let options = {
+            legend: {
+              display: true,
+              position: 'bottom'
+            },
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
             }
+          }
+
+          console.log('initialize bar chart')
+          const ctx = document.getElementById("performanceBarChart");
+          const performanceBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: chartData,
+            options: options
           });
         }
       }
