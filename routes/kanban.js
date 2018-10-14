@@ -12,10 +12,14 @@ module.exports = (app, db) => {
       layout: 'layout',
       autoRefreshDuration: autoRefreshDuration
     }
-    if (req.query.dataType === 'available') view = 'kanbanAvailable'
+    if (req.query.dataType === 'available') {
+      let ctData = await fetchAvailableCtData(req)
+      data.ctData = JSON.stringify(ctData)
+      view = 'kanbanAvailable'
+    }
     if (req.query.dataType === 'performance') view = 'kanbanPerformance'
     if (req.query.dataType === 'quality') {
-      let yieldData = await fetchYieldData(req)
+      let yieldData = await fetchQualityYieldData(req)
       data.yieldData = JSON.stringify(yieldData)
       view = 'kanbanQuality'
     }
@@ -168,6 +172,24 @@ module.exports = (app, db) => {
       });
   })
 
+  async function fetchAvailableCtData(req) {
+    const data = await db.query(`
+      select dataHour, CT_Target, CT_Real,dataDate from GetOEE_A_CT('${req.query.mah_num}')
+    `, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      })
+    let label = []
+    let targetData = []
+    let realData = []
+    data.forEach(obj => {
+      label.push(obj.dataHour)
+      realData.push(obj.CT_Real)
+      targetData.push(obj.CT_Target)
+    });
+    return { label, targetData, realData }
+  }
+
   router.get('/api/available/ctData', function (req, res, next) {
     db.query(`
       select dataHour, CT_Target, CT_Real,dataDate from GetOEE_A_CT('${req.query.mah_num}')
@@ -189,7 +211,7 @@ module.exports = (app, db) => {
       });
   })
 
-  async function fetchYieldData(req) {
+  async function fetchQualityYieldData(req) {
     const data = await db.query(`
       select dataHour, Yield_Target, Yield_Real,dataDate from GetOEE_Q_Yield('${req.query.mah_num}')
     `, {

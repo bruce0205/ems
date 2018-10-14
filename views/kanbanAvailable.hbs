@@ -218,13 +218,12 @@
           console.log('buildLine()')
 
           // step 1: fetch data
-          let json = {}
-          json = await this.fetchCtData()
+          let json = JSON.parse('{{ctData}}'.replace(/&quot;/g, '"'))
           /*
           json.label = ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6']
           json.targetData = [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90]
           json.realData = [90, 92, 89, 90, 92, 91, 94, 95, 92, 91, 89, 94]
-          */
+          /**/
           console.log(json)
 
           // step 2: build chart
@@ -249,37 +248,7 @@
           let options = {
             legend: {
               display: true,
-              position: 'bottom',
-              labels: {
-                generateLabels(chart) {
-                  console.log('generateLabels()')
-                  var data = chart.data;
-                  if (data.labels.length && data.datasets.length) {
-                    console.log(data.labels)
-                    return data.labels.map(function (label, i) {
-                      var meta = chart.getDatasetMeta(0);
-                      var ds = data.datasets[0];
-                      var arc = meta.data[i];
-                      var custom = arc && arc.custom || {};
-                      var getValueAtIndexOrDefault = theHelp.getValueAtIndexOrDefault;
-                      var arcOpts = chart.options.elements.arc;
-                      var fill = custom.backgroundColor ? custom.backgroundColor : getValueAtIndexOrDefault(ds.backgroundColor, i, arcOpts.backgroundColor);
-                      var stroke = custom.borderColor ? custom.borderColor : getValueAtIndexOrDefault(ds.borderColor, i, arcOpts.borderColor);
-                      var bw = custom.borderWidth ? custom.borderWidth : getValueAtIndexOrDefault(ds.borderWidth, i, arcOpts.borderWidth);
-                      return {
-                        // And finally :
-                        text: ds.data[i] + "% of the time " + label,
-                        fillStyle: fill,
-                        strokeStyle: stroke,
-                        lineWidth: bw,
-                        hidden: isNaN(ds.data[i]) || meta.data[i].hidden,
-                        index: i
-                      };
-                    });
-                  }
-                  return [];
-                }
-              }
+              position: 'bottom'
             },
             scales: {
               yAxes: [{
@@ -314,9 +283,9 @@
           let json = {}
           json = await this.fetchStatusData()
           /*
-          json.statusLabel = ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6']
-          json.statusInterval = [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90]
-          */
+          json.label = ['檢驗中', '處理中', '準備中', '待機中', '停機中']
+          json.interval = [60, 40, 20, 20, 10]
+          /**/
           console.log(json)
 
           // step 2: build chart
@@ -329,10 +298,12 @@
             }]
           }
           let options = {
+            /*
             legend: {
               display: false,
               position: 'bottom'
             },
+            */
             scales: {
               yAxes: [{
                 ticks: {
