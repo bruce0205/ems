@@ -180,8 +180,8 @@
           credentials: "same-origin"
         }
         let json = {
-          statusLabel: [],
-          statusInterval: []
+          label: [],
+          interval: []
         }
         try {
           const response = await fetch(url, options)
@@ -249,7 +249,37 @@
           let options = {
             legend: {
               display: true,
-              position: 'bottom'
+              position: 'bottom',
+              labels: {
+                generateLabels(chart) {
+                  console.log('generateLabels()')
+                  var data = chart.data;
+                  if (data.labels.length && data.datasets.length) {
+                    console.log(data.labels)
+                    return data.labels.map(function (label, i) {
+                      var meta = chart.getDatasetMeta(0);
+                      var ds = data.datasets[0];
+                      var arc = meta.data[i];
+                      var custom = arc && arc.custom || {};
+                      var getValueAtIndexOrDefault = theHelp.getValueAtIndexOrDefault;
+                      var arcOpts = chart.options.elements.arc;
+                      var fill = custom.backgroundColor ? custom.backgroundColor : getValueAtIndexOrDefault(ds.backgroundColor, i, arcOpts.backgroundColor);
+                      var stroke = custom.borderColor ? custom.borderColor : getValueAtIndexOrDefault(ds.borderColor, i, arcOpts.borderColor);
+                      var bw = custom.borderWidth ? custom.borderWidth : getValueAtIndexOrDefault(ds.borderWidth, i, arcOpts.borderWidth);
+                      return {
+                        // And finally :
+                        text: ds.data[i] + "% of the time " + label,
+                        fillStyle: fill,
+                        strokeStyle: stroke,
+                        lineWidth: bw,
+                        hidden: isNaN(ds.data[i]) || meta.data[i].hidden,
+                        index: i
+                      };
+                    });
+                  }
+                  return [];
+                }
+              }
             },
             scales: {
               yAxes: [{
@@ -291,11 +321,11 @@
 
           // step 2: build chart
           let chartData = {
-            labels: json.statusLabel,
+            labels: json.label,
             datasets: [{
               label: 'Interval',
               backgroundColor: "#f44141", // red
-              data: json.statusInterval
+              data: json.interval
             }]
           }
           let options = {
@@ -316,7 +346,7 @@
             }
           }
 
-          console.log('initialize line chart')
+          console.log('initialize bar chart')
           const ctx = document.getElementById("availableBarChart");
           const availableBarChart = new Chart(ctx, {
             type: 'bar',
