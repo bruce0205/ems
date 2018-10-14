@@ -150,13 +150,12 @@
     created() {
       // api fetch data
       this.fetchData()
-      this.fetchStatusData()
-      this.fetchCtData()
     },
     mounted() {
       setTimeout(function () {
         init_knob()
       }, 300)
+      this.buildLine()
       this.buildBar()
     },
     methods: {
@@ -181,116 +180,155 @@
           console.error(err);
         });
       },
-      fetchStatusData() {
-        var url = `/kanban/api/available/statusData?mah_num={{mah_num}}`;
-        fetch(url, {
+      async fetchStatusData() {
+        let url = `/kanban/api/available/statusData?mah_num={{mah_num}}`;
+        let options = {
           method: 'GET',
           credentials: "same-origin"
-        }).then((response) => {
-          return response.json();
-        }).then((data) => {
-          this.statusLabel = data.label
-          this.statusInterval = data.interval
-        }).catch((err) => {
-          console.error(err);
-        });
+        }
+        let json = {
+          statusLabel: [],
+          statusInterval: []
+        }
+        try {
+          const response = await fetch(url, options)
+          json = response.json()
+        } catch (err) {
+          console.error(err)
+        } finally {
+          return json
+        }
       },
-      fetchCtData() {
-        var url = `/kanban/api/available/ctData?mah_num={{mah_num}}`;
-        fetch(url, {
+      async fetchCtData() {
+        let url = `/kanban/api/available/ctData?mah_num={{mah_num}}`;
+        let options = {
           method: 'GET',
           credentials: "same-origin"
-        }).then((response) => {
-          return response.json();
-        }).then((data) => {
-          this.ct.label = data.label
-          this.ct.targetData = data.targetData
-          this.ct.realData = data.realData
+        }
+        let json = {
+          label: [],
+          targetData: [],
+          realData: []
+        }
+        try {
 
-          this.buildLine()
-        }).catch((err) => {
-          console.error(err);
-        });
+          const response = await fetch(url, options)
+          json = await response.json()
+        } catch (err) {
+          console.error(err)
+        } finally {
+          return json
+        }
       },
-      buildLine() {
+      async buildLine() {
         if ($("#availableLineChart").length) {
-          var ctx = document.getElementById('availableLineChart').getContext('2d');
-          var availableLineChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-              // labels: ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6',],
-              labels: JSON.parse(JSON.stringify(this.ct.label)),
-              datasets: [{
-                label: '時間稼動率',
-                // data: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
-                data: JSON.parse(JSON.stringify(this.ct.realData)),
-                backgroundColor: "#4286f4", // blue
-                borderColor: "#4286f4",
-                fill: false,
-                lineTension: 0.3
-              }, {
-                label: '目標稼動率',
-                // data: [98, 98, 98, 98, 96, 98, 96, 98, 98, 98, 98, 96],
-                data: JSON.parse(JSON.stringify(this.ct.targetData)),
-                backgroundColor: "#f44141", // red
-                borderColor: "#f44141",
-                fill: false,
-                lineTension: 0.3
-              }]
+          console.log('buildLine()')
+
+          // step 1: fetch data
+          let json = {}
+          json = await this.fetchCtData()
+          /*
+          json.label = ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6']
+          json.targetData = [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90]
+          json.realData = [90, 92, 89, 90, 92, 91, 94, 95, 92, 91, 89, 94]
+          */
+          console.log(json)
+
+          // step 2: build chart
+          let chartData = {
+            labels: json.label,
+            datasets: [{
+              label: '時間稼動率',
+              data: json.realData,
+              backgroundColor: "#4286f4", // blue
+              borderColor: "#4286f4",
+              fill: false,
+              lineTension: 0.3
+            }, {
+              label: '目標稼動率',
+              data: json.targetData,
+              backgroundColor: "#f44141", // red
+              borderColor: "#f44141",
+              fill: false,
+              lineTension: 0.3
+            }]
+          }
+          let options = {
+            legend: {
+              display: true,
+              position: 'bottom'
             },
-            options: {
-              legend: {
-                display: true,
-                position: 'bottom'
-              },
-              scales: {
-                yAxes: [{
-                  ticks: {
-                    beginAtZero: true,
-                    callback: function (value, index, values) {
-                      return value + '%';
-                    },
-                    stepSize: 20
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true,
+                  callback: function (value, index, values) {
+                    return value + '%';
                   },
-                  gridLines: {
-                    display: true
-                  }
-                }]
-              }
+                  stepSize: 20
+                },
+                gridLines: {
+                  display: true
+                }
+              }]
             }
+          }
+
+          console.log('initialize line chart')
+          const ctx = document.getElementById('availableLineChart').getContext('2d');
+          const availableLineChart = new Chart(ctx, {
+            type: 'line',
+            data: chartData,
+            options: options
           });
         }
       },
-      buildBar() {
+      async buildBar() {
         if ($("#availableBarChart").length) {
-          var ctx = document.getElementById("availableBarChart");
-          var availableBarChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-              labels: this.statusLabel,
-              datasets: [{
-                label: 'Interval',
-                backgroundColor: "#f44141", // red
-                data: this.statusInterval
-              }]
+          console.log('buildBar()')
+
+          // step 1: fetch data
+          let json = {}
+          json = await this.fetchStatusData()
+          /*
+          json.statusLabel = ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6']
+          json.statusInterval = [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90]
+          */
+          console.log(json)
+
+          // step 2: build chart
+          let chartData = {
+            labels: json.statusLabel,
+            datasets: [{
+              label: 'Interval',
+              backgroundColor: "#f44141", // red
+              data: json.statusInterval
+            }]
+          }
+          let options = {
+            legend: {
+              display: false,
+              position: 'bottom'
             },
-            options: {
-              legend: {
-                display: false,
-                position: 'bottom'
-              },
-              scales: {
-                yAxes: [{
-                  ticks: {
-                    beginAtZero: true,
-                    stepSize: 10,
-                    callback: function (value, index, values) {
-                      return value + ' 分';
-                    }
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true,
+                  stepSize: 10,
+                  callback: function (value, index, values) {
+                    return value + ' 分';
                   }
-                }]
-              }
+                }
+              }]
             }
+          }
+
+          console.log('initialize line chart')
+          const ctx = document.getElementById("availableBarChart");
+          const availableBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: chartData,
+            options: options
           });
         }
       }
