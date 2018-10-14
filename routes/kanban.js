@@ -17,7 +17,11 @@ module.exports = (app, db) => {
       data.ctData = JSON.stringify(ctData)
       view = 'kanbanAvailable'
     }
-    if (req.query.dataType === 'performance') view = 'kanbanPerformance'
+    if (req.query.dataType === 'performance') {
+      let ctData = await fetchPerformanceCtData(req)
+      data.ctData = JSON.stringify(ctData)
+      view = 'kanbanPerformance'
+    }
     if (req.query.dataType === 'quality') {
       let yieldData = await fetchQualityYieldData(req)
       data.yieldData = JSON.stringify(yieldData)
@@ -250,6 +254,29 @@ module.exports = (app, db) => {
         console.error(err);
       });
   })
+
+  async function fetchPerformanceCtData(req) {
+    const data = await db.query(`
+      select dataHour, Output_Target, Output_Real, Output_Target_Acc, Output_Real_Acc, dataDate from GetOEE_P_CT('${req.query.mah_num}')
+    `, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      })
+
+    let label = []
+    let targetData = []
+    let targetAccData = []
+    let realData = []
+    let realAccData = []
+    data.forEach(obj => {
+      label.push(obj.dataHour)
+      realData.push(obj.Output_Real)
+      targetData.push(obj.Output_Target)
+      realAccData.push(obj.Output_Real_Acc)
+      targetAccData.push(obj.Output_Target_Acc)
+    });
+    return { label, targetData, realData, targetAccData, realAccData }
+  }
 
   router.get('/api/performance/ctData', function (req, res, next) {
     db.query(`
