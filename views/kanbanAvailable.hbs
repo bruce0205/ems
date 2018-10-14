@@ -257,7 +257,8 @@
                   callback: function (value, index, values) {
                     return value + '%';
                   },
-                  stepSize: 20
+                  suggestedMin: 0
+                  // stepSize: 20
                 },
                 gridLines: {
                   display: true
@@ -308,7 +309,8 @@
               yAxes: [{
                 ticks: {
                   beginAtZero: true,
-                  stepSize: 10,
+                  suggestedMin: 0,
+                  // stepSize: 10,
                   callback: function (value, index, values) {
                     return value + ' 分';
                   }

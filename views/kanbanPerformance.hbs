@@ -245,6 +245,15 @@
             legend: {
               display: true,
               position: 'bottom'
+            },
+            scales: {
+              yAxes: [{
+                position: "left",
+                ticks: {
+                  suggestedMin: 0,
+                  beginAtZero: true
+                }
+              }]
             }
           }
 
@@ -291,6 +300,7 @@
             scales: {
               yAxes: [{
                 ticks: {
+                  suggestedMin: 0,
                   beginAtZero: true
                 }
               }]
