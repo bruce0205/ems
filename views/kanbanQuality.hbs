@@ -168,7 +168,7 @@
       setTimeout(function () {
         init_knob()
       }, 300)
-      // this.buildBar2()
+      this.buildBar()
       this.buildLine()
     },
     methods: {
@@ -221,19 +221,22 @@
           console.log('buildLine()')
 
           // step 1: fetch data
-          let json
+          let json = {}
           json = await this.fetchYieldData()
+          /*
+          json.label = ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6']
+          json.targetData = [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90]
+          json.realData = [90, 92, 89, 90, 92, 91, 94, 95, 92, 91, 89, 94]
+          */
           console.log(json)
 
           // step 2: build chart
           let chartData = {
-            labels: ['8', '10', '12', '14', '16', '18', '20', '22', '0', '2', '4', '6'],
-            // labels: json.label,
+            labels: json.label,
             datasets: [{
               type: 'line',
               label: '生產良率',
-              data: [90, 92, 89, 90, 92, 91, 94, 95, 92, 91, 89, 94],
-              // data: json.realData,
+              data: json.realData,
               backgroundColor: "#4286f4", // blue
               borderColor: "#4286f4",
               fill: false,
@@ -241,8 +244,7 @@
             }, {
               type: 'line',
               label: '目標良率',
-              data: [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90],
-              // data: json.targetData,
+              data: json.targetData,
               backgroundColor: "#f44141", // red
               borderColor: "#f44141",
               fill: false,
@@ -250,10 +252,47 @@
             }]
           }
           let options = {
-            legend: {
-              display: true,
-              position: 'bottom'
+            responsive: true,
+            title: {
+              display: false,
+              text: 'Chart.jsLine Chart'
             },
+            /**/
+            legend: {
+              display: false,
+              position: 'right',
+              labels: {
+                generateLabels(chart) {
+                  console.log('generateLabels()')
+                  var data = chart.data;
+                  if (data.labels.length && data.datasets.length) {
+                    console.log(data.labels)
+                    return data.labels.map(function (label, i) {
+                      var meta = chart.getDatasetMeta(0);
+                      var ds = data.datasets[0];
+                      var arc = meta.data[i];
+                      var custom = arc && arc.custom || {};
+                      var getValueAtIndexOrDefault = theHelp.getValueAtIndexOrDefault;
+                      var arcOpts = chart.options.elements.arc;
+                      var fill = custom.backgroundColor ? custom.backgroundColor : getValueAtIndexOrDefault(ds.backgroundColor, i, arcOpts.backgroundColor);
+                      var stroke = custom.borderColor ? custom.borderColor : getValueAtIndexOrDefault(ds.borderColor, i, arcOpts.borderColor);
+                      var bw = custom.borderWidth ? custom.borderWidth : getValueAtIndexOrDefault(ds.borderWidth, i, arcOpts.borderWidth);
+                      return {
+                        // And finally :
+                        text: ds.data[i] + "% of the time " + label,
+                        fillStyle: fill,
+                        strokeStyle: stroke,
+                        lineWidth: bw,
+                        hidden: isNaN(ds.data[i]) || meta.data[i].hidden,
+                        index: i
+                      };
+                    });
+                  }
+                  return [];
+                }
+              }
+            },
+            /**/
             scales: {
               yAxes: [{
                 ticks: {
@@ -279,9 +318,9 @@
           });
         }
       },
-      async buildBar2() {
+      async buildBar() {
         if ($("#qualityBarChart").length) {
-          console.log('buildBar2()')
+          console.log('buildBar()')
 
           // step 1: fetch data
           let json
@@ -350,83 +389,6 @@
           });
         }
       },
-      async buildBar() {
-        console.log('buildBar()')
-        if ($("#qualityBarChart").length) {
-
-          // step 1: fetch data
-          let url = `/kanban/api/quality/errorData?mah_num={{mah_num}}`;
-          let option = {
-            method: 'GET',
-            credentials: "same-origin"
-          }
-          const response = await fetch(url, option)
-          const json = await response.json()
-          console.log(json)
-
-          // step 2: build chart
-          let chartData = {
-            labels: json.label,
-            datasets: [{
-              type: 'line',
-              yAxisID: "y-axis-per",
-              label: '百分比',
-              data: json.percentage,
-              backgroundColor: 'rgba(92,184,92,0.75)', // green
-              borderColor: "rgba(92,184,92,0.75)",
-              fill: false,
-              lineTension: 0.3
-            }, {
-              type: 'bar',
-              yAxisID: "y-axis-count",
-              label: '數量',
-              data: json.count,
-              backgroundColor: "rgba(217,83,79,0.75)" // red
-            }]
-
-          }
-          let options = {
-            responsive: true,
-            title: {
-              display: false,
-              text: 'Chart.js Combo Bar Line Chart'
-            },
-            tooltips: {
-              mode: 'label', //index or label
-              // intersect: true
-            },
-            scales: {
-              yAxes: [{
-                position: "left",
-                id: "y-axis-count",
-                ticks: {
-                  beginAtZero: true
-                }
-              }, {
-                position: "right",
-                id: "y-axis-per",
-                ticks: {
-                  max: json.maxPercentage,
-                  // stepSize: 1,
-                  beginAtZero: true,
-                  callback: function (value, index, values) {
-                    return value + '%';
-                  },
-                }
-              }]
-            }
-          }
-
-          console.log('initialize bar chart')
-          const ctx = document.getElementById('qualityBarChart').getContext('2d');
-          const qualityBarChart = new Chart(ctx, {
-            type: 'bar',
-            data: chartData,
-            options: options
-          });
-
-        }
-      }
     },
     computed: {
       now() {
