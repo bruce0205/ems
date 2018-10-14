@@ -4,7 +4,7 @@ var router = express.Router();
 const R = require('ramda');
 
 module.exports = (app, db) => {
-  router.get('/', function (req, res, next) {
+  router.get('/', async function (req, res, next) {
     const autoRefreshDuration = req.query.autoRefreshDuration > 0 ? req.query.autoRefreshDuration : 60000
     let view = 'kanban'
     let data = {
@@ -14,9 +14,13 @@ module.exports = (app, db) => {
     }
     if (req.query.dataType === 'available') view = 'kanbanAvailable'
     if (req.query.dataType === 'performance') view = 'kanbanPerformance'
-    if (req.query.dataType === 'quality') view = 'kanbanQuality'
+    if (req.query.dataType === 'quality') {
+      let yieldData = await fetchYieldData(req)
+      data.yieldData = JSON.stringify(yieldData)
+      view = 'kanbanQuality'
+    }
     if (req.query.mah_num) data.mah_num = req.query.mah_num
-
+    console.log('return....')
     res.render(view, data);
   });
 
@@ -185,10 +189,29 @@ module.exports = (app, db) => {
       });
   })
 
+  async function fetchYieldData(req) {
+    const data = await db.query(`
+      select dataHour, Yield_Target, Yield_Real,dataDate from GetOEE_Q_Yield('${req.query.mah_num}')
+    `, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      })
+
+    let label = []
+    let targetData = []
+    let realData = []
+    data.forEach(obj => {
+      label.push(obj.dataHour)
+      realData.push(obj.Yield_Real)
+      targetData.push(obj.Yield_Target)
+    });
+    return { label, targetData, realData }
+  }
+
   router.get('/api/quality/yieldData', function (req, res, next) {
     db.query(`
       select dataHour, Yield_Target, Yield_Real,dataDate from GetOEE_Q_Yield('${req.query.mah_num}')
-  `, {
+    `, {
         raw: false, // Set this to true if you don't have a model definition for your query.
         type: Sequelize.QueryTypes.SELECT
       }).then(data => {
