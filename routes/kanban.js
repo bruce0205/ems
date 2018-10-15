@@ -176,7 +176,7 @@ module.exports = (app, db) => {
       });
   })
 
-  async function fetchAvailableCtData(req) {
+  async function fetchAvailableCtData (req) {
     const data = await db.query(`
       select dataHour, CT_Target, CT_Real,dataDate from GetOEE_A_CT('${req.query.mah_num}')
     `, {
@@ -215,7 +215,7 @@ module.exports = (app, db) => {
       });
   })
 
-  async function fetchQualityYieldData(req) {
+  async function fetchQualityYieldData (req) {
     const data = await db.query(`
       select dataHour, Yield_Target, Yield_Real,dataDate from GetOEE_Q_Yield('${req.query.mah_num}')
     `, {
@@ -231,6 +231,11 @@ module.exports = (app, db) => {
       realData.push(obj.Yield_Real)
       targetData.push(obj.Yield_Target)
     });
+    /**
+    label = ["8", "10", "12", "14", "16", "18", "20", "22", "0", "2", "4", "6"]
+    targetData = [90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90]
+    realData = [90, 92, 89, 90, 92, 91, 94, 95, 92, 91, 89, 94]
+    /**/
     return { label, targetData, realData }
   }
 
@@ -255,7 +260,7 @@ module.exports = (app, db) => {
       });
   })
 
-  async function fetchPerformanceCtData(req) {
+  async function fetchPerformanceCtData (req) {
     const data = await db.query(`
       select dataHour, Output_Target, Output_Real, Output_Target_Acc, Output_Real_Acc, dataDate from GetOEE_P_CT('${req.query.mah_num}')
     `, {
