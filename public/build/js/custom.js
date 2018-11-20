@@ -1361,7 +1361,6 @@ if (typeof NProgress != 'undefined') {
 		function init_knob() {
 
 				if( typeof ($.fn.knob) === 'undefined'){ return; }
-				// console.log('init_knob');
 
 				$(".knob").knob({
 				  change: function(value) {
@@ -5013,7 +5012,7 @@ if (typeof NProgress != 'undefined') {
 		init_InputMask();
 		init_JQVmap();
 		init_cropper();
-		init_knob();
+		// init_knob();
 		init_IonRangeSlider();
 		init_ColorPicker();
 		init_TagsInput();
