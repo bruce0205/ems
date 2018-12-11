@@ -78,7 +78,7 @@ module.exports = (app, db) => {
         type: Sequelize.QueryTypes.SELECT
       }).then(data => {
         let machines = data.map((val, index) => {
-          val['OEE'] = val.AVA * val.PER * val.QUA / 1000000
+          val['OEE'] = val.AVA * val.PER * val.QUA / 10000
           val['isSelected'] = false
           val.status = val.status.trim()
           let color = R.find(R.propEq('text', val.status.trim()))(statusList)
