@@ -65,7 +65,10 @@
                       <a href="/manufacture">生產資訊</a>
                     </li>
                     <li>
-                      <a href="/kanban">生產管理看板</a>
+                      <a href="/tryMold">試模資訊</a>
+                    </li>
+                    <li>
+                      <a href="/inspection">檢驗資訊</a>
                     </li>
                   </ul>
                 </li>
@@ -152,7 +155,8 @@
       <script src="../build/js/epoch.js"></script> {{#if isMachine}}
       <script src="../build/js/machineModule.js"></script> {{else if isMold}}
       <script src="../build/js/moldModule.js"></script> {{else if isManufacture}}
-      <script src="../build/js/manufactureModule.js"></script> {{else if isKanban}} {{/if}}
+      <script src="../build/js/manufactureModule.js"></script> {{else if isTryMold}}
+      <script src="../build/js/tryMoldModule.js"></script>{{/if}}
 
       <!-- page content -->
       {{{body}}}

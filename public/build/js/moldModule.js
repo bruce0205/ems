@@ -6,8 +6,8 @@ var moldModule = (function () {
       var url = `/mold/api/detail?pn=${rowData.mvs_pn}&mold=${rowData.mvs_mold}&triggerType=${triggerType}`; // data 為 queryString
 
       var thStyle = {
-        'border': '1px solid #7ecbfe',
-        'background-color': '#1EA4FF',
+        'border': '1px solid #C5CAE9',
+        'background-color': '#5C6BC0',
         'padding': '4px 8px',
         'color': '#FFFFFF',
         'font-weight': 'bolder',
@@ -15,7 +15,7 @@ var moldModule = (function () {
         'border-width': '1px 0 1px 0'
       };
       var tdStyle = {
-        'border': '1px solid #7ecbfe',
+        'border': '1px solid #C5CAE9',
         // 'background-color': '#F0FFFF',
         'padding': '4px 8px',
       };
