@@ -1,21 +1,21 @@
 const express = require('express');
 const Sequelize = require('sequelize');
 const router = express.Router();
-const multer  = require('multer')
+const multer = require('multer')
 const moment = require('moment');
 const upload = multer({
     dest: 'uploads/'
 })
 
 module.exports = (app, db) => {
-	router.get('/', function (req, res, next) {
-		res.render('qcFile', {
-			isQcFile: true,
-			layout: 'layout',
-		});
+    router.get('/', function (req, res, next) {
+        res.render('qcFile', {
+            isQcFile: true,
+            layout: 'layout',
+        });
     });
 
-	router.get('/api/mainFile/data', function (req, res, next) {
+    router.get('/api/mainFile/data', function (req, res, next) {
         let sql = `
             select
                 sys_id, owner, machineNo,
@@ -25,21 +25,21 @@ module.exports = (app, db) => {
         `
 
         db.query(sql, {
-                raw: false, // Set this to true if you don't have a model definition for your query.
-                type: Sequelize.QueryTypes.SELECT
-            }).then(data => {
-                data = data.map((val, index) => {
-                    return val
-                })
-                res.send({
-                    data
-                });
-            }).catch(err => {
-                console.error(err);
+            raw: false, // Set this to true if you don't have a model definition for your query.
+            type: Sequelize.QueryTypes.SELECT
+        }).then(data => {
+            data = data.map((val, index) => {
+                return val
+            })
+            res.send({
+                data
             });
+        }).catch(err => {
+            console.error(err);
+        });
     });
 
-    router.get('/api/attachment/data', function (req, res, next) {
+    router.get('/api/attachment/data/:headerId', function (req, res, next) {
         let sql = `
             select
                 ROW_NUMBER() OVER(ORDER BY fileType DESC, UploadDatetime ASC) AS no,
@@ -47,22 +47,22 @@ module.exports = (app, db) => {
                 convert(varchar, UploadDatetime, 20) UploadDatetime
             from tbl_qc_file
             where enable = 1
-            and header_id = 3
+            and header_id = ${req.params.headerId}
         `
 
         db.query(sql, {
-                raw: false, // Set this to true if you don't have a model definition for your query.
-                type: Sequelize.QueryTypes.SELECT
-            }).then(data => {
-                data = data.map((val, index) => {
-                    return val
-                })
-                res.send({
-                    data
-                });
-            }).catch(err => {
-                console.error(err);
+            raw: false, // Set this to true if you don't have a model definition for your query.
+            type: Sequelize.QueryTypes.SELECT
+        }).then(data => {
+            data = data.map((val, index) => {
+                return val
+            })
+            res.send({
+                data
             });
+        }).catch(err => {
+            console.error(err);
+        });
     });
 
     router.post('/api/upload/mainFile', upload.single('mainFile'), async function (req, res, next) {
@@ -90,7 +90,7 @@ module.exports = (app, db) => {
         }
     });
 
-    router.post('/api/upload/attachment', upload.single('attachment'), async function async (req, res, next) {
+    router.post('/api/upload/attachment', upload.single('attachment'), async function async(req, res, next) {
         try {
             console.log(req.file)
             // step1: insert table
@@ -117,11 +117,31 @@ module.exports = (app, db) => {
             raw: false, // Set this to true if you don't have a model definition for your query.
             type: Sequelize.QueryTypes.SELECT
         })
-        if (response.length === 1 ) {
+        if (response.length === 1) {
             console.log(response[0].oriFileName)
             res.download(`uploads/${req.params.sysFileName}`, response[0].oriFileName);
         }
     })
 
-	app.use('/qcFile', router);
+    router.delete('/api/file/:sysFileName', async function (req, res, next) {
+        try {
+            console.log(req.file)
+            // step1: update table
+            let updateSql = `
+                update tbl_qc_file set enable = 0 where sysFileName = '${req.params.sysFileName}'
+            `
+            const response = await db.query(updateSql, {
+                raw: false, // Set this to true if you don't have a model definition for your query.
+                type: Sequelize.QueryTypes.SELECT
+            })
+            console.log(response)
+
+            res.send({ status: 200 });
+        } catch (err) {
+            console.error(err)
+            res.send({ status: 500 });
+        }
+    })
+
+    app.use('/qcFile', router);
 }

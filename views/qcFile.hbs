@@ -1,14 +1,13 @@
 <style>
-a:link {
-  color: #FF5252;
-	text-decoration: underline;
-}
+	a:link {
+		color: #FF5252;
+		text-decoration: underline;
+	}
 
-/* mouse over link */
-a:hover {
-  color: #82B1FF;
-}
-
+	/* mouse over link */
+	a:hover {
+		color: #82B1FF;
+	}
 </style>
 
 <div class="right_col" role="main">
@@ -43,7 +42,7 @@ a:hover {
 
 		<div class="clearfix"></div>
 
-		<div class="row">
+		<div id="uploadDiv" class="row" style="display: none">
 			<input type="text" name="sysId" value="3" style="display: none;">
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<div class="x_panel">
@@ -58,7 +57,8 @@ a:hover {
 							上傳外觀檢驗
 						</button>
 						<input id="attachmentId" name="attachment" type='file' style="display: none;" />
-						<button id="attachmentBtn" type="button" class="btn btn-primary" onclick="openAttachmentUpload()">
+						<button id="attachmentBtn" type="button" class="btn btn-primary"
+							onclick="openAttachmentUpload()">
 							上傳一般附件
 						</button>
 						<br></br>
@@ -75,7 +75,6 @@ a:hover {
 <script>
 	$(document).ready(function () {
 		qcFileModule.build();
-		qcFileUploadModule.build();
 
 		$("[name='mainFile']").change(async function (event) {
 			if (event.target.files[0]) {
@@ -89,7 +88,7 @@ a:hover {
 			}
 		});
 	});
-	async function uploadFile (event, type) {
+	async function uploadFile(event, type) {
 		if (event.target.files[0]) {
 			console.log(event.target.files[0])
 
@@ -105,20 +104,40 @@ a:hover {
 			})
 			if (response.status === 200) {
 				notify('上傳成功', 'success');
-					qcFileUploadModule.destroy();
-					qcFileUploadModule.build();
+				qcFileUploadModule.destroy();
+				qcFileUploadModule.build();
 			} else {
 				notify('上傳失敗', 'danger');
 			}
 		}
 	}
 	function setSysId(sysId) {
-		console.log('setSysId')
+		console.log('setSysId: ' + sysId)
+		$("[name='sysId']").val(sysId)
+		// show qc
+		$("#uploadDiv").show()
+		qcFileUploadModule.destroy();
+		qcFileUploadModule.build();
 	}
 	function openMainFileUpload() {
 		document.getElementById('mainFileId').click();
 	}
 	function openAttachmentUpload() {
 		document.getElementById('attachmentId').click();
+	}
+	async function deleteFile(sysFileName) {
+		console.log('sysFileName: ' + sysFileName)
+		let url = `/qcFile/api/file/${sysFileName}`;
+		const response = await fetch(url, {
+			method: 'DELETE',
+			credentials: "same-origin"
+		})
+		if (response.status === 200) {
+			notify('刪除成功', 'success');
+			qcFileUploadModule.destroy();
+			qcFileUploadModule.build();
+		} else {
+			notify('刪除失敗', 'danger');
+		}
 	}
 </script>

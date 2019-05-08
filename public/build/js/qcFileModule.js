@@ -16,8 +16,8 @@ var qcFileModule = (function () {
 				},
 				"lengthMenu": [10, 20, 50, 75, 100],
 				"pageLength": 10,
-                // "autoWidth": false,
-                "scrollY": "200px",
+				// "autoWidth": false,
+				"scrollY": "200px",
 				// 'scrollX': true,
 				"drawCallback": function (settings) {
 					var api = this.api();
@@ -40,7 +40,7 @@ var qcFileModule = (function () {
 					{
 						"title": "線別",
 						"data": "owner"
-                    },
+					},
 					{
 						"title": "線別",
 						"data": "machineNo"
@@ -52,21 +52,22 @@ var qcFileModule = (function () {
 					{
 						"title": "試模迄日",
 						"data": "endDateTime"
-                    },
-                    {
-                        "title": "Action",
-                        "data": "sys_id",
-                        "render": function (data, type, row, meta) {
-                            // TODO: set "FileUploaddDiv" hiden
+					},
+					{
+						"title": "Action",
+						"data": "sys_id",
+						"render": function (data, type, row, meta) {
+							// TODO: set "FileUploaddDiv" hiden
 
-                            let div = $("<div>");
-                            let uploadButton = $('<button>').addClass('btn btn-info btn-xs').append('上傳檔案')
-                            uploadButton.on('click', setSysId);
-                            // uploadButton.click(setSysId)
-                            div.append(uploadButton);
-                            return div.wrap('<div></div>').parent().html();
-                        }
-                      }
+							// let div = $("<div>");
+							// let uploadButton = $('<button>').addClass('btn btn-info btn-xs').append('上傳檔案')
+							// uploadButton.on('click', setSysId);
+							// // uploadButton.click(setSysId)
+							// div.append(uploadButton);
+							// return div.wrap('<div></div>').parent().html();
+							return `<button class="btn btn-info btn-xs" onclick="setSysId('${data}')">上傳檔案</button>`
+						}
+					}
 				],
 				"order": []
 			});

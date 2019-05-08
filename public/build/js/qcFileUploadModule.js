@@ -6,10 +6,11 @@ var qcFileUploadModule = (function () {
 			return dataTableInstance;
 		},
 		build: function () {
+			let headerId = $("[name='sysId']").val()
 			dataTableInstance = $('#qcAttachmentTable').DataTable({
 				"searching": false,
 				"ajax": {
-					"url": "/qcFile/api/attachment/data",
+					"url": `/qcFile/api/attachment/data/${headerId}`,
 					"data": function (d) {
 						return d
 					}
@@ -47,10 +48,10 @@ var qcFileUploadModule = (function () {
                     },
 					{
 						"title": "檔案名稱",
-						"data": "sysFileName",
+						"data": "oriFileName",
 						"render": function (data, type, row, meta) {
 							let div = $("<div>");
-							let a =  $('<a>').attr({'href': `/qcFile/api/download/${data}`, 'target': '_self'}).text(row.oriFileName)
+							let a =  $('<a>').attr({'href': `/qcFile/api/download/${row.sysFileName}`, 'target': '_self'}).text(data)
 							div.append(a);
 
                             return div.wrap('<div></div>').parent().html();
@@ -66,16 +67,9 @@ var qcFileUploadModule = (function () {
                     },
                     {
                         "title": "Action",
-                        "data": "sys_id",
+                        "data": "sysFileName",
                         "render": function (data, type, row, meta) {
-                            // TODO: set "FileUploaddDiv" hiden
-
-                            let div = $("<div>");
-                            let uploadButton = $('<button>').addClass('btn btn-warning btn-xs').append('刪除')
-                            uploadButton.on('click', setSysId);
-                            // uploadButton.click(setSysId)
-                            div.append(uploadButton);
-                            return div.wrap('<div></div>').parent().html();
+							return `<button class="btn btn-warning btn-xs" onclick="deleteFile('${data}')">刪除</button>`
                         }
                       }
 				],
@@ -84,7 +78,7 @@ var qcFileUploadModule = (function () {
 			return dataTableInstance;
 		},
 		destroy: function () {
-			dataTableInstance.destroy();
+			if (dataTableInstance) dataTableInstance.destroy();
 		},
 		draw: function () {
 			dataTableInstance.draw();
