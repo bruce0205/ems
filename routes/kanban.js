@@ -28,7 +28,6 @@ module.exports = (app, db) => {
       view = 'kanbanQuality'
     }
     if (req.query.mah_num) data.mah_num = req.query.mah_num
-    console.log('return....')
     res.render(view, data);
   });
 

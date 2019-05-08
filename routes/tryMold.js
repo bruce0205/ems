@@ -25,7 +25,6 @@ module.exports = (app, db) => {
 		if (req.query.owner) sql += ` and owner like '%${req.query.owner}%'`
 		if (req.query.startDateTime) sql += ` and startDateTime >= Cast('${req.query.startDateTime} 00:00:00' as datetime)`
 		if (req.query.endDatetime) sql += ` and endDatetime <= Cast('${req.query.endDatetime} 23:59:59' as datetime)`
-		console.log(req.query)
 
 		db.query(sql, {
 				raw: false, // Set this to true if you don't have a model definition for your query.

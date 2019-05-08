@@ -15,6 +15,8 @@
   <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome -->
   <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/solid.css" integrity="sha384-ioUrHig76ITq4aEJ67dHzTvqjsAP/7IzgwE7lgJcg2r7BRNGYSK0LwSmROzYtgzs" crossorigin="anonymous"> -->
+  <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/fontawesome.css" integrity="sha384-sri+NftO+0hcisDKgr287Y/1LVnInHJ1l+XC7+FOabmTTIK0HnE2ID+xxvJ21c5J" crossorigin="anonymous"> -->
   <!-- NProgress -->
   <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
   <!-- bootstrap-progressbar -->
@@ -68,7 +70,7 @@
                       <a href="/tryMold">試模資訊</a>
                     </li>
                     <li>
-                      <a href="/inspection">檢驗資訊</a>
+                      <a href="/qcFile">檢驗資訊</a>
                     </li>
                   </ul>
                 </li>
@@ -156,7 +158,9 @@
       <script src="../build/js/machineModule.js"></script> {{else if isMold}}
       <script src="../build/js/moldModule.js"></script> {{else if isManufacture}}
       <script src="../build/js/manufactureModule.js"></script> {{else if isTryMold}}
-      <script src="../build/js/tryMoldModule.js"></script>{{/if}}
+      <script src="../build/js/tryMoldModule.js"></script> {{else if isQcFile}}
+      <script src="../build/js/qcFileModule.js"></script>
+      <script src="../build/js/qcFileUploadModule.js"></script>{{/if}}
 
       <!-- page content -->
       {{{body}}}
