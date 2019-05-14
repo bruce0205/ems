@@ -6,6 +6,7 @@ module.exports = (app, db) => {
 	router.get('/', function (req, res, next) {
 		res.render('tryMold', {
 			isTryMold: true,
+			username: req.session.username,
 			layout: 'layout',
 		});
 	});
@@ -33,9 +34,8 @@ module.exports = (app, db) => {
 				data = data.map((val, index) => {
 					return val
 				})
-				res.send({
-					data
-				});
+				// res.send({data});
+				res.status(200).json({data})
 			}).catch(err => {
 				console.error(err);
 			});

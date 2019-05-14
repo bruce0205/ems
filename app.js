@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const hbs = require('hbs');
 const db = require('./config/database.js');
 const auth = require('./lib/auth');
+var session = require('express-session');
 
 const index = require('./routes/index');
 const users = require('./routes/users');
@@ -39,7 +40,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/login', login);
+app.use(session({
+  secret: 'recommand 128 bytes random string', // 建议使用 128 个字符的随机字符串
+  cookie: { maxAge: 3 * 60 * 60 * 1000 }
+}));
+
+// app.use('/login', login);
+login(app, db);
 app.use(auth.checkPermission);
 
 app.use('/home', index);

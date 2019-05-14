@@ -9,6 +9,7 @@ module.exports = (app, db) => {
   router.get('/', function (req, res, next) {
     res.render('mold', {
       isMold: true,
+      username: req.session.username,
       layout: 'layout',
     });
   });

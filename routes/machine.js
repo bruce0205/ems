@@ -8,7 +8,8 @@ module.exports = (app, db) => {
     res.render('machine', {
       isMachine: true,
       layout: 'layout',
-      autoRefreshDuration: autoRefreshDuration
+      autoRefreshDuration: autoRefreshDuration,
+      username: req.session.username
     });
   });
 

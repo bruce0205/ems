@@ -11,6 +11,7 @@ module.exports = (app, db) => {
     router.get('/', function (req, res, next) {
         res.render('qcFile', {
             isQcFile: true,
+            username: req.session.username,
             layout: 'layout',
         });
     });
