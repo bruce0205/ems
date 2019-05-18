@@ -38,7 +38,7 @@ var qcFileModule = (function () {
 						"data": "sys_id"
 					},
 					{
-						"title": "線別",
+						"title": "User",
 						"data": "owner"
 					},
 					{
@@ -46,11 +46,11 @@ var qcFileModule = (function () {
 						"data": "machineNo"
 					},
 					{
-						"title": "試模起日",
+						"title": "檢驗起日",
 						"data": "startDateTime"
 					},
 					{
-						"title": "試模迄日",
+						"title": "檢驗迄日",
 						"data": "endDateTime"
 					},
 					{
