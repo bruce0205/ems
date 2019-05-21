@@ -51,7 +51,7 @@ var qcFileUploadModule = (function () {
 						"data": "oriFileName",
 						"render": function (data, type, row, meta) {
 							let div = $("<div>");
-							let a =  $('<a>').attr({'href': `/qcFile/api/download/${row.sysFileName}`, 'target': '_self'}).text(data)
+							let a =  $('<a>').attr({'href': `/qcFile/api/download/${row.sysFileName}`, 'target': '_self', 'name': 'fileDownload'}).text(data)
 							div.append(a);
 
                             return div.wrap('<div></div>').parent().html();

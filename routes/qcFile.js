@@ -21,9 +21,17 @@ module.exports = (app, db) => {
             select
                 sys_id, owner, machineNo,
                 convert(varchar, startDateTime, 20) startDateTime,
-                convert(varchar, endDateTime, 20) endDateTime
+                convert(varchar, endDateTime, 20) endDateTime,
+                qc_type, qc_result, remark
             from tbl_QC
+            where 1=1
         `
+        console.log(req.query)
+        if (req.query.startDateTime) sql += ` and startDateTime >= Cast('${req.query.startDateTime} 00:00:00' as datetime)`
+		if (req.query.endDatetime) sql += ` and endDatetime <= Cast('${req.query.endDatetime} 23:59:59' as datetime)`
+        if (req.query.machineNo) sql += ` and machineNO like '%${req.query.machineNo}%'`
+        if (req.query.qcType) sql += ` and qc_type like '%${req.query.qcType}%'`
+        sql += ` order by sys_id`
 
         db.query(sql, {
             raw: false, // Set this to true if you don't have a model definition for your query.
@@ -39,6 +47,28 @@ module.exports = (app, db) => {
             console.error(err);
         });
     });
+
+    router.put('/api/mainFile/data', function (req, res, next) {
+		console.log(req.body)
+
+		db.query(`
+			update tbl_QC set
+			qc_result = $qc_result,
+			remark = $remark
+			where sys_id = $sys_id
+		  `, {
+				bind: {
+					sys_id: req.body.sys_id,
+					qc_result: req.body.qc_result,
+					remark: req.body.remark
+				}
+			}).then(data => {
+				res.send({ status: 200 });
+			}).catch(err => {
+				console.error(err);
+				res.send({ status: 500 });
+			});
+	});
 
     router.get('/api/attachment/data/:headerId', function (req, res, next) {
         let sql = `

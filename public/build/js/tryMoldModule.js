@@ -290,6 +290,7 @@ var tryMoldModule = (function () {
 				} else {
 					notify('更新失敗', 'danger');
 				}
+				dataTableInstance.columns.adjust();
 			}).catch((err) => {
 				console.error(err);
 			});

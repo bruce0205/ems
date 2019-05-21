@@ -43,7 +43,7 @@ module.exports = (app, db) => {
 
 	router.put('/api/data', function (req, res, next) {
 		console.log(req.body)
-		console.log(req.body.plasticType)
+
 		db.query(`
 			update tbl_TryMold set
 			plasticType = $plasticType,
