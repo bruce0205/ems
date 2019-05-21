@@ -50,7 +50,7 @@ var qcFileModule = (function () {
 				"lengthMenu": [10, 20, 50, 75, 100],
 				"pageLength": 10,
 				// "autoWidth": false,
-				"scrollY": "200px",
+				// "scrollY": "200px",
 				// 'scrollX': true,
 				"drawCallback": function (settings) {
 					var api = this.api();
