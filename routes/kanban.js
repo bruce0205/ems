@@ -158,7 +158,7 @@ module.exports = (app, db) => {
 
   router.get('/api/available/statusData', function (req, res, next) {
     db.query(`
-      select status_oee, status_interval from GetOEE_A_Time('S1',CAST(dateadd(HOUR,-8,getdate()) AS DateTime) + CAST('08:00:00' AS DateTIME))
+      select status_oee, status_interval from GetOEE_A_StatusChart('${req.query.mah_num}')
   `, {
         raw: false, // Set this to true if you don't have a model definition for your query.
         type: Sequelize.QueryTypes.SELECT
