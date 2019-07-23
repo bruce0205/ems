@@ -46,9 +46,44 @@
             <div class="clearfix"></div>
           </div>
           <div class="x_content">
-            <p class="text-muted font-13 m-b-30">
+            <div class="col-md-11 col-sm-11">
+              <form style="margin-left: -10px" class="form-horizontal">
+                <div style="display: block;" class="col-md-3 col-sm-3 form-group">
+                  <label style="text-align:left" class="control-label col-md-3 col-sm-3">機種</label>
+                  <div class="col-md-9 col-sm-9">
+                    <input id="pn" type="text" class="form-control" placeholder="">
+                  </div>
+                </div>
+                <div style="display: block;" class="col-md-3 col-sm-3 form-group">
+                  <label style="text-align:left" class="control-label col-md-3 col-sm-3">模號</label>
+                  <div class="col-md-9 col-sm-9">
+                    <input id="mold" type="text" class="form-control" placeholder="">
+                  </div>
+                </div>
+                <div style="display: block;" class="col-md-3 col-sm-3 form-group">
+                  <label style="text-align:left" class="control-label col-md-3 col-sm-3">穴位1</label>
+                  <div class="col-md-9 col-sm-9">
+                    <input id="hole1" type="text" class="form-control" placeholder="">
+                  </div>
+                </div>
+                <div style="display: block;" class="col-md-3 col-sm-3 form-group">
+                  <label style="text-align:left" class="control-label col-md-3 col-sm-3">穴位2</label>
+                  <div class="col-md-9 col-sm-9">
+                    <input id="hole2" type="text" class="form-control" placeholder="">
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-1 col-sm-1">
+              <form class="form-horizontal">
+                <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+                  <button id="searchBtn" type="button" style="float: right;" class="btn btn-primary" onclick="addMold()">
+                    <i class="fa fa-plus" style="margin-right: 10px"></i>新增
+                  </button>
+                </div>
+              </form>
+            </div>
 
-            </p>
             <table id="moldTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
               <thead></thead>
               <tbody></tbody>
@@ -160,6 +195,57 @@
 </div>
 
 <script>
+  function isEmpty(value) {
+    if (value == null || value == undefined || value.length == 0 ) {
+      return true
+    } else {
+      return false
+    }
+  }
+  async function addMold() {
+    let pnElement = $("#pn")
+    let moldElelemt = $("#mold")
+    let hole1Element = $("#hole1")
+    let hole2Element = $("#hole2")
+
+    // TODO: validate data
+    if (isEmpty(pnElement.val()) || isEmpty(moldElelemt.val())) {
+      return notify('"機種"和"模號" 資料必填', 'danger');
+    }
+
+    var url = '/mold/api/insertMold';
+    let body = {
+      pn: pnElement.val(),
+      mold: moldElelemt.val(),
+      hole1: hole1Element.val(),
+      hole2: hole2Element.val()
+    }
+
+    console.log(body)
+
+    await fetch(url, {
+      method: 'POST',
+      credentials: "same-origin",
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify(body)
+    }).then((response) => {
+      return response.json();
+    }).then((data) => {
+      if (data.status === 200) {
+        notify('模具新增成功', 'success');
+        pnElement.val('')
+        moldElelemt.val('')
+        hole1Element.val('')
+        hole2Element.val('')
+      } else {
+        notify('模具新增失敗', 'danger');
+      }
+    }).catch((err) => {
+      console.error(err);
+    });
+  }
   function showAssemblyHistoryModal(event) {
     moldModule.destroyHistory();
     moldModule.buildHistory(event.data, 'assembly');
@@ -183,7 +269,7 @@
     mvs_hole2: null,
     offLine: false,
     pn_type: '',
-    username: 'Jason Huang',
+    username: '{{account}}',
     pn: '',
     pn_date: '',
     pn_count: 0,

@@ -10,6 +10,7 @@ module.exports = (app, db) => {
     res.render('mold', {
       isMold: true,
       username: req.session.username,
+      account: req.session.account,
       layout: 'layout',
     });
   });
@@ -170,6 +171,30 @@ module.exports = (app, db) => {
         console.error(err);
       });
   });
+
+  router.post('/api/insertMold', function (req, res, next) {
+    console.log(req.body)
+    db.query(`
+      InsertMoldMain_sp
+      @pn = :pn,
+      @mold = :mold,
+      @hole1 = :hole1,
+      @hole2 = :hole2
+    `, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        replacements: {
+          pn: req.body.pn,
+          mold: req.body.mold,
+          hole1: req.body.hole1,
+          hole2: req.body.hole2
+        },
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        res.send({ status: 200 });
+      }).catch(err => {
+        res.send({ status: 500 });
+      });
+  })
 
   router.post('/api/record', function (req, res, next) {
     let spName = `InsertMold_${req.body.triggerType}_sp`;
