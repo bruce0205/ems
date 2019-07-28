@@ -1,0 +1,284 @@
+<link href="../vendors/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet">
+<script src="../build/js/dataTables.cellEdit.js"></script>
+
+<style>
+.modal-mask {
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .5);
+  display: table;
+  transition: opacity .3s ease;
+}
+.modal-wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.modal-container {
+  width: 400px;
+  margin: 0px auto;
+  padding: 5px 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+  transition: all .3s ease;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.modal-header h4 {
+  margin-top: 0;
+  color: #42b983;
+}
+
+.modal-body {
+  margin: 0px 0;
+}
+
+.modal-default-button {
+  float: right;
+}
+.stop-scrolling {
+  height: 100%;
+  overflow: hidden;
+}
+</style>
+
+<script src="../build/js/vue.min.js"></script>
+
+<div id="app" class="right_col" role="main">
+  <button style="display: none" id="show-modal" @click="showModal = true">Show Modal</button>
+  <modal v-if="showModal" @close="changeStatus">
+    <h4 slot="header"><font color="red">${partNo}</font> 狀態變更</h4>
+    <span slot="body" style="font-size:larger"></span>
+    <select slot="body" id="newStatus" class="form-control">
+      <option></option>
+      <option v-for="param in StatusList" :value="param.field_value">${param.field_key}</option>
+    </select>
+  </modal>
+
+	<div class="">
+		<div class="page-title">
+			<div class="title_left">
+				<h3>料號查詢
+					<small></small>
+				</h3>
+			</div>
+		</div>
+
+		<div class="clearfix"></div>
+
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="x_panel">
+					<div class="x_title">
+						<h2>查詢資訊
+						</h2>
+						<div class="clearfix"></div>
+					</div>
+					<div class="x_content" style="width: 100%">
+						<form class="form-horizontal">
+
+							<div style="display: block;" class="col-md-4 col-sm-12 col-xs-12 form-group">
+								<label style="text-align:left" class="control-label col-md-4 col-sm-4 col-xs-12">供應商</label>
+								<div class="col-md-8 col-sm-8 col-xs-12">
+                  <select v-model="VendorSelected" id="vendor" class="form-control">
+                    <option></option>
+                    <option v-for="param in VendorList" :value="param.field_value">${param.field_key}</option>
+                  </select>
+								</div>
+							</div>
+
+							<div style="display: block;" class="col-md-4 col-sm-12 col-xs-12 form-group">
+								<label style="text-align:left" class="control-label col-md-4 col-sm-4 col-xs-12">模具組件</label>
+								<div class="col-md-8 col-sm-8 col-xs-12">
+                  <select v-model="TypeSelected" id="type" class="form-control">
+                    <option></option>
+                    <option v-for="param in TypeList" :value="param.field_value">${param.field_key}</option>
+                  </select>
+								</div>
+							</div>
+
+							<div style="display: block;" class="col-md-4 col-sm-12 col-xs-12 form-group">
+								<label style="text-align:left" class="control-label col-md-4 col-sm-4 col-xs-12">部品類別</label>
+								<div class="col-md-8 col-sm-8 col-xs-12">
+                  <select v-model="PositionSelected" id="position" class="form-control">
+                    <option></option>
+                    <option v-for="param in PositionList" :value="param.field_value">${param.field_key}</option>
+                  </select>
+								</div>
+							</div>
+
+							<div class="col-md-4 col-sm-12 col-xs-12 form-group">
+								<label style="text-align:left" class="control-label col-md-4 col-sm-4 col-xs-12">模具零件</label>
+								<div class="col-md-8 col-sm-8 col-xs-12">
+                  <select :disabled="partNameDisabled"  id="partName" v-model="PartNameSelected" class="form-control">
+                    <option></option>
+                    <option v-for="param in PartNameList" :value="param.field_value">${param.field_key}</option>
+                  </select>
+								</div>
+							</div>
+
+							<div class="col-md-4 col-sm-12 col-xs-12 form-group">
+								<label style="text-align:left" class="control-label col-md-4 col-sm-4 col-xs-12">機種型號</label>
+								<div class="col-md-8 col-sm-8 col-xs-12">
+                  <select v-model="ProductSelected" id="product" class="form-control">
+                    <option></option>
+                    <option v-for="param in ProductList" :value="param.field_value">${param.field_key}</option>
+                  </select>
+								</div>
+							</div>
+
+							<div class="col-md-4 col-sm-12 col-xs-12 form-group">
+								<label style="text-align:left" class="control-label col-md-4 col-sm-4 col-xs-12">版本別</label>
+								<div class="col-md-8 col-sm-8 col-xs-12">
+                  <select  v-model="VersionSelected" id="version" class="form-control">
+                    <option></option>
+                    <option v-for="param in VersionList" :value="param.field_value">${param.field_key}</option>
+                  </select>
+								</div>
+							</div>
+
+							<div class="col-md-4 col-sm-12 col-xs-12 form-group">
+								<label style="text-align:left" class="control-label col-md-4 col-sm-4 col-xs-12">狀態</label>
+								<div class="col-md-8 col-sm-8 col-xs-12">
+                  <select  v-model="StatusSelected" id="status" class="form-control">
+                    <option></option>
+                    <option v-for="param in StatusList" :value="param.field_value">${param.field_key}</option>
+                  </select>
+								</div>
+							</div>
+
+							<div class="col-md-12 col-sm-12 col-xs-12 form-group">
+								<button id="searchBtn" type="button" style="float: right;" class="btn btn-primary">
+									<i class="fa fa-search" style="margin-right: 10px"></i>Search
+								</button>
+							</div>
+
+						</form>
+
+						<table id="partsTable" class="table table-striped table-bordered">
+							<thead></thead>
+							<tbody></tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+  Vue.component('modal', {
+    template: '#modal-template'
+  })
+
+  let vm = new Vue({
+    delimiters: ['${', '}'],
+    el: '#app',
+    data: {
+      partNo: '',
+      sysId: '',
+      selectedStatus: '',
+      VendorList: [],
+      VendorSelected: '',
+      TypeList: [],
+      TypeSelected: '',
+      PositionList: [],
+      PositionSelected: '',
+      PartNameList: [],
+      PartNameSelected: '',
+      ProductList: [],
+      ProductSelected: '',
+      VersionList: [],
+      VersionSelected: '',
+      StatusList: [],
+      StatusSelected: '',
+      partNameDisabled: true,
+      showModal: false
+    },
+    mounted() {
+      this.fetchParameters('Vendor')
+      this.fetchParameters('Type')
+      this.fetchParameters('Position')
+      this.fetchParameters('Product')
+      this.fetchParameters('Vendor')
+      this.fetchParameters('Version')
+			this.fetchParameters('Status')
+
+      partsModule.init()
+		  partsModule.build()
+    },
+    methods: {
+      async fetchParameters (fieldType, fieldDynamicIndex) {
+        let url = `/parts/parameters?fieldType=${fieldType}`
+        if (fieldDynamicIndex) url += `&fieldDynamicIndex=${fieldDynamicIndex}`
+        const response = await fetch(url, {
+          method: 'GET',
+          credentials: "same-origin"
+        })
+        let result = JSON.parse(JSON.stringify((await response.json()).result))
+        this[`${fieldType}List`] = result
+      },
+      changeStatus () {
+        console.log('changeStatus')
+      }
+    },
+    computed: {
+      partNo () {
+        if (this.VendorSelected || this.TypeSelected || this.PositionSelected || this.PartNameSelected || this.ProductSelected || this.VersionSelected) {
+          return this.VendorSelected + this.TypeSelected + this.PositionSelected + this.PartNameSelected + '-' + this.seqNo + '-'  + this.ProductSelected + this.VersionSelected
+        }
+      }
+    },
+    watch: {
+      PositionSelected (newValue, oldValue) {
+        if (newValue) {
+          this.fetchParameters('PartName', newValue)
+          this.partNameDisabled = false
+        } else {
+          this.partNameList = []
+          this.PartNameSelected = ''
+          this.partNameDisabled = true
+        }
+      }
+    }
+  })
+
+  function setSysId(sysId, partNo) {
+    vm.partNo = partNo
+    vm.sysId = sysId
+    vm.showModal = true
+  }
+
+</script>
+<script type="text/x-template" id="modal-template">
+  <transition name="modal">
+    <div class="modal-mask">
+      <div class="modal-wrapper">
+        <div class="modal-container">
+
+          <div class="modal-header">
+            <slot name="header">
+              default header
+            </slot>
+          </div>
+
+          <div class="modal-body">
+            <slot name="body">
+              default body
+            </slot>
+          </div>
+
+          <div class="modal-footer">
+            <slot name="footer">
+              <button type="button" class="btn btn-success" style="float: right" @click="$emit('close')">Ok</button>
+            </slot>
+          </div>
+        </div>
+      </div>
+    </div>
+  </transition>
+</script>

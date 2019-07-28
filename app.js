@@ -19,6 +19,7 @@ const login = require('./routes/login');
 const kanban = require('./routes/kanban');
 const tryMold = require('./routes/tryMold');
 const qcFile = require('./routes/qcFile');
+const parts = require('./routes/parts');
 
 const app = express();
 
@@ -57,6 +58,7 @@ manufacture(app, db);
 kanban(app, db);
 tryMold(app, db);
 qcFile(app, db);
+parts(app, db);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
