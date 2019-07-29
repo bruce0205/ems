@@ -51,10 +51,10 @@
 
 <div id="app" class="right_col" role="main">
   <button style="display: none" id="show-modal" @click="showModal = true">Show Modal</button>
-  <modal v-if="showModal" @close="changeStatus">
+  <modal v-if="showModal" @close="changeStatus" @cancel="showModal = false; newStatus=''">
     <h4 slot="header"><font color="red">${partNo}</font> 狀態變更</h4>
     <span slot="body" style="font-size:larger"></span>
-    <select slot="body" id="newStatus" class="form-control">
+    <select slot="body" v-model="newStatus" id="newStatus" class="form-control">
       <option></option>
       <option v-for="param in StatusList" :value="param.field_value">${param.field_key}</option>
     </select>
@@ -181,6 +181,8 @@
     data: {
       partNo: '',
       sysId: '',
+      editRowIndex: '',
+      newStatus: '',
       selectedStatus: '',
       VendorList: [],
       VendorSelected: '',
@@ -222,8 +224,44 @@
         let result = JSON.parse(JSON.stringify((await response.json()).result))
         this[`${fieldType}List`] = result
       },
-      changeStatus () {
+      async changeStatus () {
         console.log('changeStatus')
+        let url = `/parts/api/status`
+        let body = {
+          sysId: this.sysId,
+          newStatus: this.newStatus
+        }
+        const response = await fetch(url, {
+          method: 'PUT',
+          credentials: "same-origin",
+          headers: new Headers({
+            'Content-Type': 'application/json'
+          }),
+          body: JSON.stringify(body)
+        })
+        let result = await response.json()
+
+        this.newStatus = ''
+        this.showModal = false
+
+        // show result
+        console.log(result)
+        if (result.status === 200) {
+          // fetch data
+          let fetchUrl = '/parts/api/data?sysId=' + this.sysId
+          let fetchResponse = await(await fetch(fetchUrl, {
+            method: 'GET',
+            credentials: "same-origin"
+          })).json()
+          console.log(fetchResponse.data[0].status_display)
+
+          partsModule.getInstance().rows(this.editRowIndex).data()[0].status_display = fetchResponse.data[0].status_display
+          partsModule.getInstance().rows(this.editRowIndex).invalidate()
+
+					notify('更新成功', 'success');
+				} else {
+          notify('更新失敗', 'danger');
+        }
       }
     },
     computed: {
@@ -247,9 +285,10 @@
     }
   })
 
-  function setSysId(sysId, partNo) {
+  function setSysId(sysId, partNo, editRowIndex) {
     vm.partNo = partNo
     vm.sysId = sysId
+    vm.editRowIndex = editRowIndex
     vm.showModal = true
   }
 
@@ -274,6 +313,7 @@
 
           <div class="modal-footer">
             <slot name="footer">
+              <button type="button" class="btn btn-info" style="float: right" @click="$emit('cancel')">Cancel</button>
               <button type="button" class="btn btn-success" style="float: right" @click="$emit('close')">Ok</button>
             </slot>
           </div>

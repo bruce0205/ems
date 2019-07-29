@@ -48,19 +48,15 @@ var partsModule = (function () {
 				"columns": [
 					{
 						"title": "No",
-						"data": "sys_id"
+						"data": "row_no"
 					},
 					{
 						"title": "料號",
 						"data": "part_no"
 					},
 					{
-						"title": "模具組件",
-						"data": "part_type"
-					},
-					{
 						"title": "狀態",
-						"data": "status"
+						"data": "status_display"
 					},
 					{
 						"title": "建立時間",
@@ -78,7 +74,7 @@ var partsModule = (function () {
 						"title": "Action",
 						"data": "sys_id",
 						"render": function (data, type, row, meta) {
-                            return `<button class="btn btn-info btn-xs" onclick="setSysId('${row.sys_id}', '${row.part_no}')">變更狀態</button>`
+                            return `<button class="btn btn-info btn-xs" onclick="setSysId('${row.sys_id}', '${row.part_no}', '${meta.row}')">變更狀態</button>`
 						}
 					}
 				],

@@ -2,6 +2,16 @@ var express = require('express');
 var Sequelize = require('sequelize');
 var router = express.Router();
 
+const dbOptions = {
+  raw: false,
+  type: Sequelize.QueryTypes.SELECT
+}
+
+const dbInsertOptions = {
+  raw: false,
+  type: Sequelize.QueryTypes.INSERT
+}
+
 module.exports = (app, db) => {
   router.get('/form', function (req, res, next) {
     res.render('partsForm', {
@@ -21,23 +31,25 @@ module.exports = (app, db) => {
 
   router.get('/api/data', function (req, res, next) {
     let sql = `
-      SELECT sys_id
-        ,part_no
-        ,part_type
-        ,status
-        ,convert(varchar, create_datetime, 20) create_datetime
-        ,create_user
-        ,description
-      FROM tbl_PARTS
+      SELECT
+        ROW_NUMBER() OVER( ORDER BY sys_id asc) AS row_no,
+        sys_id,
+        part_no,
+        part_type,
+        status,
+        (select Field_Key from tbl_PARTS_ATTR_CONFIG b where Part_Type = 'mold' and Field_Type = 'Status' and b.field_value = a.status) status_display,
+        convert(varchar, create_datetime, 20) create_datetime,
+        create_user,
+        description
+      FROM tbl_PARTS a
       Where 1=1
     `
+
+    if (req.query.sysId) sql += ` and sys_id = ${req.query.sysId}`
     console.log(req.query)
     sql += ` order by sys_id`
 
-    db.query(sql, {
-        raw: false, // Set this to true if you don't have a model definition for your query.
-        type: Sequelize.QueryTypes.SELECT
-    }).then(data => {
+    db.query(sql, dbOptions).then(data => {
         data = data.map((val, index) => {
             return val
         })
@@ -58,12 +70,45 @@ module.exports = (app, db) => {
       sql += ` and Field_Dynamic_Index = '${req.query.fieldDynamicIndex}' `
     }
     console.log(sql)
-    const result = await db.query(sql, {
-      raw: false,
-      type: Sequelize.QueryTypes.SELECT
-    })
+    const result = await db.query(sql, dbOptions)
 
     res.send({result});
+  })
+
+  router.put('/api/status', async (req, res, next) => {
+    let status = 500
+    let rowNo = req.body.row
+    try {
+      let oldStatus
+      let partNo
+      // step1: query old status
+      let querySql = `select sys_id, status, part_no from tbl_parts where sys_id='${req.body.sysId}'`
+      const queryResult = await db.query(querySql, dbOptions)
+      if (queryResult.length === 1) {
+        oldStatus = queryResult[0].status
+        partNo = queryResult[0].part_no
+      } else {
+        throw `cannot find data from sys_id: ${req.body.sysId}`
+      }
+
+      // step2: update status
+      let updateSql = `update tbl_parts set status ='${req.body.newStatus}' where sys_id = ${req.body.sysId}`
+      const updateResult = await db.query(updateSql, dbInsertOptions)
+
+      // step3: insert history table
+      let insertSql = `insert into tbl_parts_status_history values ('${partNo}', 'mold', '${oldStatus}', getdate(), '${req.session.account}')`
+      const insertResult = await db.query(insertSql, dbInsertOptions)
+      console.log(insertResult)
+      console.log(insertResult.length)
+      if (insertResult.length === 2 && insertResult[1] === 1) {
+        status = 200
+      } else {
+        throw 'insert tbl_parts_status_history fail'
+      }
+    } catch (err) {
+      console.error(err)
+    }
+    res.send({status})
   })
 
   router.post('/', async (req, res, next) => {
@@ -71,10 +116,6 @@ module.exports = (app, db) => {
     let seqNo
     let partNo
     let partNoSysId
-    let dbOptions = {
-      raw: false,
-      type: Sequelize.QueryTypes.SELECT
-    }
 
     try {
       // step1: get seq no
@@ -94,11 +135,8 @@ module.exports = (app, db) => {
       partNo = req.body.partNo.replace('%%%', seqNo)
       console.log('partNo: ' + partNo)
 
-      let insertPartNoSql = `insert into tbl_PARTS values ('${partNo}', 'mold', 'Initial', getdate(), 'bruce', '${req.body.description}')`
-      const partNoResult = await db.query(insertPartNoSql, {
-        raw: false,
-        type: Sequelize.QueryTypes.INSERT
-      })
+      let insertPartNoSql = `insert into tbl_PARTS values ('${partNo}', 'mold', 'Initial', getdate(), '${req.session.account}', '${req.body.description}')`
+      const partNoResult = await db.query(insertPartNoSql, dbInsertOptions)
       if (partNoResult[1] !== 1)  throw 'insert tbl_parts fail'
 
 
@@ -117,10 +155,7 @@ module.exports = (app, db) => {
         let item = req.body.attributes[i]
         console.log(item)
         let insertPartsAttrSql = `insert into tbl_parts_attr values ('${partNoSysId}', '${item.fieldType}', '${item.fieldKey}', '${item.fieldValue}')`
-        const partsAttrResult = await db.query(insertPartsAttrSql, {
-          raw: false,
-          type: Sequelize.QueryTypes.INSERT
-        })
+        const partsAttrResult = await db.query(insertPartsAttrSql, dbInsertOptions)
       }
 
       console.log('process finish..')
