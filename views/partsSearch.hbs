@@ -51,15 +51,8 @@
 
 <div id="app" class="right_col" role="main">
   <button style="display: none" id="show-modal" @click="showModal = true">Show Modal</button>
-  <modal v-if="showModal" @close="changeStatus" @cancel="showModal = false; newStatus=''">
-    <h4 slot="header"><font color="red">${partNo}</font> 狀態變更</h4>
-    <span slot="body" style="font-size:larger"></span>
-    <select slot="body" v-model="newStatus" id="newStatus" class="form-control">
-      <option></option>
-      <option v-for="param in StatusList" :value="param.field_value">${param.field_key}</option>
-    </select>
+  <modal v-if="showModal" :part-no="partNo" :Status-List="StatusList" @close="changeStatus" @cancel="showModal = false">
   </modal>
-
 	<div class="">
 		<div class="page-title">
 			<div class="title_left">
@@ -172,7 +165,32 @@
 </div>
 <script>
   Vue.component('modal', {
-    template: '#modal-template'
+    props: {
+      partNo: {
+        type: String,
+        default: 'Unknown partNo'
+      },
+      StatusList: {
+        type: Array
+      }
+    },
+    template: '#modal-template',
+    delimiters: ['${', '}'],
+    data () {
+      return {
+        newStatus: '',
+        okDisable: true
+      }
+    },
+    watch: {
+      newStatus (newValue) {
+        if (newValue) {
+          this.okDisable = false
+        } else {
+          this.okDisable = true
+        }
+      }
+    }
   })
 
   let vm = new Vue({
@@ -182,7 +200,6 @@
       partNo: '',
       sysId: '',
       editRowIndex: '',
-      newStatus: '',
       selectedStatus: '',
       VendorList: [],
       VendorSelected: '',
@@ -224,12 +241,13 @@
         let result = JSON.parse(JSON.stringify((await response.json()).result))
         this[`${fieldType}List`] = result
       },
-      async changeStatus () {
-        console.log('changeStatus')
+      async changeStatus (newStatus) {
+        console.log('changeStatus: ' + newStatus)
+        if(!newStatus) return
         let url = `/parts/api/status`
         let body = {
           sysId: this.sysId,
-          newStatus: this.newStatus
+          newStatus: newStatus
         }
         const response = await fetch(url, {
           method: 'PUT',
@@ -241,7 +259,6 @@
         })
         let result = await response.json()
 
-        this.newStatus = ''
         this.showModal = false
 
         // show result
@@ -253,7 +270,7 @@
             method: 'GET',
             credentials: "same-origin"
           })).json()
-          console.log(fetchResponse.data[0].status_display)
+          console.log('newStatusDisplay: ' + fetchResponse.data[0].status_display)
 
           partsModule.getInstance().rows(this.editRowIndex).data()[0].status_display = fetchResponse.data[0].status_display
           partsModule.getInstance().rows(this.editRowIndex).invalidate()
@@ -264,16 +281,10 @@
         }
       }
     },
-    computed: {
-      partNo () {
-        if (this.VendorSelected || this.TypeSelected || this.PositionSelected || this.PartNameSelected || this.ProductSelected || this.VersionSelected) {
-          return this.VendorSelected + this.TypeSelected + this.PositionSelected + this.PartNameSelected + '-' + this.seqNo + '-'  + this.ProductSelected + this.VersionSelected
-        }
-      }
-    },
     watch: {
       PositionSelected (newValue, oldValue) {
         if (newValue) {
+          this.PartNameSelected = ''
           this.fetchParameters('PartName', newValue)
           this.partNameDisabled = false
         } else {
@@ -300,22 +311,19 @@
         <div class="modal-container">
 
           <div class="modal-header">
-            <slot name="header">
-              default header
-            </slot>
+            <h4><font color="red">${partNo}</font> 狀態變更</h4>
           </div>
 
           <div class="modal-body">
-            <slot name="body">
-              default body
-            </slot>
+            <select v-model="newStatus" id="newStatus" class="form-control">
+              <option></option>
+              <option v-for="param in StatusList" :value="param.field_value">${param.field_key}</option>
+            </select>
           </div>
 
           <div class="modal-footer">
-            <slot name="footer">
-              <button type="button" class="btn btn-info" style="float: right" @click="$emit('cancel')">Cancel</button>
-              <button type="button" class="btn btn-success" style="float: right" @click="$emit('close')">Ok</button>
-            </slot>
+            <button type="button" class="btn btn-success" style="float: right" @click="$emit('cancel')">Cancel</button>
+            <button type="button" :disabled="okDisable" class="btn btn-danger" style="float: right" @click="$emit('close', newStatus)">Ok</button>
           </div>
         </div>
       </div>

@@ -46,6 +46,14 @@ module.exports = (app, db) => {
     `
 
     if (req.query.sysId) sql += ` and sys_id = ${req.query.sysId}`
+    if (req.query.vendor) sql += ` and sys_id in (select part_id from tbl_PARTS_ATTR where field_type='Vendor' and field_value='${req.query.vendor}')`
+    if (req.query.type) sql += ` and sys_id in (select part_id from tbl_PARTS_ATTR where field_type='Type' and field_value='${req.query.type}')`
+    if (req.query.position) sql += ` and sys_id in (select part_id from tbl_PARTS_ATTR where field_type='Position' and field_value='${req.query.position}')`
+    if (req.query.partName) sql += ` and sys_id in (select part_id from tbl_PARTS_ATTR where field_type='PartName' and field_value='${req.query.partName}')`
+    if (req.query.product) sql += ` and sys_id in (select part_id from tbl_PARTS_ATTR where field_type='Product' and field_value='${req.query.product}')`
+    if (req.query.version) sql += ` and sys_id in (select part_id from tbl_PARTS_ATTR where field_type='Version' and field_value='${req.query.version}')`
+    if (req.query.status) sql += ` and status='${req.query.status}'`
+
     console.log(req.query)
     sql += ` order by sys_id`
 
@@ -98,8 +106,6 @@ module.exports = (app, db) => {
       // step3: insert history table
       let insertSql = `insert into tbl_parts_status_history values ('${partNo}', 'mold', '${oldStatus}', getdate(), '${req.session.account}')`
       const insertResult = await db.query(insertSql, dbInsertOptions)
-      console.log(insertResult)
-      console.log(insertResult.length)
       if (insertResult.length === 2 && insertResult[1] === 1) {
         status = 200
       } else {
