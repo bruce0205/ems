@@ -38,6 +38,13 @@
 .modal-default-button {
   float: right;
 }
+
+.fade-enter-active {
+  transition: opacity 1.5s;
+}
+.fade-enter {
+  opacity: 0;
+}
 </style>
 
 <script src="../build/js/vue.min.js"></script>
@@ -88,6 +95,9 @@
                     <option v-for="param in VendorList" :value="param.field_value">${param.field_key}</option>
                   </select>
                 </div>
+                <transition name="fade">
+                  <label v-if="showRequired.vendor" class="control-label" for="first-name" ><font color="#E57373">This field is required.</font></span>
+                </transition>
               </div>
 
               <div class="form-group">
@@ -99,6 +109,9 @@
                     <option v-for="param in TypeList" :value="param.field_value">${param.field_key}</option>
                   </select>
                 </div>
+                <transition name="fade">
+                  <label v-if="showRequired.type" class="control-label" for="first-name" ><font color="#E57373">This field is required.</font></span>
+                </transition>
               </div>
 
               <div class="form-group">
@@ -110,6 +123,9 @@
                     <option v-for="param in PositionList" :value="param.field_value">${param.field_key}</option>
                   </select>
                 </div>
+                <transition name="fade">
+                  <label v-if="showRequired.position" class="control-label" for="first-name" ><font color="#E57373">This field is required.</font></span>
+                </transition>
               </div>
 
               <div class="form-group">
@@ -121,6 +137,9 @@
                     <option v-for="param in PartNameList" :value="param.field_value">${param.field_key}</option>
                   </select>
                 </div>
+                <transition name="fade">
+                  <label v-if="showRequired.partName" class="control-label" for="first-name" ><font color="#E57373">This field is required.</font></span>
+                </transition>
               </div>
 
               <div class="form-group">
@@ -132,6 +151,9 @@
                     <option v-for="param in ProductList" :value="param.field_value">${param.field_key}</option>
                   </select>
                 </div>
+                <transition name="fade">
+                  <label v-if="showRequired.product" class="control-label" for="first-name" ><font color="#E57373">This field is required.</font></span>
+                </transition>
               </div>
 
               <div class="form-group">
@@ -143,6 +165,9 @@
                     <option v-for="param in VersionList" :value="param.field_value">${param.field_key}</option>
                   </select>
                 </div>
+                <transition name="fade">
+                  <label v-if="showRequired.version" class="control-label" for="first-name" ><font color="#E57373">This field is required.</font></span>
+                </transition>
               </div>
 
               <div class="form-group">
@@ -178,6 +203,15 @@
     el: '#app',
     data: {
       createdPartNo: '',
+      showRequired: {
+        vendor: false,
+        type: false,
+        position: false,
+        partName: false,
+        product: false,
+        version: false
+      },
+      show: false,
       VendorList: [],
       VendorSelected: '',
       TypeList: [],
@@ -217,6 +251,7 @@
         this[`${fieldType}List`] = result
       },
       async createPartNo () {
+        if(!this.validate()) return
         this.createButtonDisable = true
         console.log('createPartNo() invoke')
         let url = '/parts'
@@ -258,6 +293,13 @@
         this.showModal = true
       },
       resetForm () {
+        this.showRequired.vendor = false
+        this.showRequired.type = false
+        this.showRequired.position = false
+        this.showRequired.partName = false
+        this.showRequired.product = false
+        this.showRequired.version = false
+
         this.VendorSelected = ''
         this.TypeSelected = ''
         this.PositionSelected = ''
@@ -268,6 +310,55 @@
         this.createdPartNo = ''
         this.showModal = false
         this.createButtonDisable = false
+      },
+      validate () {
+        let flag = true
+
+        if (this.VendorSelected) {
+          this.showRequired.vendor = false
+        } else {
+          this.showRequired.vendor = true
+          flag = false
+        }
+
+        if (this.TypeSelected) {
+          this.showRequired.type = false
+        } else {
+          this.showRequired.type = true
+          flag = false
+        }
+
+        if (this.PositionSelected) {
+          this.showRequired.position = false
+        } else {
+          this.showRequired.position = true
+          flag = false
+        }
+
+        if (this.PartNameSelected) {
+          this.showRequired.partName = false
+        } else {
+          this.showRequired.partName = true
+          flag = false
+        }
+
+        if (this.TypeSelected === 'S') {
+          this.showRequired.product = false
+        } else if(this.ProductSelected) {
+          this.showRequired.product = false
+        } else {
+          this.showRequired.product = true
+          flag = false
+        }
+
+        if (this.VersionSelected) {
+          this.showRequired.version = false
+        } else {
+          this.showRequired.version = true
+          flag = false
+        }
+
+        return flag
       }
     },
     computed: {
