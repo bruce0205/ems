@@ -257,7 +257,7 @@ var tryMoldModule = (function () {
 			let endCount = parseInt(updatedRow.data()['endCount'])
 			let startCount = parseInt(updatedRow.data()['startCount'])
 			let mafHev = parseFloat(updatedRow.data()['maf_hev'])
-			let onOffUsage = parseInt(updatedRow.data()['onOffUsage']) ? parseInt(updatedRow.data()['onOffUsage']) : 0
+			let onOffUsage = parseFloat(updatedRow.data()['onOffUsage']) ? parseFloat(updatedRow.data()['onOffUsage']) : 0
 			let newTryUsage = Math.round(((endCount - startCount) * mafHev + onOffUsage) * 10) / 10
 			updatedRow.data()['tryUsage'] = newTryUsage;
 

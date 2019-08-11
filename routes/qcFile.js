@@ -3,6 +3,9 @@ const Sequelize = require('sequelize');
 const router = express.Router();
 const multer = require('multer')
 const moment = require('moment');
+const appRoot = require('app-root-path')
+const XLSX = require('xlsx')
+const path = require('path')
 const upload = multer({
     dest: 'uploads/'
 })
@@ -97,6 +100,9 @@ module.exports = (app, db) => {
     });
 
     router.post('/api/upload/mainFile', upload.single('mainFile'), async function (req, res, next) {
+        let parseFlag = 1
+        let errorMsg
+        let fileSysId
         try {
             // step1: disable origin file
             let updateSql = `
@@ -105,19 +111,76 @@ module.exports = (app, db) => {
             `
             await db.query(updateSql)
 
-            // step2: insert table
+            let workbook = XLSX.readFile(path.join(appRoot.toString(), req.file.path))
+            let worksheet = workbook.Sheets[workbook.SheetNames[1]]     
+            if (req.file.mimetype.indexOf('excel') < 0) {
+                // step2-1: parse file
+                errorMsg = '[parse] wrong format'
+                parseFlag = 0
+            } else if (!worksheet) {
+                // step2-2: check sheet
+                errorMsg = '[parse] wrong sheet'
+                parseFlag = 0
+            }
+ 
+            // step2-3: insert into tbl_qc_file
             let insertSql = `
                 insert into tbl_qc_file
-                (header_id, FileType, OriFileName, SysFileName, Enable, UploadDatetime) values
-                (${req.body.sysId}, '${req.file.fieldname}', '${req.file.originalname}', '${req.file.filename}', 1, convert(datetime, '${moment().format("YYYY-MM-DD HH:mm:ss")}',20))
+                (header_id, FileType, OriFileName, SysFileName, Enable, ParseResult, UploadDatetime) values
+                (${req.body.sysId}, '${req.file.fieldname}', '${req.file.originalname}', '${req.file.filename}', 1, ${parseFlag}, convert(datetime, '${moment().format("YYYY-MM-DD HH:mm:ss")}',20))
             `
-            console.log(await db.query(insertSql))
+            console.log(await db.query(insertSql,{
+                raw: true,
+                type: Sequelize.QueryTypes.INSERT
+            }))
 
-            // TODO: parse file
+            // step2-4: get inserted file_id
+            let querySql = `
+                select sys_id from tbl_QC_file where sysFileName = '${req.file.filename}' and enable = 1
+            `
+            let queryResponse = await db.query(querySql,{
+                raw: true,
+                type: Sequelize.QueryTypes.SELECT
+            })
+            fileSysId = queryResponse[0].sys_id
+            console.log('fileSysId: ' +　fileSysId)
+
+            // step3: insert into tbl_qc_detail
+            let valueColumns = ['A', 'B', 'C', 'D', 'F', 'G', 'H', 'I', 'J', 'K']
+            let rowPosition = '5'
+
+            while(parseFlag > 0) {
+                console.log('rowPosition: ' + rowPosition)
+
+                let addressOfCell = `A${rowPosition}`
+                let values = {}
+                if (worksheet[addressOfCell]){
+                    for (column of valueColumns) {
+                        let cell = worksheet[`${column}${rowPosition}`]
+                        let cellValue = (cell ? cell.w : undefined);
+                        values[column] = cellValue
+                        console.log(`${column}${rowPosition}: ` + cellValue)
+                    }
+                    // TODO: insert into tbl_QC_Detail
+                    let detailInsertSql = `
+                        insert into tbl_qc_detail
+                        (header_id, file_id, Value_1, Value_2, Value_3, Value_4, Value_5, Value_6, Value_7, Value_8, Value_9) values
+                        (${req.body.sysId}, '${fileSysId}', '${values.B}', '${values.C}', '${values.D}', '${values.F}', '${values.G}', '${values.H}', '${values.I}', '${values.J}', '${values.K}')
+                    `
+                    console.log(await db.query(detailInsertSql,{
+                        raw: true,
+                        type: Sequelize.QueryTypes.INSERT
+                    }))
+                } else {
+                    break
+                }
+                rowPosition++
+            }
+            if (errorMsg) throw errorMsg
             res.send({ status: 200 });
         } catch (err) {
             console.error(err)
-            res.send({ status: 500 });
+            res.send({ status: 500,　errorMsg:　err });
         }
     });
 

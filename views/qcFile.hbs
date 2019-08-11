@@ -178,22 +178,27 @@
 			console.log(event.target.files[0])
 
 			let url = `/qcFile/api/upload/${type}`;
-			let data = new FormData()
-			data.append(type, event.target.files[0])
-			data.append('sysId', $("[name='sysId']").val())
+			let formData = new FormData()
+			formData.append(type, event.target.files[0])
+			formData.append('sysId', $("[name='sysId']").val())
 
 			const response = await fetch(url, {
 				method: 'POST',
 				credentials: "same-origin",
-				body: data
+				body: formData
 			})
-			if (response.status === 200) {
+			const data = await response.json()
+			console.log(data)
+			if (data.status === 200) {
 				notify('上傳成功', 'success');
-				qcFileUploadModule.destroy();
-				qcFileUploadModule.build();
 			} else {
-				notify('上傳失敗', 'danger');
+				notify(data.errorMsg, 'danger');
 			}
+			qcFileUploadModule.destroy();
+			qcFileUploadModule.build();
+
+			document.getElementById('mainFileId').value = ''
+			document.getElementById('attachmentId').value = ''
 		}
 	}
 	function setSysId(sysId) {
@@ -218,7 +223,8 @@
 			method: 'DELETE',
 			credentials: "same-origin"
 		})
-		if (response.status === 200) {
+		const data = await response.json()
+		if (data.status === 200) {
 			notify('刪除成功', 'success');
 			qcFileUploadModule.destroy();
 			qcFileUploadModule.build();
