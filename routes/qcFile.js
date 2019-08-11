@@ -111,16 +111,21 @@ module.exports = (app, db) => {
             `
             await db.query(updateSql)
 
-            let workbook = XLSX.readFile(path.join(appRoot.toString(), req.file.path))
-            let worksheet = workbook.Sheets[workbook.SheetNames[1]]     
+            let workbook
+            let worksheet
+
             if (req.file.mimetype.indexOf('excel') < 0) {
                 // step2-1: parse file
                 errorMsg = '[parse] wrong format'
                 parseFlag = 0
-            } else if (!worksheet) {
+            } else {
                 // step2-2: check sheet
-                errorMsg = '[parse] wrong sheet'
-                parseFlag = 0
+                workbook = XLSX.readFile(path.join(appRoot.toString(), req.file.path))
+                worksheet = workbook.Sheets[workbook.SheetNames[1]]
+                if (!worksheet) {
+                    errorMsg = '[parse] wrong sheet'
+                    parseFlag = 0
+                }
             }
  
             // step2-3: insert into tbl_qc_file
