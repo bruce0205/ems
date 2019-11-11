@@ -77,9 +77,10 @@ module.exports = (app, db) => {
         let sql = `
             select
                 ROW_NUMBER() OVER(ORDER BY fileType DESC, UploadDatetime ASC) AS no,
-                sys_id, header_id, fileType, oriFileName, sysFileName, enable, parseResult,
-                convert(varchar, UploadDatetime, 20) UploadDatetime
-            from tbl_qc_file
+                q.sys_id, header_id, fileType, oriFileName, sysFileName, enable, parseResult,
+                convert(varchar, UploadDatetime, 20) UploadDatetime,u.Name
+            from tbl_qc_file q
+			left join tbl_User u on u.Account = q.UploadBy
             where enable = 1
             and header_id = ${req.params.headerId}
         `
@@ -131,8 +132,8 @@ module.exports = (app, db) => {
             // step2-3: insert into tbl_qc_file
             let insertSql = `
                 insert into tbl_qc_file
-                (header_id, FileType, OriFileName, SysFileName, Enable, ParseResult, UploadDatetime) values
-                (${req.body.sysId}, '${req.file.fieldname}', '${req.file.originalname}', '${req.file.filename}', 1, ${parseFlag}, convert(datetime, '${moment().format("YYYY-MM-DD HH:mm:ss")}',20))
+                (header_id, FileType, OriFileName, SysFileName, Enable, ParseResult, UploadDatetime,UploadBy) values
+                (${req.body.sysId}, '${req.file.fieldname}', '${req.file.originalname}', '${req.file.filename}', 1, ${parseFlag}, convert(datetime, '${moment().format("YYYY-MM-DD HH:mm:ss")}',20),'${req.session.account}')
             `
             console.log(await db.query(insertSql,{
                 raw: true,
@@ -195,8 +196,8 @@ module.exports = (app, db) => {
             // step1: insert table
             let insertSql = `
                 insert into tbl_qc_file
-                (header_id, FileType, OriFileName, SysFileName, Enable, UploadDatetime) values
-                (${req.body.sysId}, '${req.file.fieldname}', '${req.file.originalname}', '${req.file.filename}', 1, convert(datetime, '${moment().format("YYYY-MM-DD HH:mm:ss")}',20))
+                (header_id, FileType, OriFileName, SysFileName, Enable, UploadDatetime, UploadBy) values
+                (${req.body.sysId}, '${req.file.fieldname}', '${req.file.originalname}', '${req.file.filename}', 1, convert(datetime, '${moment().format("YYYY-MM-DD HH:mm:ss")}',20),'${req.session.account}')
             `
             console.log(await db.query(insertSql))
 

@@ -147,7 +147,7 @@ module.exports = (app, db) => {
           label.push(obj.Err_name.trim())
           count.push(obj.Err_count)
           percentage.push(obj.Err_pert)
-          if (obj.Err_per > maxPercentage) maxPercentage = obj.Err_per
+          if (obj.Err_pert > maxPercentage) maxPercentage = obj.Err_pert
         });
         maxPercentage += 10
         res.send({ label, count, percentage, maxPercentage });

@@ -52,7 +52,7 @@ var tryMoldModule = (function () {
 				"drawCallback": function (settings) {
 					var api = this.api();
 					if (api.rows()[0].length > 0) {
-						// $("#excelBtn").show();
+						 $("#excelBtn").show();
 					} else {
 						$("#excelBtn").hide();
 					}
@@ -78,6 +78,10 @@ var tryMoldModule = (function () {
 					{
 						"title": "試模迄日",
 						"data": "endDateTime"
+					},
+					{
+						"title": "試射耗時",
+						"data": "varDatetime"
 					},
 					{
 						"title": "機種",
@@ -191,10 +195,14 @@ var tryMoldModule = (function () {
 			console.log('DataTables has redrawn the table');
 		},
 		download: function () {
-			var parameter = 'fromDate=' + $("#fromDate").val();
-			parameter += '&endDate=' + $("#endDate").val();
-
-			window.location.href = "/manufacture/excel?" + parameter;
+			var parameter = 'startDateTime=' + $("#fromDate").val();
+			parameter += '&endDatetime=' + $("#endDate").val();
+		    parameter += '&lineNo=' + $("#lineNo").val();
+			parameter += '&pn=' + $("#pn").val();
+			parameter += '&mold=' + $("#mold").val();
+			parameter += '&owner=' + $("#owner").val();
+			
+			window.location.href = "/tryMold/excel?" + parameter;
 		},
 		makeCellEditable: function () {
 			dataTableInstance.table().MakeCellsEditable({

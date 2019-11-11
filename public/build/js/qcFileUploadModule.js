@@ -65,6 +65,10 @@ var qcFileUploadModule = (function () {
 						"title": "上傳時間",
 						"data": "UploadDatetime"
                     },
+					{
+						"title": "上傳者",
+						"data": "UploadBy"
+                    },
                     {
                         "title": "Action",
                         "data": "sysFileName",
