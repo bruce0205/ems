@@ -208,7 +208,7 @@ var tryMoldModule = (function () {
 			dataTableInstance.table().MakeCellsEditable({
 				"onUpdate": tryMoldModule.cellUpdateCallback,
 				"inputCss": 'my-input-class',
-				"columns": [6, 7, 8, 9, 10, 13, 14],
+				"columns": [7, 8, 9, 10, 11, 14, 15],
 				"allowNulls": {
 					"columns": [3],
 					"errorClass": 'error'
@@ -218,11 +218,6 @@ var tryMoldModule = (function () {
 					"cancelCss": 'my-cancel-class'
 				},
 				"inputTypes": [
-					{
-						"column": 6,
-						"type": "text",
-						"options": null
-					},
 					{
 						"column": 7,
 						"type": "text",
@@ -244,12 +239,17 @@ var tryMoldModule = (function () {
 						"options": null
 					},
 					{
-						"column": 13,
+						"column": 11,
 						"type": "text",
 						"options": null
 					},
 					{
 						"column": 14,
+						"type": "text",
+						"options": null
+					},
+					{
+						"column": 15,
 						"type": "text",
 						"options": null
 					}

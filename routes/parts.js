@@ -37,7 +37,7 @@ module.exports = (app, db) => {
         part_no,
         part_type,
         status,
-        (select Field_Key from tbl_PARTS_ATTR_CONFIG b where Part_Type = 'mold' and Field_Type = 'Status' and b.field_value = a.status) status_display,
+        (select distinct Field_Key from tbl_PARTS_ATTR_CONFIG b where Part_Type = 'mold' and Field_Type = 'Status' and b.field_value = a.status) status_display,
         convert(varchar, create_datetime, 20) create_datetime,
         create_user,
         description
@@ -73,16 +73,55 @@ module.exports = (app, db) => {
     let partType = 'mold'
     let fieldType = req.query.fieldType
 
-    let sql = `select field_key, field_value from tbl_PARTS_ATTR_CONFIG where Part_Type = '${partType}' and Field_Type = '${fieldType}' `
-    if (req.query.fieldDynamicIndex) {
-      sql += ` and Field_Dynamic_Index = '${req.query.fieldDynamicIndex}' `
-    }
-    console.log(sql)
+	let sql = ``
+	
+	if(fieldType === 'StatusALL')
+	{
+		sql = `select distinct field_key, field_value from tbl_PARTS_ATTR_CONFIG where Part_Type = '${partType}' and Field_Type = 'Status' `
+		
+		
+	}
+	else if (fieldType === 'Status')
+	{
+		sql = `select distinct field_key, field_value from tbl_PARTS_ATTR_CONFIG where Part_Type = '${partType}' and Field_Type = 'Status' `
+		sql += ` and Field_Dynamic_Index_2 = (select AuthGroup from tbl_User where Account = '${req.session.account}')`
+		if (req.query.SysID)
+		{
+				
+				let oldStatus
+      
+				// step1: query old status
+				let querySql = `select sys_id, status, part_no from tbl_parts where sys_id='${req.query.SysID}'`
+				const queryResult = await db.query(querySql, dbOptions)
+				if (queryResult.length === 1) {
+					oldStatus = queryResult[0].status
+				} else {
+				throw `cannot find data from sys_id: ${req.query.SysID}`
+				}
+				
+				sql += ` and Field_Dynamic_Index = '${oldStatus}'`
+				
+		}
+	}
+	
+	else
+	{
+		sql = `select field_key, field_value from tbl_PARTS_ATTR_CONFIG where Part_Type = '${partType}' and Field_Type = '${fieldType}' `
+		if (req.query.fieldDynamicIndex) {
+			sql += ` and Field_Dynamic_Index = '${req.query.fieldDynamicIndex}' `
+			}
+	}
+    
+    
     const result = await db.query(sql, dbOptions)
 
     res.send({result});
   })
 
+  
+  
+  
+  
   router.put('/api/status', async (req, res, next) => {
     let status = 500
     let rowNo = req.body.row

@@ -140,7 +140,7 @@
 								<div class="col-md-8 col-sm-8 col-xs-12">
                   <select  v-model="StatusSelected" id="status" class="form-control">
                     <option></option>
-                    <option v-for="param in StatusList" :value="param.field_value">${param.field_key}</option>
+                    <option v-for="param in StatusALLList" :value="param.field_value">${param.field_key}</option>
                   </select>
 								</div>
 							</div>
@@ -214,6 +214,7 @@
       VersionList: [],
       VersionSelected: '',
       StatusList: [],
+	  StatusALLList: [],
       StatusSelected: '',
       partNameDisabled: true,
       showModal: false
@@ -225,15 +226,19 @@
       this.fetchParameters('Product')
       this.fetchParameters('Vendor')
       this.fetchParameters('Version')
-			this.fetchParameters('Status')
+	  //this.fetchParameters('Status')
+      this.fetchParameters('StatusALL')
 
       partsModule.init()
 		  partsModule.build()
     },
     methods: {
       async fetchParameters (fieldType, fieldDynamicIndex) {
+	    
+		
         let url = `/parts/parameters?fieldType=${fieldType}`
         if (fieldDynamicIndex) url += `&fieldDynamicIndex=${fieldDynamicIndex}`
+		
         const response = await fetch(url, {
           method: 'GET',
           credentials: "same-origin"
@@ -297,11 +302,29 @@
   })
 
   function setSysId(sysId, partNo, editRowIndex) {
+  
+    vm.StatusList = []
+	
+	let url = `/parts/parameters?fieldType=Status&SysID=${sysId}`
+    fetch(url, {
+    method: 'GET',
+    credentials: "same-origin"
+	}).then((response) => {
+	  return response.json();
+	}).then((data) => {
+	  vm.StatusList = data.result
+	}).catch((err) => {
+	  console.error(err);
+	})
+
+	
     vm.partNo = partNo
     vm.sysId = sysId
     vm.editRowIndex = editRowIndex
     vm.showModal = true
   }
+  
+  
 
 </script>
 <script type="text/x-template" id="modal-template">
