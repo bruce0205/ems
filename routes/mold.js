@@ -15,6 +15,26 @@ module.exports = (app, db) => {
     });
   });
 
+  router.delete('/api', function (req, res, next) {
+    console.log(req.body)
+    db.query(`
+      DeleteMoldMain_sp
+      @pn = :pn,
+      @mold = :mold
+    `, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        replacements: {
+          pn: req.body.pn,
+          mold: req.body.mold
+        },
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        res.send({ status: 200 });
+      }).catch(err => {
+        res.send({ status: 500 });
+      });
+  });
+
   router.get('/api/header', function (req, res, next) {
     db.query(`
         select mvs_pn, mvs_mold, mvs_hole1, mvs_hole2 from MOLD_MVS

@@ -192,6 +192,27 @@
       </div>
     </div>
   </div>
+
+  <div id="deleteModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-sm" style="width: 520px">
+      <div class="modal-content" style="top:60px">
+        <div class="modal-header">
+          <button type="button" class="close" onclick='closeDeleteMoldModal()' aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 style="font-weight: bolder">模具刪除</h4>
+        </div>
+        <div class="modal-body">
+          <h5 style="font-weight: bolder" class="modal-title">${pn} -> ${mold}</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" onclick="closeDeleteMoldModal()">Cancel</button>
+          <button type="button" class="btn btn-danger" onclick="deleteMold()">Delete</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -208,7 +229,6 @@
     let hole1Element = $("#hole1")
     let hole2Element = $("#hole2")
 
-    // TODO: validate data
     if (isEmpty(pnElement.val()) || isEmpty(moldElelemt.val())) {
       return notify('"機種"和"模號" 資料必填', 'danger');
     }
@@ -220,8 +240,6 @@
       hole1: hole1Element.val(),
       hole2: hole2Element.val()
     }
-
-    console.log(body)
 
     await fetch(url, {
       method: 'POST',
@@ -242,6 +260,8 @@
       } else {
         notify('模具新增失敗', 'danger');
       }
+      moldModule.getInstance().destroy()
+      moldModule.build()
     }).catch((err) => {
       console.error(err);
     });
@@ -259,6 +279,10 @@
 
   function closeMoldHistoryModal() {
     $("#historyModal").modal('hide');
+  }
+
+  function closeDeleteMoldModal() {
+    $("#deleteModal").modal('hide');
   }
 
   let data = {
@@ -391,10 +415,36 @@
     }
   });
 
+  let deleteVm = new Vue({
+    delimiters: ['${', '}'],
+    el: '#deleteModal',
+    data: {
+      rowNo: null,
+      pn: null,
+      mold: null
+    },
+    methods: {
+    }
+  });
+
   function closeMoldModal() {
     $("#testModal").modal('hide');
     $('#datetimepicker1').data("DateTimePicker").destroy();
     $('#offLine').iCheck('destroy');
+  }
+
+  function showDeleteMoldModal(pn, mold) {
+    deleteVm.pn = pn
+    deleteVm.mold = mold
+
+    for (i = 0;i< moldModule.getInstance().rows().data().length; i++ ) {
+      let obj = moldModule.getInstance().rows().data()[i]
+      if(obj.mvs_pn === pn && obj.mvs_mold === mold){
+        deleteVm.rowNo = i
+        break;
+      }
+    }
+    $("#deleteModal").modal('show');
   }
 
   function showMoldModal(event) {
@@ -433,6 +483,38 @@
 
     // step 5: show modal
     $("#testModal").modal('show');
+  }
+
+  async function deleteMold() {
+    // step1: call api
+    var url = '/mold/api';
+    let body = {
+      pn: deleteVm.pn.trim(),
+      mold: deleteVm.mold.trim(),
+    }
+
+    await fetch(url, {
+      method: 'DELETE',
+      credentials: "same-origin",
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify(body)
+    }).then((response) => {
+      return response.json();
+    }).then((data) => {
+      if (data.status === 200) {
+        notify('更新成功', 'success');
+        // step 3: ui reload
+        $("#deleteModal").modal('hide');
+        moldModule.getInstance().row(deleteVm.rowNo).remove()
+        moldModule.getInstance().draw()
+      } else {
+        notify('更新失敗', 'danger');
+      }
+    }).catch((err) => {
+      console.error(err);
+    });
   }
 
   async function saveMold() {

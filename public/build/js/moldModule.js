@@ -114,23 +114,31 @@ var moldModule = (function () {
           {
             "title": "mvs_pn",
             "data": "mvs_pn",
-            "width": "22%",
+            "width": "20%",
           },
           {
             "title": "mvs_mold",
             "data": "mvs_mold",
-            "width": "22%",
+            "width": "20%",
           },
           {
             "title": "mvs_hole1",
             "data": "mvs_hole1",
-            "width": "22%",
+            "width": "20%",
           },
           {
             "title": "mvs_hole2",
             "data": "mvs_hole2",
-            "width": "22%",
-          }
+            "width": "20%",
+          },
+					{
+						"title": "Action",
+            "className": 'action-control text-center',
+            "width": "8%",
+						"render": function (data, type, row, meta) {
+              return `<button class="btn btn-danger btn-xs" onclick="showDeleteMoldModal('${row.mvs_pn}', '${row.mvs_mold}')">刪除</button>`
+						}
+					}
         ],
         "order": []
       });
@@ -144,6 +152,7 @@ var moldModule = (function () {
         var tr = $(this).closest('tr');
         moldModule.toggleDetail(tr, 'sts');
       });
+
     },
     toggleDetail: function (tr, triggerType) {
       var row = dataTableInstance.row(tr);
