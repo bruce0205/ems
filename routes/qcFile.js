@@ -78,7 +78,7 @@ module.exports = (app, db) => {
             select
                 ROW_NUMBER() OVER(ORDER BY fileType DESC, UploadDatetime ASC) AS no,
                 q.sys_id, header_id, fileType, oriFileName, sysFileName, enable, parseResult,
-                convert(varchar, UploadDatetime, 20) UploadDatetime,u.Name
+                convert(varchar, UploadDatetime, 20) UploadDatetime,u.Name UploadBy
             from tbl_qc_file q
 			left join tbl_User u on u.Account = q.UploadBy
             where enable = 1

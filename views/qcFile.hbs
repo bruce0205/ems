@@ -179,7 +179,7 @@
 
 			let url = `/qcFile/api/upload/${type}`;
 			let formData = new FormData()
-			formData.append('attach', event.target.files[0])
+			formData.append(type, event.target.files[0])
 			formData.append('sysId', $("[name='sysId']").val())
 
 			const response = await fetch(url, {
