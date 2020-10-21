@@ -81,6 +81,29 @@
                     <li>
                       <a href="/parts/search">料號查詢</a>
                     </li>
+                    <li>
+                      <a href="/partsConfig">料號選項維護</a>
+                    </li>
+                    <li>
+                      <a href="/user/search">*使用者維護*</a>
+                    </li>
+                    <li>
+                      <a href="/manufacture/pn">*生產料號基本資料維護*</a>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a>
+                    <i class="fa fa-compass"></i> xxx
+                    <span class="fa fa-chevron-down"></span>
+                  </a>
+                  <ul class="nav child_menu">
+                    <li>
+                      <a href="/xxx/yyy">yyy</a>
+                    </li>
+                    <li>
+                      <a href="/xxx/zzz">zzz</a>
+                    </li>
                   </ul>
                 </li>
               </ul>
@@ -170,7 +193,8 @@
       <script src="../build/js/tryMoldModule.js"></script> {{else if isQcFile}}
       <script src="../build/js/qcFileModule.js"></script>
       <script src="../build/js/qcFileUploadModule.js"></script> {{else if isParts}}
-      <script src="../build/js/partsModule.js"></script>
+      <script src="../build/js/partsModule.js"></script> {{else if isPartsConfig}}
+      <script src="../build/js/partsConfigModule.js"></script>
       {{/if}}
 
       <!-- page content -->

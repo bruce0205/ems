@@ -118,10 +118,6 @@ module.exports = (app, db) => {
     res.send({result});
   })
 
-  
-  
-  
-  
   router.put('/api/status', async (req, res, next) => {
     let status = 500
     let rowNo = req.body.row

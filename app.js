@@ -20,6 +20,7 @@ const kanban = require('./routes/kanban');
 const tryMold = require('./routes/tryMold');
 const qcFile = require('./routes/qcFile');
 const parts = require('./routes/parts');
+const partsConfig = require('./routes/partsConfig');
 
 const app = express();
 
@@ -50,6 +51,10 @@ app.use(session({
 login(app, db);
 app.use(auth.checkPermission);
 
+app.get('/', function(req, res) {
+  res.redirect('/machine');
+});
+
 app.use('/home', index);
 app.use('/users', users);
 machine(app, db);
@@ -59,6 +64,7 @@ kanban(app, db);
 tryMold(app, db);
 qcFile(app, db);
 parts(app, db);
+partsConfig(app, db);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

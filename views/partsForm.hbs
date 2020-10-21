@@ -1,4 +1,7 @@
 <style>
+.required {
+  color:#E57373
+}
 .modal-mask {
   position: fixed;
   z-index: 9998;
@@ -87,7 +90,7 @@
               </div>
 
               <div class="form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">供應商 <span class="required">*</span>
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><span class="required">*</span> 供應商
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <select v-model="VendorSelected" class="form-control">
@@ -96,12 +99,12 @@
                   </select>
                 </div>
                 <transition name="fade">
-                  <label v-if="showRequired.vendor" class="control-label" for="first-name" ><font color="#E57373">This field is required.</font></span>
+                  <label v-if="showRequired.vendor" class="control-label" for="first-name" ><font class="required">This field is required.</font></span>
                 </transition>
               </div>
 
               <div class="form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">模具組件 <span class="required">*</span>
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name"><span class="required">*</span> 模具組件
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <select v-model="TypeSelected" class="form-control">
@@ -110,12 +113,12 @@
                   </select>
                 </div>
                 <transition name="fade">
-                  <label v-if="showRequired.type" class="control-label" for="first-name" ><font color="#E57373">This field is required.</font></span>
+                  <label v-if="showRequired.type" class="control-label" for="first-name" ><font class="required">This field is required.</font></span>
                 </transition>
               </div>
 
               <div class="form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">部品類別 <span class="required">*</span>
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name"><span class="required">*</span> 部品類別
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <select v-model="PositionSelected" class="form-control">
@@ -124,12 +127,12 @@
                   </select>
                 </div>
                 <transition name="fade">
-                  <label v-if="showRequired.position" class="control-label" for="first-name" ><font color="#E57373">This field is required.</font></span>
+                  <label v-if="showRequired.position" class="control-label" for="first-name" ><font class="required">This field is required.</font></span>
                 </transition>
               </div>
 
               <div class="form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">模具零件 <span class="required">*</span>
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name"><span class="required">*</span> 模具零件
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <select :disabled="partNameDisabled"  v-model="PartNameSelected" class="form-control">
@@ -138,7 +141,7 @@
                   </select>
                 </div>
                 <transition name="fade">
-                  <label v-if="showRequired.partName" class="control-label" for="first-name" ><font color="#E57373">This field is required.</font></span>
+                  <label v-if="showRequired.partName" class="control-label" for="first-name" ><font class="required">This field is required.</font></span>
                 </transition>
               </div>
 
@@ -152,12 +155,12 @@
                   </select>
                 </div>
                 <transition name="fade">
-                  <label v-if="showRequired.product" class="control-label" for="first-name" ><font color="#E57373">This field is required.</font></span>
+                  <label v-if="showRequired.product" class="control-label" for="first-name" ><font class="required">This field is required.</font></span>
                 </transition>
               </div>
 
               <div class="form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">版本別 <span class="required">*</span>
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name"><span class="required">*</span> 版本別
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <select  v-model="VersionSelected" class="form-control">
@@ -166,7 +169,7 @@
                   </select>
                 </div>
                 <transition name="fade">
-                  <label v-if="showRequired.version" class="control-label" for="first-name" ><font color="#E57373">This field is required.</font></span>
+                  <label v-if="showRequired.version" class="control-label" for="first-name" ><font class="required">This field is required.</font></span>
                 </transition>
               </div>
 
