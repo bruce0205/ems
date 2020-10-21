@@ -4,8 +4,9 @@
 
 <style>
   .required {
-    color:#E57373
+    color: #E57373
   }
+
   .modal-mask {
     position: fixed;
     z-index: 9998;
@@ -110,8 +111,8 @@
               </div>
 
               <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-                <button id="addBtn" type="button" @click="showNewForm" style="float: right;" class="btn btn-danger">
-                  <i class="fa fa-plus-circle" style="margin-right: 10px"></i>新增
+                <button id="addBtn" type="button" @click="showNewForm" style="float: right;" class="btn btn-warning">
+                  <i class="fa fa-plus" style="margin-right: 10px"></i>新增
                 </button>
                 <button id="searchBtn" type="button" style="float: right;" class="btn btn-primary">
                   <i class="fa fa-search" style="margin-right: 10px"></i>Search
@@ -136,6 +137,29 @@
     vm.formType = 'modify'
     vm.showModal = true
     vm.sysId = sysId
+  }
+  async function deleteData(sysId) {
+    let url = `/partsConfig/api/data/${sysId}`
+    let header = {
+      'Content-Type': 'application/json'
+    }
+    try {
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: new Headers(header),
+        credentials: "same-origin"
+      })
+      if (response.status === 200) {
+        notify(`刪除成功`, 'success');
+        document.getElementById("searchBtn").click();
+      } else {
+        throw response.statusText
+      }
+    } catch (ex) {
+      console.error(ex)
+      notify(`刪除失敗`, 'danger');
+    }
+
   }
   Vue.component('modal', {
     props: ['fieldTypes', 'formType', 'sysId'],
@@ -393,8 +417,8 @@
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-success" style="float: right" @click="$emit('cancel')">Cancel</button>
-            <button type="button" class="btn btn-danger" style="float: right" @click="save">Ok</button>
+            <button type="button" class="btn btn-danger" style="float: right" @click="$emit('cancel')">Cancel</button>
+            <button type="button" class="btn btn-warning" style="float: right" @click="save">Ok</button>
           </div>
         </div>
       </div>

@@ -73,7 +73,10 @@ var partsConfigModule = (function () {
 						"title": "Action",
 						"data": "sys_id",
 						"render": function (data, type, row, meta) {
-                            return `<button class="btn btn-info btn-xs" onclick="showModifyForm('${row.sys_id}')"><i class="fa fa-pencil" style="margin-right: 10px"></i>更新</button>`
+							return `
+								<button class="btn btn-info btn-xs" onclick="showModifyForm('${row.sys_id}')"><i class="fa fa-pencil" style="margin-right: 10px"></i>更新</button>
+								<button class="btn btn-danger btn-xs" onclick="deleteData('${row.sys_id}')"><i class="fa fa-remove" style="margin-right: 10px"></i>刪除</button>
+								`
 						}
 					}
 				],

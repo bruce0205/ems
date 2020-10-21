@@ -108,5 +108,21 @@ module.exports = (app, db) => {
     }
   })
 
+  router.delete('/api/data/:sysId', async function (req, res, next) {
+    try {
+      let sql = `delete from tbl_parts_attr_config where sys_id = ${req.params.sysId}`
+      const result = await db.query(sql, dbInsertOptions)
+      console.log(result)
+      if (result[1] === 1) {
+        res.status(200).send({})
+      } else if (result[1] === 0) {
+        throw '重覆刪除'
+      }
+    } catch (ex) {
+      console.error(ex)
+      res.status(500).send({errorMessage: ex})
+    }
+  })
+
   app.use('/partsConfig', router);
 }
