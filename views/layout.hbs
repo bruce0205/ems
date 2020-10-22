@@ -85,7 +85,7 @@
                       <a href="/partsConfig">料號選項維護</a>
                     </li>
                     <li>
-                      <a href="/user/search">*使用者維護*</a>
+                      <a href="/users">使用者維護</a>
                     </li>
                     <li>
                       <a href="/manufacture/pn">*生產料號基本資料維護*</a>
@@ -194,7 +194,8 @@
       <script src="../build/js/qcFileModule.js"></script>
       <script src="../build/js/qcFileUploadModule.js"></script> {{else if isParts}}
       <script src="../build/js/partsModule.js"></script> {{else if isPartsConfig}}
-      <script src="../build/js/partsConfigModule.js"></script>
+      <script src="../build/js/partsConfigModule.js"></script> {{else if isUsers}}
+      <script src="../build/js/usersModule.js"></script>
       {{/if}}
 
       <!-- page content -->

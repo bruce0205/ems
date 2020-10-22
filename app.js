@@ -11,7 +11,6 @@ const auth = require('./lib/auth');
 var session = require('express-session');
 
 const index = require('./routes/index');
-const users = require('./routes/users');
 const machine = require('./routes/machine');
 const mold = require('./routes/mold');
 const manufacture = require('./routes/manufacture');
@@ -21,6 +20,7 @@ const tryMold = require('./routes/tryMold');
 const qcFile = require('./routes/qcFile');
 const parts = require('./routes/parts');
 const partsConfig = require('./routes/partsConfig');
+const users = require('./routes/users');
 
 const app = express();
 
@@ -56,7 +56,6 @@ app.get('/', function(req, res) {
 });
 
 app.use('/home', index);
-app.use('/users', users);
 machine(app, db);
 mold(app, db);
 manufacture(app, db);
@@ -65,6 +64,7 @@ tryMold(app, db);
 qcFile(app, db);
 parts(app, db);
 partsConfig(app, db);
+users(app, db);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

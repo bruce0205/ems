@@ -264,7 +264,7 @@
             fieldDynamicIndex: this.fieldDynamicIndex,
             fieldDynamicIndex2: this.fieldDynamicIndex2
           }
-          if (this.formType = 'modify') {
+          if (this.formType === 'modify') {
             body.sysId = this.sysId
           }
           const response = await fetch(url, {
@@ -364,7 +364,7 @@
                   <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name"><span class="required">*</span> 欄位類型
                   </label>
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input class="form-control" list="browsers" v-model="fieldType" name="browser">
+                    <input class="form-control" list="browsers" v-model="fieldType" name="browser" autocomplete="off">
                     <datalist id="browsers">
                       <option v-for="param in fieldTypes" :value="param.type">${param.type}</option>
                     </datalist>

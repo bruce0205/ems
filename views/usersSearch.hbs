@@ -1,0 +1,701 @@
+<link href="../vendors/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet">
+<script src="../build/js/dataTables.cellEdit.js"></script>
+<script src="../build/js/md5.min.js"></script>
+<script src="../build/js/qrcode.min.js"></script>
+
+
+<style>
+  .required {
+    color: #E57373
+  }
+
+  .modal-mask {
+    position: fixed;
+    z-index: 9998;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .5);
+    display: table;
+  }
+
+  .modal-wrapper {
+    display: table-cell;
+    vertical-align: middle;
+  }
+
+  .modal-container {
+    width: 700px;
+    margin: 0px auto;
+    padding: 5px 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+    font-family: Helvetica, Arial, sans-serif;
+  }
+
+  .modal-header h4 {
+    margin-top: 0;
+    color: #42b983;
+  }
+
+  .modal-body {
+    margin: 0px 0;
+  }
+
+  .modal-default-button {
+    float: right;
+  }
+
+  .stop-scrolling {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .fade-enter-active {
+    transition: opacity 1.5s;
+  }
+
+  .fade-enter {
+    opacity: 0;
+  }
+</style>
+
+<script src="../build/js/vue.min.js"></script>
+
+<div id="app" class="right_col" role="main">
+  <button style="display: none" id="show-modal" @click="showResetPasswordModal = true">Show Modal</button>
+  <modal v-if="showModal" :field-types="fieldTypes" :form-type="formType" :sys-id="sysId" @cancel="showModal = false"
+    @close="close">
+  </modal>
+  <password-reset v-if="showResetPasswordModal" :sys-id="sysId" @cancel="showResetPasswordModal = false" @close="close">
+  </password-reset>
+  <qrcode-password v-if="showQrcodeModal" :sys-id="sysId" @cancel="showQrcodeModal = false"></qrcode-password>
+
+  <div class="">
+    <div class="page-title">
+      <div class="title_left">
+        <h3>使用者維護
+          <small></small>
+        </h3>
+      </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>查詢資訊
+            </h2>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content" style="width: 100%">
+            <form class="form-horizontal">
+
+              <div style="display: block;" class="col-md-4 col-sm-12 col-xs-12 form-group">
+                <label style="text-align:left" class="control-label col-md-4 col-sm-4 col-xs-12">帳號</label>
+                <div class="col-md-8 col-sm-8 col-xs-12">
+                  <input id="account" type="text" class="form-control" placeholder="">
+                </div>
+              </div>
+
+              <div style="display: block;" class="col-md-4 col-sm-12 col-xs-12 form-group">
+                <label style="text-align:left" class="control-label col-md-4 col-sm-4 col-xs-12">姓名</label>
+                <div class="col-md-8 col-sm-8 col-xs-12">
+                  <input id="name" type="text" class="form-control" placeholder="">
+                </div>
+              </div>
+
+              <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+                <button id="addBtn" type="button" @click="showNewForm" style="float: right;" class="btn btn-warning">
+                  <i class="fa fa-plus" style="margin-right: 10px"></i>新增
+                </button>
+                <button id="searchBtn" type="button" style="float: right;" class="btn btn-primary">
+                  <i class="fa fa-search" style="margin-right: 10px"></i>Search
+                </button>
+              </div>
+
+            </form>
+
+            <table id="usersTable" class="table table-striped table-bordered">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showModifyForm(sysId) {
+    vm.formType = 'modify'
+    vm.showModal = true
+    vm.sysId = sysId
+  }
+  function showResetPasswordForm(sysId) {
+    vm.showResetPasswordModal = true
+    vm.sysId = sysId
+  }
+  function showQrcodeForm(sysId) {
+    vm.showQrcodeModal = true
+    vm.sysId = sysId
+  }
+  async function deleteData(sysId) {
+    let url = `/users/api/data/${sysId}`
+    let header = {
+      'Content-Type': 'application/json'
+    }
+    try {
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: new Headers(header),
+        credentials: "same-origin"
+      })
+      if (response.status === 200) {
+        notify(`刪除成功`, 'success');
+        document.getElementById("searchBtn").click();
+      } else {
+        throw response.statusText
+      }
+    } catch (ex) {
+      console.error(ex)
+      notify(`刪除失敗`, 'danger');
+    }
+  }
+
+  Vue.component('qrcodePassword', {
+    props: ['sysId'],
+    template: '#qrcode-template',
+    delimiters: ['${', '}'],
+    data() {
+      return {
+        account: '',
+        password: ''
+      }
+    },
+    computed: {
+      message() {
+        return `${this.account}|${this.password}`
+      }
+    },
+    async created() {
+    },
+    mounted() {
+      setTimeout(async () => {
+        await this.fetchData()
+        var qrcode = new QRCode("qrcode", {
+          width: 256,
+          height: 256,
+        });
+        qrcode.makeCode(this.message);
+      }, 100)
+
+    },
+    methods: {
+      async fetchData() {
+        let url = `/users/api/data/${this.sysId}`
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: new Headers({
+            'Content-Type': 'application/json'
+          }),
+          credentials: "same-origin"
+        })
+        let obj = await response.json()
+        this.account = obj.account
+        this.password = obj.password
+      },
+    }
+  })
+
+  Vue.component('passwordReset', {
+    props: ['sysId'],
+    template: '#password-template',
+    delimiters: ['${', '}'],
+    data() {
+      return {
+        account: '',
+        passwordDisplay: '',
+        showRequired: {
+          password: false
+        }
+      }
+    },
+    created() {
+      this.fetchData()
+    },
+    computed: {
+      password() {
+        if (this.passwordDisplay) return md5(this.passwordDisplay).toUpperCase()
+      }
+    },
+    methods: {
+      async fetchData() {
+        let url = `/users/api/data/${this.sysId}`
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: new Headers({
+            'Content-Type': 'application/json'
+          }),
+          credentials: "same-origin"
+        })
+        let obj = await response.json()
+        this.account = obj.account
+      },
+      genPassword() {
+        let password = ''
+        let pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+        for (let i = 1; i <= 6; i++) {
+          password += pool[Math.floor(Math.random() * 36)]
+        }
+        this.passwordDisplay = password
+      },
+      validate() {
+        let flag = true
+
+        if (this.password) {
+          this.showRequired.password = false
+        } else {
+          this.showRequired.password = true
+          flag = false
+        }
+
+        return flag
+      },
+      async save() {
+        if (!this.validate()) return
+        try {
+          let url = `/users/api/resetPassword`
+          let method = this.formType === 'new' ? 'POST' : 'PUT'
+          let header = {
+            'Content-Type': 'application/json'
+          }
+          let body = {
+            sysId: this.sysId,
+            password: this.password
+          }
+          const response = await fetch(url, {
+            method: method,
+            body: JSON.stringify(body),
+            headers: new Headers(header),
+            credentials: "same-origin"
+          })
+          if (response.status === 200) {
+            notify(`重設密碼成功`, 'success');
+          } else {
+            throw response.statusText
+          }
+
+        } catch (ex) {
+          console.error(ex)
+          notify(`重設密碼失敗`, 'danger');
+        } finally {
+          this.$emit('close')
+        }
+      }
+    }
+  })
+
+  Vue.component('modal', {
+    props: ['formType', 'sysId'],
+    template: '#modal-template',
+    delimiters: ['${', '}'],
+    data() {
+      return {
+        account: "",
+        name: '',
+        passwordDisplay: '',
+        email: '',
+        mailAlarmEnable: false,
+        authGroup: '',
+        showRequired: {
+          account: false,
+          name: false,
+          password: false,
+          authGroup: false
+        },
+        showDuplicated: {
+          account: false
+        }
+      }
+    },
+    created() {
+      if (this.sysId) this.fetchData()
+    },
+    mounted() {
+      $('#mailAlarmEnable').iCheck({
+        checkboxClass: 'icheckbox_flat-green',
+        radioClass: 'iradio_flat-green'
+      });
+      $("#mailAlarmEnable").on('ifChecked', this.toggleMailAlarm);
+      $("#mailAlarmEnable").on('ifUnchecked', this.toggleMailAlarm);
+    },
+    destroyed() {
+    },
+    computed: {
+      title() {
+        if (this.formType === 'new') return '新增'
+        if (this.formType === 'modify') return '修改'
+      },
+      password() {
+        if (this.passwordDisplay) return md5(this.passwordDisplay).toUpperCase()
+      }
+    },
+    methods: {
+      toggleMailAlarm() {
+        this.mailAlarmEnable = !this.mailAlarmEnable
+      },
+      genPassword() {
+        let password = ''
+        let pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+        for (let i = 1; i <= 6; i++) {
+          password += pool[Math.floor(Math.random() * 36)]
+        }
+        this.passwordDisplay = password
+      },
+      async duplicateAccount() {
+        let url = `/users/api/duplicate/account/${this.account}`
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: new Headers({
+            'Content-Type': 'application/json'
+          }),
+          credentials: "same-origin"
+        })
+        console.log(response.status)
+        if (response.status === 200) return true
+      },
+      async duplicate() {
+        let flag = true
+        console.log(await this.duplicateAccount())
+        if (await this.duplicateAccount()) {
+          console.log('dddduuu')
+          this.showDuplicated.account = true
+          flag = false
+        } else {
+          this.showDuplicated.account = false
+        }
+        return flag
+      },
+      validate() {
+        let flag = true
+
+        if (this.account) {
+          this.showRequired.account = false
+        } else {
+          this.showRequired.account = true
+          flag = false
+        }
+
+        if (this.name) {
+          this.showRequired.name = false
+        } else {
+          this.showRequired.name = true
+          flag = false
+        }
+
+        if (this.formType === 'new') {
+          if (this.password) {
+            this.showRequired.password = false
+          } else {
+            this.showRequired.password = true
+            flag = false
+          }
+        }
+
+        if (this.authGroup) {
+          this.showRequired.authGroup = false
+        } else {
+          this.showRequired.authGroup = true
+          flag = false
+        }
+
+        return flag
+      },
+      async fetchData() {
+        let url = `/users/api/data/${this.sysId}`
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: new Headers({
+            'Content-Type': 'application/json'
+          }),
+          credentials: "same-origin"
+        })
+        let obj = await response.json()
+        this.account = obj.account
+        this.name = obj.name
+        this.email = obj.email
+        this.mailAlarmEnable = obj.mailalarmenable
+        this.authGroup = obj.authgroup
+        if (this.mailAlarmEnable) $('#mailAlarmEnable').iCheck('check');
+      },
+      async save() {
+        if (!this.validate()) return
+        if ((this.formType === 'new') && !(await this.duplicate())) return
+
+        try {
+          let url = `/users/api/data`
+          let method = this.formType === 'new' ? 'POST' : 'PUT'
+          let header = {
+            'Content-Type': 'application/json'
+          }
+          let body = {
+            account: this.account,
+            name: this.name,
+            password: this.password,
+            email: this.email ? this.email : '',
+            mailAlarmEnable: this.mailAlarmEnable ? true : false,
+            authGroup: this.authGroup
+          }
+          if (this.formType === 'modify') {
+            body.sysId = this.sysId
+          }
+          const response = await fetch(url, {
+            method: method,
+            body: JSON.stringify(body),
+            headers: new Headers(header),
+            credentials: "same-origin"
+          })
+          if (response.status === 200) {
+            notify(`${this.title}成功`, 'success');
+          } else {
+            throw response.statusText
+          }
+
+        } catch (ex) {
+          console.error(ex)
+          notify(`${this.title}失敗`, 'danger');
+        } finally {
+          this.$emit('close')
+        }
+      }
+    },
+    watch: {
+    }
+  })
+
+  let vm = new Vue({
+    delimiters: ['${', '}'],
+    el: '#app',
+    data: {
+      showModal: false,
+      showResetPasswordModal: false,
+      showQrcodeModal: false,
+      partTypes: [],
+      fieldTypes: [],
+      partTypeSelected: '',
+      fieldTypeSelected: '',
+      formType: null,
+      sysId: null
+    },
+    mounted() {
+      usersModule.init()
+      usersModule.build()
+    },
+    methods: {
+      showNewForm() {
+        this.formType = 'new'
+        this.showModal = true
+        this.sysId = null
+      },
+      async fetchParameters(typeName) {
+        let url = `/users/parameters?typeName=${typeName}`
+        const response = await fetch(url, {
+          method: 'GET',
+          credentials: "same-origin"
+        })
+        // console.log(await response.json())
+        let result = JSON.parse(JSON.stringify((await response.json()).result))
+        this[`${typeName}Types`] = result
+      },
+      close() {
+        this.showModal = false
+        this.showResetPasswordModal = false
+      }
+    },
+    watch: {
+    }
+  })
+</script>
+
+<script type="text/x-template" id="qrcode-template">
+  <transition name="modal">
+    <div class="modal-mask">
+      <div class="modal-wrapper">
+        <div class="modal-container">
+
+          <div class="modal-header">
+            <h4>${account}'s password</h4>
+          </div>
+
+          <div class="modal-body">
+            <div>
+              <div id="qrcode" style="width: 256px; margin: 0 auto"></div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" style="float: right" @click="$emit('cancel')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </transition>
+</script>
+
+<script type="text/x-template" id="password-template">
+  <transition name="modal">
+    <div class="modal-mask">
+      <div class="modal-wrapper">
+        <div class="modal-container">
+
+          <div class="modal-header">
+            <h4>${account} 重設密碼</h4>
+          </div>
+
+          <div class="modal-body">
+            <div style="width: 100%">
+              <form class="form-horizontal">
+
+                <div class="form-group" v-if="sysId">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><span class="required">*</span> 密碼</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="input-group">
+                      <input type="text" class="form-control" v-model="passwordDisplay">
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-primary" @click="genPassword"">自動產生</button>
+                      </span>
+                    </div>
+                  </div>
+                  <transition name="fade">
+                    <label v-if="showRequired.password" class="control-label" for="first-name" ><font class="required">This field is required.</font></span>
+                  </transition>
+                </div>
+
+              </form>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" style="float: right" @click="$emit('cancel')">Cancel</button>
+            <button type="button" class="btn btn-warning" style="float: right" @click="save">Ok</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </transition>
+</script>
+
+<script type="text/x-template" id="modal-template">
+  <transition name="modal">
+    <div class="modal-mask">
+      <div class="modal-wrapper">
+        <div class="modal-container">
+
+          <div class="modal-header">
+            <h4>${title}使用者</h4>
+          </div>
+
+          <div class="modal-body">
+            <div style="width: 100%">
+              <form class="form-horizontal">
+
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><span class="required">*</span> 帳號
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input :disabled="sysId" type="text" v-model="account" class="form-control">
+                  </div>
+                  <transition name="fade">
+                    <label v-if="showRequired.account" class="control-label" for="first-name" ><font  class="required">This field is required.</font></span>
+                  </transition>
+                  <transition name="fade">
+                    <label v-if="showDuplicated.account" class="control-label" for="first-name" ><font  class="required">This field is duplicated.</font></span>
+                  </transition>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name"><span class="required">*</span> 姓名
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input class="form-control" list="browsers" v-model="name" name="browser">
+                  </div>
+                  <transition name="fade">
+                    <label v-if="showRequired.name" class="control-label" for="first-name" ><font class="required">This field is required.</font></span>
+                  </transition>
+                </div>
+
+                <div class="form-group" v-if="!sysId">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><span class="required">*</span> 密碼</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="input-group">
+                      <input type="text" class="form-control" v-model="passwordDisplay">
+                      <span class="input-group-btn">
+                        <button type="button" class="btn btn-primary" @click="genPassword">自動產生</button>
+                      </span>
+                    </div>
+                  </div>
+                  <transition name="fade">
+                    <label v-if="showRequired.password" class="control-label" for="first-name" ><font class="required">This field is required.</font></span>
+                  </transition>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">eMail</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input class="form-control" v-model="email">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Mail Alarm Enable</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="form-inline">
+                      <div class="checkbox">
+                        <label>
+                          <input id="mailAlarmEnable" type="checkbox" v-model="mailAlarmEnable" class="flat"> 啟用
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"><span class="required">*</span> Auth Group</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <select id="partType" class="form-control" v-model="authGroup">
+                      <option></option>
+                      <option value="MFG">MFG</option>
+                      <option value="ENG">ENG</option>
+                      <option value="Q">Q</option>
+                      <option value="RD">RD</option>
+                    </select>
+                  </div>
+                  <transition name="fade">
+                    <label v-if="showRequired.authGroup" class="control-label" for="first-name" ><font class="required">This field is required.</font></span>
+                  </transition>
+                </div>
+
+              </form>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" style="float: right" @click="$emit('cancel')">Cancel</button>
+            <button type="button" class="btn btn-warning" style="float: right" @click="save">Ok</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </transition>
+</script>
