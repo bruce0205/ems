@@ -88,7 +88,7 @@
                       <a href="/users">使用者維護</a>
                     </li>
                     <li>
-                      <a href="/manufacture/pn">*生產料號基本資料維護*</a>
+                      <a href="/manufacturePn">生產料號基本資料維護</a>
                     </li>
                   </ul>
                 </li>
@@ -195,7 +195,8 @@
       <script src="../build/js/qcFileUploadModule.js"></script> {{else if isParts}}
       <script src="../build/js/partsModule.js"></script> {{else if isPartsConfig}}
       <script src="../build/js/partsConfigModule.js"></script> {{else if isUsers}}
-      <script src="../build/js/usersModule.js"></script>
+      <script src="../build/js/usersModule.js"></script> {{else if isManufacturePn}}
+      <script src="../build/js/manufacturePnModule.js"></script>
       {{/if}}
 
       <!-- page content -->
@@ -206,7 +207,7 @@
       <footer>
         <div class="pull-right">
           Dashboard Template by
-          <a href="">Bruce Hsu</a>
+          <a href="">Meproz</a>
         </div>
         <div class="clearfix"></div>
       </footer>

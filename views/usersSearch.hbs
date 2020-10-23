@@ -372,7 +372,7 @@
       },
       async duplicate() {
         let flag = true
-        console.log(await this.duplicateAccount())
+
         if (await this.duplicateAccount()) {
           console.log('dddduuu')
           this.showDuplicated.account = true
@@ -584,7 +584,7 @@
 
           <div class="modal-footer">
             <button type="button" class="btn btn-danger" style="float: right" @click="$emit('cancel')">Cancel</button>
-            <button type="button" class="btn btn-warning" style="float: right" @click="save">Ok</button>
+            <button type="button" class="btn btn-warning" style="float: right" @click="save">Save</button>
           </div>
         </div>
       </div>
@@ -692,7 +692,7 @@
 
           <div class="modal-footer">
             <button type="button" class="btn btn-danger" style="float: right" @click="$emit('cancel')">Cancel</button>
-            <button type="button" class="btn btn-warning" style="float: right" @click="save">Ok</button>
+            <button type="button" class="btn btn-warning" style="float: right" @click="save">Save</button>
           </div>
         </div>
       </div>

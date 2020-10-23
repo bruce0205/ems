@@ -21,6 +21,7 @@ const qcFile = require('./routes/qcFile');
 const parts = require('./routes/parts');
 const partsConfig = require('./routes/partsConfig');
 const users = require('./routes/users');
+const manufacturePn = require('./routes/manufacturePn');
 
 const app = express();
 
@@ -65,6 +66,7 @@ qcFile(app, db);
 parts(app, db);
 partsConfig(app, db);
 users(app, db);
+manufacturePn(app, db);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
