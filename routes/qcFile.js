@@ -203,8 +203,9 @@ module.exports = (app, db) => {
 
             res.send({ status: 200 });
         } catch (err) {
+			console.log(err)
             console.error(err)
-            res.send({ status: 500 });
+            res.send({ status: 500,errorMsg:　err });
         }
     });
 
