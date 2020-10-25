@@ -74,7 +74,7 @@ module.exports = (app, db) => {
 
   router.get('/api/reason/:mafPn/:mafMold', async function (req, res, next) {
     let sql = `
-      select e.err_id, trim(e.err_nam) as err_nam, (case isnull(m.Sys_ID,0) when 0 then 0 else 1 end) as checked, m.Seq
+      select e.err_id, rtrim(e.err_nam) as err_nam, (case isnull(m.Sys_ID,0) when 0 then 0 else 1 end) as checked, m.Seq
       from ERR_List e
       left join  tbl_ERRPN_MAPPING m on m.PN = '${req.params.mafPn}' and m.Mold = '${req.params.mafMold}' and m.Err_id = e.err_id
     `
