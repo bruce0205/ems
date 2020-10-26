@@ -24,7 +24,7 @@ var manufacturePnModule = (function () {
 				},
 				"lengthMenu": [10, 20, 50, 75, 100],
 				"pageLength": 10,
-				// "autoWidth": false,
+				// "autoWidth": true,
 				// "scrollY": "200px",
 				'scrollX': true,
 				"drawCallback": function (settings) {
