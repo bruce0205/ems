@@ -24,9 +24,9 @@ var manufacturePnModule = (function () {
 				},
 				"lengthMenu": [10, 20, 50, 75, 100],
 				"pageLength": 10,
-				"autoWidth": false,
+				// "autoWidth": false,
 				// "scrollY": "200px",
-				// 'scrollX': true,
+				'scrollX': true,
 				"drawCallback": function (settings) {
 					var api = this.api();
 					if (api.rows()[0].length > 0) {
@@ -60,7 +60,7 @@ var manufacturePnModule = (function () {
 					{
 						"title": "穴號2",
 						"data": "maf_hole2"
-                    },
+					},
 					{
 						"title": "維護日",
 						"data": "maf_date"

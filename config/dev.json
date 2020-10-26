@@ -14,7 +14,7 @@
         }
     ],
     "db": {
-        "host": "172.17.250.33",
+        "host": "localhost",
         "database": "OeeAPP",
         "username": "sa",
         "password": "abc123@DFG456",

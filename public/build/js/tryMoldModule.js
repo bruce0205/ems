@@ -201,7 +201,7 @@ var tryMoldModule = (function () {
 			parameter += '&pn=' + $("#pn").val();
 			parameter += '&mold=' + $("#mold").val();
 			parameter += '&owner=' + $("#owner").val();
-			
+
 			window.location.href = "/tryMold/excel?" + parameter;
 		},
 		makeCellEditable: function () {
