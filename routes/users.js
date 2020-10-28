@@ -18,6 +18,7 @@ module.exports = (app, db) => {
     res.render('usersSearch', {
       isUsers: true,
       username: req.session.username,
+      authGroup: req.session.group,
       layout: 'layout'
     });
   })
