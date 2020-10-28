@@ -15,6 +15,7 @@ module.exports = (app, db) => {
         res.render('qcFile', {
             isQcFile: true,
             username: req.session.username,
+            isAdmin: req.session.isAdmin,
             layout: 'layout',
         });
     });
@@ -128,7 +129,7 @@ module.exports = (app, db) => {
                     parseFlag = 0
                 }
             }
- 
+
             // step2-3: insert into tbl_qc_file
             let insertSql = `
                 insert into tbl_qc_file

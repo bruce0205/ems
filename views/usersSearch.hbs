@@ -312,6 +312,7 @@
         passwordDisplay: '',
         email: '',
         mailAlarmEnable: false,
+        adminEnable: false,
         authGroup: '',
         showRequired: {
           account: false,
@@ -334,6 +335,13 @@
       });
       $("#mailAlarmEnable").on('ifChecked', this.toggleMailAlarm);
       $("#mailAlarmEnable").on('ifUnchecked', this.toggleMailAlarm);
+
+      $('#adminEnable').iCheck({
+        checkboxClass: 'icheckbox_flat-green',
+        radioClass: 'iradio_flat-green'
+      });
+      $("#adminEnable").on('ifChecked', this.toggleAdmin);
+      $("#adminEnable").on('ifUnchecked', this.toggleAdmin);
     },
     destroyed() {
     },
@@ -349,6 +357,9 @@
     methods: {
       toggleMailAlarm() {
         this.mailAlarmEnable = !this.mailAlarmEnable
+      },
+      toggleAdmin() {
+        this.adminEnable = !this.adminEnable
       },
       genPassword() {
         let password = ''
@@ -431,8 +442,10 @@
         this.name = obj.name
         this.email = obj.email
         this.mailAlarmEnable = obj.mailalarmenable
+        this.adminEnable = obj.adminenable
         this.authGroup = obj.authgroup
         if (this.mailAlarmEnable) $('#mailAlarmEnable').iCheck('check');
+        if (this.adminEnable) $('#adminEnable').iCheck('check');
       },
       async save() {
         if (!this.validate()) return
@@ -450,6 +463,7 @@
             password: this.password,
             email: this.email ? this.email : '',
             mailAlarmEnable: this.mailAlarmEnable ? true : false,
+            adminEnable: this.adminEnable ? true : false,
             authGroup: this.authGroup
           }
           if (this.formType === 'modify') {
@@ -684,6 +698,20 @@
                   <transition name="fade">
                     <label v-if="showRequired.authGroup" class="control-label" for="first-name" ><font class="required">This field is required.</font></span>
                   </transition>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Admin Enable</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="form-inline">
+                      <div class="checkbox">
+                        <label>
+                          <input id="adminEnable" type="checkbox" v-model="adminEnable" class="flat"> 啟用
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
               </form>

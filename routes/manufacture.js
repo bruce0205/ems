@@ -10,6 +10,7 @@ module.exports = (app, db) => {
     res.render('manufacture', {
       isManufacture: true,
       username: req.session.username,
+      isAdmin: req.session.isAdmin,
       layout: 'layout',
       fromDate: req.query.fromDate,
       endDate: req.query.endDate

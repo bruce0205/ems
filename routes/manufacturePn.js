@@ -17,6 +17,7 @@ module.exports = (app, db) => {
     res.render('manufacturePn', {
       isManufacturePn: true,
       username: req.session.username,
+      isAdmin: req.session.isAdmin,
       layout: 'layout'
     });
   });

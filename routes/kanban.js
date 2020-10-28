@@ -10,7 +10,9 @@ module.exports = (app, db) => {
     let data = {
       isKanban: true,
       layout: 'layout',
-      autoRefreshDuration: autoRefreshDuration
+      autoRefreshDuration: autoRefreshDuration,
+      username: req.session.username,
+      isAdmin: req.session.isAdmin
     }
     if (req.query.dataType === 'available') {
       let ctData = await fetchAvailableCtData(req)
@@ -233,7 +235,7 @@ module.exports = (app, db) => {
       hole1Data.push(obj.Hole1_Real)
 	  hole2Data.push(obj.Hole2_Real)
 	  targetData.push(obj.Yield_Target)
-	  
+
     });
     /**
     label = ["8", "10", "12", "14", "16", "18", "20", "22", "0", "2", "4", "6"]

@@ -9,7 +9,8 @@ module.exports = (app, db) => {
       isMachine: true,
       layout: 'layout',
       autoRefreshDuration: autoRefreshDuration,
-      username: req.session.username
+      username: req.session.username,
+      isAdmin: req.session.isAdmin
     });
   });
 

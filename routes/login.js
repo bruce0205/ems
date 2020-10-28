@@ -27,7 +27,7 @@ module.exports = (app, db) => {
 
     if (req.body.uu && req.body.pp) {
       let password = md5(req.body.pp)
-      let sql = `select name, account, authGroup from tbl_User where account ='${req.body.uu}' and password ='${password}'`
+      let sql = `select name, account, authGroup, adminenable from tbl_User where account ='${req.body.uu}' and password ='${password}'`
       const response = await db.query(sql, {
         raw: false, // Set this to true if you don't have a model definition for your query.
         type: Sequelize.QueryTypes.SELECT
@@ -54,6 +54,7 @@ module.exports = (app, db) => {
         req.session.username = response[0].name
         req.session.account = response[0].account
         req.session.group = response[0].authGroup
+        req.session.isAdmin = response[0].adminenable
         res.cookie('jwt', token, cookieOptions);
         res.redirect('/');
       }

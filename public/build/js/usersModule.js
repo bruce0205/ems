@@ -63,10 +63,17 @@ var usersModule = (function () {
 						"render": function (data, type, row, meta) {
 							return data === true ? '啟用' : '';
 						}
-                    },
+					},
 					{
 						"title": "Auth Group",
 						"data": "authgroup"
+					},
+					{
+						"title": "Admin Enable",
+						"data": "adminenable",
+						"render": function (data, type, row, meta) {
+							return data === true ? '啟用' : '';
+						}
 					},
 					{
 						"title": "Action",

@@ -10,6 +10,7 @@ module.exports = (app, db) => {
     res.render('mold', {
       isMold: true,
       username: req.session.username,
+      isAdmin: req.session.isAdmin,
       account: req.session.account,
       layout: 'layout',
     });

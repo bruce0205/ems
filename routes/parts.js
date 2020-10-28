@@ -17,6 +17,7 @@ module.exports = (app, db) => {
     res.render('partsForm', {
       isParts: true,
       username: req.session.username,
+      isAdmin: req.session.isAdmin,
       layout: 'layout'
     });
   });
@@ -25,6 +26,7 @@ module.exports = (app, db) => {
     res.render('partsSearch', {
       isParts: true,
       username: req.session.username,
+      isAdmin: req.session.isAdmin,
       layout: 'layout'
     });
   });
@@ -74,12 +76,12 @@ module.exports = (app, db) => {
     let fieldType = req.query.fieldType
 
 	let sql = ``
-	
+
 	if(fieldType === 'StatusALL')
 	{
 		sql = `select distinct field_key, field_value from tbl_PARTS_ATTR_CONFIG where Part_Type = '${partType}' and Field_Type = 'Status' `
-		
-		
+
+
 	}
 	else if (fieldType === 'Status')
 	{
@@ -87,9 +89,9 @@ module.exports = (app, db) => {
 		sql += ` and Field_Dynamic_Index_2 = (select AuthGroup from tbl_User where Account = '${req.session.account}')`
 		if (req.query.SysID)
 		{
-				
+
 				let oldStatus
-      
+
 				// step1: query old status
 				let querySql = `select sys_id, status, part_no from tbl_parts where sys_id='${req.query.SysID}'`
 				const queryResult = await db.query(querySql, dbOptions)
@@ -98,12 +100,12 @@ module.exports = (app, db) => {
 				} else {
 				throw `cannot find data from sys_id: ${req.query.SysID}`
 				}
-				
+
 				sql += ` and Field_Dynamic_Index = '${oldStatus}'`
-				
+
 		}
 	}
-	
+
 	else
 	{
 		sql = `select field_key, field_value from tbl_PARTS_ATTR_CONFIG where Part_Type = '${partType}' and Field_Type = '${fieldType}' `
@@ -111,8 +113,8 @@ module.exports = (app, db) => {
 			sql += ` and Field_Dynamic_Index = '${req.query.fieldDynamicIndex}' `
 			}
 	}
-    
-    
+
+
     const result = await db.query(sql, dbOptions)
 
     res.send({result});

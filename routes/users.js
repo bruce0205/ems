@@ -18,7 +18,7 @@ module.exports = (app, db) => {
     res.render('usersSearch', {
       isUsers: true,
       username: req.session.username,
-      authGroup: req.session.group,
+      isAdmin: req.session.isAdmin,
       layout: 'layout'
     });
   })
@@ -33,7 +33,8 @@ module.exports = (app, db) => {
         password,
         email,
         mailalarmenable,
-        authgroup
+        authgroup,
+        adminenable
       FROM tbl_user a
       Where 1=1
     `
@@ -58,7 +59,7 @@ module.exports = (app, db) => {
   router.get('/api/data/:sysId', async function (req, res, next) {
     console.log('sysId', req.params.sysId)
     let sql = `
-      select sys_id, account, name, password, email, mailalarmenable, authgroup from tbl_user
+      select sys_id, account, name, password, email, mailalarmenable, authgroup, adminenable from tbl_user
       where 1=1 and sys_id = ${req.params.sysId}
     `
     const result = await db.query(sql, dbOptions)
@@ -72,7 +73,7 @@ module.exports = (app, db) => {
   router.get('/api/duplicate/account/:account', async function (req, res, next) {
     console.log('sysId', req.params.sysId)
     let sql = `
-      select sys_id, account, name, password, email, mailalarmenable, authgroup from tbl_user
+      select sys_id, account, name, password, email, mailalarmenable, authgroup, adminenable from tbl_user
       where 1=1 and account = '${req.params.account}'
     `
     const result = await db.query(sql, dbOptions)
@@ -86,7 +87,7 @@ module.exports = (app, db) => {
   router.post('/api/data', async function (req, res, next) {
     try {
       console.log(req.body)
-      let insertSql = `insert into tbl_user values ('${req.body.account}', '${req.body.name}', '${req.body.password}', '${req.body.email}', '${req.body.mailAlarmEnable}', '${req.body.authGroup}')`
+      let insertSql = `insert into tbl_user values ('${req.body.account}', '${req.body.name}', '${req.body.password}', '${req.body.email}', '${req.body.mailAlarmEnable}', '${req.body.authGroup}', '${req.body.adminEnable}')`
       const insertResult = await db.query(insertSql, dbInsertOptions)
       res.status(200).send({})
     } catch (ex) {
@@ -103,7 +104,8 @@ module.exports = (app, db) => {
         name = '${req.body.name}',
         email = '${req.body.email}',
         mailalarmenable = '${req.body.mailAlarmEnable}',
-        authgroup = '${req.body.authGroup}'
+        authgroup = '${req.body.authGroup}',
+        adminenable = '${req.body.adminEnable}'
         where sys_id = ${req.body.sysId}
       `
       const result = await db.query(sql, dbInsertOptions)

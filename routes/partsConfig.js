@@ -17,6 +17,7 @@ module.exports = (app, db) => {
     res.render('partsConfigSearch', {
       isPartsConfig: true,
       username: req.session.username,
+      isAdmin: req.session.isAdmin,
       layout: 'layout'
     });
   });

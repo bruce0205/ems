@@ -9,6 +9,7 @@ module.exports = (app, db) => {
 		res.render('tryMold', {
 			isTryMold: true,
 			username: req.session.username,
+			isAdmin: req.session.isAdmin,
 			layout: 'layout',
 		});
 	});
@@ -45,7 +46,7 @@ module.exports = (app, db) => {
 	});
 
 	router.get('/excel', function (req, res, next) {
-		
+
 		let sql = `
 			select sys_id, line_no,
 			convert(varchar, startDateTime, 20) startDateTime, convert(varchar, endDateTime, 20) endDateTime,
@@ -61,7 +62,7 @@ module.exports = (app, db) => {
 		if (req.query.owner) sql += ` and owner like '%${req.query.owner}%'`
 		if (req.query.startDateTime) sql += ` and startDateTime >= Cast('${req.query.startDateTime} 00:00:00' as datetime)`
 		if (req.query.endDatetime) sql += ` and endDatetime <= Cast('${req.query.endDatetime} 23:59:59' as datetime)`
-		
+
     db.query(sql, {
         raw: false, // Set this to true if you don't have a model definition for your query.
         type: Sequelize.QueryTypes.SELECT
@@ -103,7 +104,7 @@ module.exports = (app, db) => {
 		  if (index === 13) adjustValue = '試射擔當';
 		  if (index === 14) adjustValue = '試模原因';
 		  if (index === 15) adjustValue = '備註';
-		  
+
 
           ws.cell(1, index + 1).string(adjustValue).style(headerStyle);
         })
@@ -129,7 +130,7 @@ module.exports = (app, db) => {
         console.error(err);
       });
   });
-	
+
 	router.put('/api/data', function (req, res, next) {
 		console.log(req.body)
 
