@@ -213,6 +213,80 @@
       </div>
     </div>
   </div>
+
+  <div id="maintainModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-sm" style="width: 1080px">
+      <div class="modal-content" style="top:60px">
+        <div class="modal-header">
+          <button type="button" class="close" onclick='closeMaintainMoldModal()' aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 style="font-weight: bolder">${pn} -> ${mold} 模具保養</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-5 col-sm-5">
+              <form class="form-horizontal">
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">機種</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <span class="form-control" style="background-color: #eee">
+                      ${pn}
+                    </span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">模號</span>
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <span class="form-control" style="background-color: #eee">
+                      ${mold}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">是否為計畫性
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="checkbox">
+                      <label>
+                        <input id="isplaned" type="checkbox" class="flat" v-model="isplaned">
+                      </label>
+                      ${isplaned}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">備註
+                  </label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <textarea class="form-control" v-model="remark" rows="3"></textarea>
+                  </div>
+                </div>
+
+                <div class="ln_solid"></div>
+                <div class="form-group">
+                  <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                    <button type="button" :disabled="disableCreate" class="btn btn-success" @click="createRecord">Create</button>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+            <div class="col-md-7 col-sm-7">
+              <table id="moldMaintainTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                <thead></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -283,6 +357,10 @@
 
   function closeDeleteMoldModal() {
     $("#deleteModal").modal('hide');
+  }
+  function closeMaintainMoldModal() {
+    $('#isplaned').iCheck('destroy');
+    $("#maintainModal").modal('hide');
   }
 
   let data = {
@@ -427,6 +505,102 @@
     }
   });
 
+  let maintainVm = new Vue({
+    delimiters: ['${', '}'],
+    el: '#maintainModal',
+    data: {
+      pn: null,
+      mold: null,
+      isplaned: false,
+      remark: null,
+      hasStart: false,
+      hasEnd: false,
+      list: []
+    },
+    methods: {
+      async createRecord() {
+        let url = `/mold/api/maintain`
+        let body = {
+          pn: this.pn,
+          mold: this.mold,
+          isplaned: this.isplaned,
+          remark: this.remark
+        }
+        await fetch(url, {
+          method: 'POST',
+          credentials: "same-origin",
+          headers: new Headers({
+            'Content-Type': 'application/json'
+          }),
+          body: JSON.stringify(body)
+        }).then((response) => {
+          return response.json();
+        })
+        this.initLoad()
+        moldModule.destroyMaintain();
+        moldModule.buildMaintain(this.pn, this.mold);
+      },
+      async updateRecord(type, seqno) {
+        let url = `/mold/api/maintain/${seqno}/${type}`
+        await fetch(url, {
+          method: 'PUT',
+          credentials: "same-origin",
+          headers: new Headers({
+            'Content-Type': 'application/json'
+          })
+        }).then((response) => {
+          return response.json();
+        })
+        this.initLoad()
+        moldModule.destroyMaintain();
+        moldModule.buildMaintain(this.pn, this.mold);
+      },
+      async getList() {
+        let url = `/mold/api/maintain/${this.pn}/${this.mold}`;
+        let data =  await fetch(url, {
+          method: 'GET',
+          credentials: "same-origin",
+          headers: new Headers({
+            'Content-Type': 'application/json'
+          })
+        }).then((response) => {
+          return response.json();
+        })
+        this.list = data.data
+      },
+      async initLoad() {
+        await this.getList()
+        console.log(this.list)
+        if (this.list.length > 0) {
+          if (this.list[0].end_datetime) {
+            maintainVm.hasEnd = true
+          } else {
+            maintainVm.hasEnd = false
+          }
+          if (this.list[0].start_datetime) {
+            maintainVm.hasStart = true
+          } else {
+            maintainVm.hasStart = false
+          }
+        }
+        let defaultIsplaned = true
+        if (defaultIsplaned) {
+          $('#isplaned').iCheck('check');
+        } else {
+          $('#isplaned').iCheck('uncheck');
+        }
+
+        this.isplaned = defaultIsplaned
+        this.remark = null
+      }
+    },
+    computed: {
+      disableCreate() {
+        return this.list.length>0&&!(this.hasStart && this.hasEnd)
+      }
+    }
+  });
+
   function closeMoldModal() {
     $("#testModal").modal('hide');
     $('#datetimepicker1').data("DateTimePicker").destroy();
@@ -445,6 +619,32 @@
       }
     }
     $("#deleteModal").modal('show');
+  }
+
+  async function updateMaintain(type, seqno) {
+    await maintainVm.updateRecord(type, seqno)
+  }
+
+  async function showMaintainMoldModal(pn, mold) {
+    // step 1: data binding
+    let trimPn = pn.trim()
+    let trimMold = mold.trim()
+    maintainVm.pn = trimPn
+    maintainVm.mold = trimMold
+
+    // step 2: initialize "checkbox"
+    $('#isplaned').iCheck({
+      checkboxClass: 'icheckbox_flat-green',
+      radioClass: 'iradio_flat-green'
+    });
+    $("#isplaned").on('ifChecked', toggleIsplaned);
+    $("#isplaned").on('ifUnchecked', toggleIsplaned);
+
+    // step 3: show modal
+    moldModule.destroyMaintain();
+    moldModule.buildMaintain(trimPn, trimMold);
+    await maintainVm.initLoad()
+    $("#maintainModal").modal('show');
   }
 
   function showMoldModal(event) {
@@ -579,6 +779,10 @@
       // vm.alarm = 0;
     }
     vm.offLine = !vm.offLine
+  }
+  function toggleIsplaned(event) {
+    if (event.type === 'ifChecked' ) maintainVm.isplaned = true
+    if (event.type === 'ifUnchecked' ) maintainVm.isplaned = false
   }
 
   $(document).ready(function () {

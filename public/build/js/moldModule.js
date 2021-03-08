@@ -1,6 +1,7 @@
 var moldModule = (function () {
   let dataTableInstance;
   let historyDataTableInstance;
+  let maintainDataTableInstance;
   return {
     format: function (datatableRow, rowData, rowIndex, triggerType) {
       var url = `/mold/api/detail?pn=${rowData.mvs_pn}&mold=${rowData.mvs_mold}&triggerType=${triggerType}`; // data 為 queryString
@@ -124,21 +125,22 @@ var moldModule = (function () {
           {
             "title": "mvs_hole1",
             "data": "mvs_hole1",
-            "width": "20%",
+            "width": "16%",
           },
           {
             "title": "mvs_hole2",
             "data": "mvs_hole2",
-            "width": "20%",
+            "width": "16%",
           },
 					{
 						"title": "Action",
             "className": 'action-control text-center',
-            "width": "8%",
+            "width": "16%",
 						"render": function (data, type, row, meta) {
-              return `<button class="btn btn-danger btn-xs" onclick="showDeleteMoldModal('${row.mvs_pn}', '${row.mvs_mold}')">刪除</button>`
+              return `<button class="btn btn-danger btn-xs" onclick="showDeleteMoldModal('${row.mvs_pn}', '${row.mvs_mold}')">刪除</button>
+              <button class="btn btn-primary btn-xs" onclick="showMaintainMoldModal('${row.mvs_pn}', '${row.mvs_mold}')">保養記錄</button>`
 						}
-					}
+					},
         ],
         "order": []
       });
@@ -271,6 +273,83 @@ var moldModule = (function () {
     },
     destroyHistory: function () {
       if (historyDataTableInstance) historyDataTableInstance.destroy();
+    },
+    buildMaintain: function (pn, mold) {
+      console.log('buildMaintain', pn, mold)
+      maintainDataTableInstance = $('#moldMaintainTable').DataTable({
+        "searching": false,
+        "ajax": {
+          "url": "/mold/api/maintain/" + pn + "/" + mold
+        },
+        "lengthMenu": [5, 10, 20, 50, 75, 100],
+        "pageLength": 5,
+        "autoWidth": false,
+        "columnDefs": [
+          { targets: '_all', width: '15%' },
+          { targets: '_all', orderable: false },
+          { targets: '_all', searchable: false }
+        ],
+        "columns": [
+					{
+						"title": "No",
+						"data": "row_no",
+            "className": 'text-center',
+            "width": "5%",
+					},
+          {
+            "title": "開始時間",
+            "data": "start_datetime",
+            "width": "15%",
+          },
+          {
+            "title": "結束時間",
+            "data": "end_datetime",
+            "width": "15%",
+          },
+          {
+            "title": "備註",
+            "data": "remark"
+          },
+          {
+            "title": "計畫性",
+            "data": "isplaned",
+            "className": 'text-center',
+            "width": "10%",
+          },
+          {
+            "title": "維護者1",
+            "data": "maintain_user1",
+            "className": 'text-center',
+            "width": "14%",
+          },
+          {
+            "title": "維護者2",
+            "data": "maintain_user2",
+            "className": 'text-center',
+            "width": "10%",
+          },
+					{
+						"title": "Action",
+            "data": "seqno",
+            "className": 'action-control text-center',
+            "width": "10%",
+						"render": function (data, type, row, meta) {
+              let startBtn = `<button class="btn btn-danger btn-xs" onclick="updateMaintain('start', '${row.seqno}')">開始</button>`
+              let endBtn = `<button class="btn btn-primary btn-xs" onclick="updateMaintain('end', '${row.seqno}')">結束</button>`
+              if (row['start_datetime'] === null) return startBtn
+              if (row['end_datetime'] === null) return endBtn
+              return ''
+						}
+          }
+        ],
+        "order": []
+      });
+    },
+    getMaintainInstance: function () {
+      return maintainDataTableInstance;
+    },
+    destroyMaintain: function () {
+      if (maintainDataTableInstance) maintainDataTableInstance.destroy();
     }
   }
 }());

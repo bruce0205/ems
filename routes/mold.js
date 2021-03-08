@@ -4,6 +4,7 @@ var router = express.Router();
 var testingFisrtData = require('../data/moldFirst.json');
 var testingSecondData = require('../data/moldSecond.json');
 var logger = require('../lib/logger.js');
+const moment = require('moment');
 
 module.exports = (app, db) => {
   router.get('/', function (req, res, next) {
@@ -69,6 +70,79 @@ module.exports = (app, db) => {
         console.error(err);
       });
   });
+
+  router.get('/api/maintain/:pn/:mold', function (req, res, next) {
+    db.query(`
+        select
+        ROW_NUMBER() OVER( ORDER BY seqno desc) AS row_no,
+        seqno,
+        convert(varchar, start_datetime, 120) as start_datetime,
+        convert(varchar, end_datetime, 120) as end_datetime,
+        mvs_pn, mvs_mold, remark, isplaned, maintain_user1, maintain_user2
+        from mold_maintain
+        where 1=1
+        and mvs_pn = :pn
+        and mvs_mold = :mold
+        order by seqno desc
+      `, {
+        replacements: {
+          pn: req.params.pn,
+          mold: req.params.mold
+        },
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        res.send({data});
+      }).catch(err => {
+        console.error(err);
+      });
+  })
+
+  router.post('/api/maintain', function (req, res, next) {
+    console.log(req.body)
+    db.query(`
+      insert into mold_maintain (mvs_pn, mvs_mold, remark, isplaned)
+      values (:pn, :mold, :remark, :isplaned)
+    `, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        replacements: {
+          pn: req.body.pn,
+          mold: req.body.mold,
+          isplaned: req.body.isplaned,
+          remark: req.body.remark
+        },
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        res.send({ status: 200 });
+      }).catch(err => {
+        res.send({ status: 500 });
+      });
+  })
+
+  router.put('/api/maintain/:seqno/:type', function (req, res, net) {
+    console.log('type', req.params.type)
+    let  userColumn = req.params.type === 'start' ? 'maintain_user1' : 'maintain_user2'
+    let sql = `
+        update mold_maintain
+        set ${userColumn} = :account, ${req.params.type}_datetime = :datetime
+        where seqno = :seqno
+    `
+    console.log(sql)
+    db.query(sql, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        replacements: {
+          seqno: req.params.seqno,
+          account: req.session.account,
+          datetime: moment().format('YYYY-MM-DD HH:mm:ss')
+        },
+        type: Sequelize.QueryTypes.SELECT
+      }).then(data => {
+        res.send({ status: 200 });
+      }).catch(err => {
+        console.error(err)
+        res.send({ status: 500 });
+      });
+  })
 
   router.get('/api/history/:historyType', function (req, res, next) {
 
