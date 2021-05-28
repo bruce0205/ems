@@ -71,8 +71,8 @@
 
 <div id="app">
   <div class="right_col" role="main">
-    <password-reset v-if="showResetPasswordModal" @cancel="showResetPasswordModal = false" @close="showResetPasswordModal = false">
-    </password-reset>
+    <formula v-if="showFormulaModal" @cancel="showFormulaModal = false" @close="showFormulaModal = false">
+    </formula>
     <div class="">
       <div class="page-title">
         <div class="title_left">
@@ -176,11 +176,11 @@
     "Availability": 0,
     "Loss_Interval": 0,
     "UpToNow_Interval": 0,
-    "showResetPasswordModal": false
+    "showFormulaModal": false
   }
 
-  Vue.component('passwordReset', {
-    template: '#password-template',
+  Vue.component('formula', {
+    template: '#formula-template',
     delimiters: ['${', '}'],
     data() {
       return {
@@ -205,7 +205,7 @@
     },
     methods: {
       showFormula() {
-        this.showResetPasswordModal = true
+        this.showFormulaModal = true
       },
       fetchData() {
         var url = `/kanban/api/available/data?mah_num={{mah_num}}`;
@@ -418,7 +418,7 @@
   });
 
 </script>
-<script type="text/x-template" id="password-template">
+<script type="text/x-template" id="formula-template">
   <transition name="modal">
     <div class="modal-mask">
       <div class="modal-wrapper">
@@ -434,7 +434,7 @@
 
                 <div class="form-group">
                   <div class="col-md-6 col-sm-6 col-xs-12">
-                    hello, i am formula
+                    hello, i am Available formula
                   </div>
                 </div>
 
