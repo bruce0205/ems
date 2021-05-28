@@ -43,7 +43,7 @@ var usersModule = (function () {
 				"columns": [
 					{
 						"title": "No",
-						"data": "seqno"
+						"data": "row_no"
 					},
 					{
 						"title": "帳號",
