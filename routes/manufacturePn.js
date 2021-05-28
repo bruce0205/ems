@@ -75,7 +75,7 @@ module.exports = (app, db) => {
 
   router.get('/api/reason/:mafPn/:mafMold', async function (req, res, next) {
     let sql = `
-      select e.err_id, rtrim(e.err_nam) as err_nam, (case isnull(m.Sys_ID,0) when 0 then 0 else 1 end) as checked, m.Seq
+      select e.err_id, rtrim(e.err_nam) as err_nam, (case isnull(m.Sys_ID,0) when 0 then 0 else 1 end) as checked, m.Seq,m.AlarmLimit
       from ERR_List e
       left join  tbl_ERRPN_MAPPING m on m.PN = '${req.params.mafPn}' and m.Mold = '${req.params.mafMold}' and m.Err_id = e.err_id
     `
@@ -92,8 +92,8 @@ module.exports = (app, db) => {
 
       let insertSql = `
         insert into tbl_errpn_mapping
-        (pn, mold, err_id, seq) values
-        (:pn, :mold, :errId, :seq)
+        (pn, mold, err_id, seq,AlarmLimit) values
+        (:pn, :mold, :errId, :seq,:AlarmLimit)
       `
       for (let i = 0; i < req.body.list.length; i++) {
         let obj = req.body.list[i]
@@ -104,7 +104,8 @@ module.exports = (app, db) => {
               pn: req.body.mafPn,
               mold: req.body.mafMold,
               errId: obj.err_id,
-              seq: obj.Seq ? obj.Seq : 1
+              seq: obj.Seq ? obj.Seq : 1,
+			  AlarmLimit: obj.AlarmLimit ? obj.AlarmLimit : 100
             }
           })
         }
