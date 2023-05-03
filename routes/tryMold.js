@@ -19,9 +19,10 @@ module.exports = (app, db) => {
 			select sys_id, line_no,
 			convert(varchar, startDateTime, 20) startDateTime, convert(varchar, endDateTime, 20) endDateTime,
 			datediff(minute,StartDatetime,endDateTime) as varDatetime,
-			pn, mold, plasticType, startCount, endCount,
-			maf_hev, onOffUsage, tryUsage, owner, reason, remark
-			from tbl_TryMold
+			pn, mold, b.maf_ptmd, startCount, endCount,
+			a.maf_hev, onOffUsage, tryUsage, owner, reason, remark
+			from tbl_TryMold a left join maf_pn b
+			on a.Pn = b.maf_pn and a.Mold=b.maf_mold
 			where EndDatetime is not null
 		`
 		if (req.query.pn) sql += ` and pn like '%${req.query.pn}%'`
@@ -51,9 +52,10 @@ module.exports = (app, db) => {
 			select sys_id, line_no,
 			convert(varchar, startDateTime, 20) startDateTime, convert(varchar, endDateTime, 20) endDateTime,
 			datediff(minute,StartDatetime,endDateTime) as varDatetime,
-			pn, mold, plasticType, startCount, endCount,
-			maf_hev, onOffUsage, tryUsage, owner, reason, remark
-			from tbl_TryMold
+			pn, mold, b.maf_ptmd, startCount, endCount,
+			a.maf_hev, onOffUsage, tryUsage, owner, reason, remark
+			from tbl_TryMold a left join maf_pn b
+			on a.Pn = b.maf_pn and a.Mold=b.maf_mold
 			where EndDatetime is not null
 		`
 		if (req.query.pn) sql += ` and pn like '%${req.query.pn}%'`
@@ -136,7 +138,6 @@ module.exports = (app, db) => {
 
 		db.query(`
 			update tbl_TryMold set
-			plasticType = $plasticType,
 			startCount = $startCount,
 			endCount = $endCount,
 			maf_hev = $maf_hev,
@@ -148,7 +149,6 @@ module.exports = (app, db) => {
 		  `, {
 				bind: {
 					sysId: req.body.sys_id,
-					plasticType: req.body.plasticType,
 					startCount: req.body.startCount,
 					endCount: req.body.endCount,
 					maf_hev: req.body.maf_hev,

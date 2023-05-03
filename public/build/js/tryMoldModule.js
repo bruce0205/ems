@@ -93,15 +93,19 @@ var tryMoldModule = (function () {
 					},
 					{
 						"title": "塑料型號",
-						"data": "plasticType",
-						"render": function (data, type, row, meta) {
-							var div = $("<div>");
-							var i = $("<i>").css({ "margin-right": "4px" });
-							i.addClass("fa fa-edit")
-							div.append(i).append(data);
-							return div.wrap('<div></div>').parent().html();
-						}
+						"data": "maf_ptmd"
 					},
+					// {
+					// 	"title": "塑料型號",
+					// 	"data": "plasticType",
+					// 	"render": function (data, type, row, meta) {
+					// 		var div = $("<div>");
+					// 		var i = $("<i>").css({ "margin-right": "4px" });
+					// 		i.addClass("fa fa-edit")
+					// 		div.append(i).append(data);
+					// 		return div.wrap('<div></div>').parent().html();
+					// 	}
+					// },
 					{
 						"title": "射出開始計數",
 						"data": "startCount",
@@ -208,7 +212,7 @@ var tryMoldModule = (function () {
 			dataTableInstance.table().MakeCellsEditable({
 				"onUpdate": tryMoldModule.cellUpdateCallback,
 				"inputCss": 'my-input-class',
-				"columns": [7, 8, 9, 10, 11, 14, 15],
+				"columns": [8, 9, 10, 11, 14, 15],
 				"allowNulls": {
 					"columns": [3],
 					"errorClass": 'error'
@@ -218,11 +222,6 @@ var tryMoldModule = (function () {
 					"cancelCss": 'my-cancel-class'
 				},
 				"inputTypes": [
-					{
-						"column": 7,
-						"type": "text",
-						"options": null
-					},
 					{
 						"column": 8,
 						"type": "text",
@@ -280,7 +279,6 @@ var tryMoldModule = (function () {
 				}),
 				body: JSON.stringify({
 					sys_id: updatedRow.data()['sys_id'],
-					plasticType: updatedRow.data()['plasticType'],
 					startCount: updatedRow.data()['startCount'],
 					endCount: updatedRow.data()['endCount'],
 					maf_hev: updatedRow.data()['maf_hev'],
