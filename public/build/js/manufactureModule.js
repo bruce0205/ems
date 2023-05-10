@@ -67,7 +67,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -81,7 +81,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -95,7 +95,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -109,7 +109,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -123,7 +123,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -137,7 +137,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -151,7 +151,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -165,7 +165,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -181,7 +181,7 @@ var manufactureModule = (function () {
               var i = $("<i>").css({ "margin-right": "4px" });
               i.addClass("fa fa-edit")
               div.append(i).append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -197,7 +197,7 @@ var manufactureModule = (function () {
               var i = $("<i>").css({ "margin-right": "4px" });
               i.addClass("fa fa-edit")
               div.append(i).append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -211,7 +211,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -225,7 +225,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -241,7 +241,7 @@ var manufactureModule = (function () {
               var i = $("<i>").css({ "margin-right": "4px" });
               i.addClass("fa fa-edit")
               div.append(i).append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -257,7 +257,7 @@ var manufactureModule = (function () {
               var i = $("<i>").css({ "margin-right": "4px" });
               i.addClass("fa fa-edit")
               div.append(i).append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -271,7 +271,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -286,7 +286,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -300,7 +300,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -314,7 +314,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -328,7 +328,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -342,7 +342,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -356,7 +356,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(formatFloat(data, 1).toFixed(1));
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -370,7 +370,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -384,7 +384,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(formatFloat(data, 1).toFixed(1));
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -398,7 +398,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -412,7 +412,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -426,7 +426,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -440,7 +440,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -454,7 +454,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -468,7 +468,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -482,7 +482,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -496,7 +496,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -510,7 +510,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -524,7 +524,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -538,7 +538,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -552,7 +552,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -566,7 +566,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -580,7 +580,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -594,7 +594,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -608,7 +608,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -622,7 +622,7 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
                 div.addClass('highlight-yield');
@@ -635,7 +635,7 @@ var manufactureModule = (function () {
             "data": "稼動結束數",
             "defaultContent": '',
             "render": function (data, type, row, meta) {
-              if (!!!row['稼動結束數']) {
+              if (!!!row['user_etime']) {
                 return `
                 <button class="btn btn-danger btn-xs" onclick="updateHole('${row['機台']}', '${row['穴號']}', '${row['班別']}', '${row['Account']}')">
                   <i class="fa fa-remove" style="margin-right: 10px"></i>強制下線
@@ -711,10 +711,10 @@ var manufactureModule = (function () {
       console.log("The old value for that cell was: " + oldValue);
       console.log(updatedRow.data());
 
-      let scount = updatedCell.data();
-      let ecount = updatedCell.data();
-      if (updatedCell.index().column === 12) ecount = updatedRow.data()['稼動結束數'];
-      if (updatedCell.index().column === 13) scount = updatedRow.data()['稼動起始數'];
+      const ecount = updatedRow.data()['稼動結束數'];
+      const scount = updatedRow.data()['稼動起始數'];
+      // if (updatedCell.index().column === 12) ecount = updatedRow.data()['稼動結束數'];
+      // if (updatedCell.index().column === 13) scount = updatedRow.data()['稼動起始數'];
 
       var url = '/manufacture/counter';
       fetch(url, {
@@ -731,7 +731,9 @@ var manufactureModule = (function () {
           user_stime: updatedRow.data()['user_stime'],
           user_etime: updatedRow.data()['user_etime'],
           scount: scount,
-          ecount: ecount
+          ecount: ecount,
+          item_segment: updatedRow.data()['item_segment'],
+          remark: updatedRow.data()['remark'],
         })
       }).then((response) => {
         return response.json();

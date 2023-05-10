@@ -155,6 +155,11 @@ module.exports = (app, db) => {
   });
 
   router.put('/counter', function (req, res, next) {
+    const scount = !!req.body.scount ? `${req.body.scount}` : 'null'
+    const ecount = !!req.body.ecount ? `${req.body.ecount}` : 'null'
+    const etime = !!req.body.user_etime ? `'${req.body.user_etime}'` : 'null'
+    const itemSegment = !!req.body.item_segment ? `'${req.body.item_segment}'` : 'null'
+    const remark = !!req.body.remark ? `'${req.body.remark}'` : 'null'
     db.query(`
       updateCounter_sp
       @user_name = '${req.body.user_name}',
@@ -162,9 +167,11 @@ module.exports = (app, db) => {
       @mah_num = '${req.body.mah_num}',
       @user_sdate = '${req.body.user_sdate}',
       @user_stime = '${req.body.user_stime}',
-      @user_etime = '${req.body.user_etime}',
-      @scount = '${req.body.scount}',
-      @ecount = '${req.body.ecount}'
+      @user_etime = ${etime},
+      @scount = ${scount},
+      @ecount = ${ecount},
+      @item_segment = ${itemSegment},
+      @remark = ${remark}
     `, {
       raw: false, // Set this to true if you don't have a model definition for your query.
       type: Sequelize.QueryTypes.SELECT
