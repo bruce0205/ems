@@ -64,19 +64,18 @@ module.exports = (app, db) => {
       let titles = R.keys(data[0])
 
       titles.forEach(function (value, index) {
-        console.log(index ,value)
         let adjustValue = value
-        if (index === 13) adjustValue = '標準稼動(秒)';
-        if (index === 16) adjustValue = '實際稼動(秒)';
-        if (index === 17) adjustValue = '嫁動差異(%)';
-        if (index === 18) adjustValue = '嫁動率(%)';
-        if (index === 19) adjustValue = '目標良率(%)';
-        if (index === 20) adjustValue = '生產良率(%)';
+        if (index === 16) adjustValue = '標準稼動(秒)';
+        if (index === 19) adjustValue = '實際稼動(秒)';
+        if (index === 20) adjustValue = '嫁動差異(%)';
+        if (index === 21) adjustValue = '嫁動率(%)';
+        if (index === 22) adjustValue = '目標良率(%)';
+        if (index === 23) adjustValue = '生產良率(%)';
 
         ws.cell(1, index + 1).string(adjustValue).style(headerStyle);
       })
 
-      const numberColumnIndex = [8, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 35, 37, 38, 39, 40];
+      const numberColumnIndex = [11, 12, 13, 14, 15, 13, 19, 20, 21, 22, 23, 24, 25, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 40, 41, 42, 43];
       data.forEach(function (row, i) {
         let cells = R.values(row)
         cells.forEach(function (cell, j) {
