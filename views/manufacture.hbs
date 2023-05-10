@@ -13,6 +13,11 @@
     font-weight: bolder;
   }
 
+  .highlight-wip {
+    color: #22c55e;
+    font-weight: bolder;
+  }
+
   .my-input-class {
     padding: 3px 6px;
     border: 1px solid #ccc;
@@ -115,7 +120,8 @@
 
             <div class="ln_solid"></div>
             <div class="col-md-12 col-sm-12 col-xs-12 form-group">
-              <button id="excelBtn" type="button" style="float: right;display: none" class="btn btn-success" onclick="manufactureModule.download()">
+              <button id="excelBtn" type="button" style="float: right;display: none" class="btn btn-success"
+                onclick="manufactureModule.download()">
                 <i class="fa fa-download" style="margin-right: 10px"></i>Download
               </button>
             </div>
@@ -136,4 +142,29 @@
     manufactureModule.makeCellEditable();
     manufactureModule.cellClickCallback();
   });
+  async function updateHole(machineNo, hole, shift, account) {
+    console.log('machineNo', machineNo)
+    console.log('hole', hole)
+    console.log('shift', shift)
+    console.log('account', account)
+    try {
+      const url = '/manufacture/api/update/hole';
+      const data = {
+        machineNo, hole, shift, account
+      }
+      const response = await fetch(url, {
+        method: "PUT", // *GET, POST, PUT, DELETE, etc.
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data), // body data type must match "Content-Type" header
+      });
+      console.log(await response.json());
+      notify(`強制下線成功`, 'success');
+
+      manufactureModule.destroy();
+      manufactureModule.build();
+    } catch (err) {
+      notify(`強制下線失敗`, 'danger');
+    }
+  }
 </script>

@@ -67,7 +67,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -77,7 +81,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -87,7 +95,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -97,7 +109,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -107,7 +123,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -117,7 +137,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -127,7 +151,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -138,7 +166,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -148,7 +180,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -158,7 +194,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -170,7 +210,11 @@ var manufactureModule = (function () {
               var i = $("<i>").css({ "margin-right": "4px" });
               i.addClass("fa fa-edit")
               div.append(i).append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -182,7 +226,11 @@ var manufactureModule = (function () {
               var i = $("<i>").css({ "margin-right": "4px" });
               i.addClass("fa fa-edit")
               div.append(i).append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -192,7 +240,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -203,7 +255,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -213,7 +269,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -223,7 +283,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -233,7 +297,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -243,7 +311,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -253,7 +325,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(formatFloat(data, 1).toFixed(1));
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -263,7 +339,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -273,7 +353,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(formatFloat(data, 1).toFixed(1));
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -283,7 +367,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -293,7 +381,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -303,7 +395,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -313,7 +409,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -323,7 +423,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -333,7 +437,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -343,7 +451,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -353,7 +465,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -363,7 +479,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -373,7 +493,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -383,7 +507,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -393,7 +521,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -403,7 +535,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -413,7 +549,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -423,7 +563,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -433,7 +577,11 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
@@ -443,10 +591,28 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
-              if (row['生產良率'] < row['目標良率']) div.addClass('highlight-yield');
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
               return div.wrap('<div></div>').parent().html();
             },
           },
+          {
+            "title": "Action",
+            "data": "稼動結束數",
+            "defaultContent": '',
+            "render": function (data, type, row, meta) {
+              if (!!!row['稼動結束數']) {
+                return `
+                <button class="btn btn-danger btn-xs" onclick="updateHole('${row['機台']}', '${row['穴號']}', '${row['班別']}', '${row['Account']}')">
+                  <i class="fa fa-remove" style="margin-right: 10px"></i>強制下線
+                </button>
+                `
+              }
+            }
+          }
         ],
         "order": []
       });
