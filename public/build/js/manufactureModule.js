@@ -159,13 +159,44 @@ var manufactureModule = (function () {
               return div.wrap('<div></div>').parent().html();
             },
           },
-
           {
             "title": "人員",
             "data": "人員",
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
+              return div.wrap('<div></div>').parent().html();
+            },
+          },
+          {
+            "title": "料塊",
+            "data": "item_segment",
+            "render": function (data, type, row, meta) {
+              var div = $("<div>");
+              var i = $("<i>").css({ "margin-right": "4px" });
+              i.addClass("fa fa-edit")
+              div.append(i).append(data);
+              if (!!!row['稼動結束數']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
+              return div.wrap('<div></div>').parent().html();
+            },
+          },
+          {
+            "title": "remark",
+            "data": "remark",
+            "render": function (data, type, row, meta) {
+              var div = $("<div>");
+              var i = $("<i>").css({ "margin-right": "4px" });
+              i.addClass("fa fa-edit")
+              div.append(i).append(data);
               if (!!!row['稼動結束數']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
@@ -641,7 +672,7 @@ var manufactureModule = (function () {
       dataTableInstance.table().MakeCellsEditable({
         "onUpdate": manufactureModule.cellUpdateCallback,
         "inputCss": 'my-input-class',
-        "columns": [10, 11],
+        "columns": [8, 9, 12, 13],
         "allowNulls": {
           "columns": [3],
           "errorClass": 'error'
@@ -652,49 +683,38 @@ var manufactureModule = (function () {
         },
         "inputTypes": [
           {
-            "column": 10,
+            "column": 8,
             "type": "text",
             "options": null
           },
           {
-            "column": 11,
+            "column": 9,
             "type": "text",
             "options": null
           },
           {
-            "column": 0,
+            "column": 12,
             "type": "text",
             "options": null
           },
           {
-            "column": 1,
-            "type": "list",
-            "options": [
-              { "value": "1", "display": "Beaty" },
-              { "value": "2", "display": "Doe" },
-              { "value": "3", "display": "Dirt" }
-            ]
+            "column": 13,
+            "type": "text",
+            "options": null
           },
-          {
-            "column": 2,
-            "type": "datepicker", // requires jQuery UI: http://http://jqueryui.com/download/
-            "options": {
-              "icon": "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif" // Optional
-            }
-          }
         ]
       });
     },
     cellUpdateCallback: function (updatedCell, updatedRow, oldValue) {
-      // console.log(updatedCell.index());
-      // console.log("The new value for the cell is: " + updatedCell.data());
-      // console.log("The old value for that cell was: " + oldValue);
-      // console.log(updatedRow.data());
+      console.log(updatedCell.index());
+      console.log("The new value for the cell is: " + updatedCell.data());
+      console.log("The old value for that cell was: " + oldValue);
+      console.log(updatedRow.data());
 
       let scount = updatedCell.data();
       let ecount = updatedCell.data();
-      if (updatedCell.index().column === 10) ecount = updatedRow.data()['稼動結束數'];
-      if (updatedCell.index().column === 11) scount = updatedRow.data()['稼動起始數'];
+      if (updatedCell.index().column === 12) ecount = updatedRow.data()['稼動結束數'];
+      if (updatedCell.index().column === 13) scount = updatedRow.data()['稼動起始數'];
 
       var url = '/manufacture/counter';
       fetch(url, {

@@ -65,6 +65,7 @@ module.exports = (app, db) => {
 
       titles.forEach(function (value, index) {
         let adjustValue = value
+        if (index === 9) adjustValue = '料塊';
         if (index === 16) adjustValue = '標準稼動(秒)';
         if (index === 19) adjustValue = '實際稼動(秒)';
         if (index === 20) adjustValue = '嫁動差異(%)';

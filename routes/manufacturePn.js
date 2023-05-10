@@ -105,7 +105,7 @@ module.exports = (app, db) => {
               mold: req.body.mafMold,
               errId: obj.err_id,
               seq: obj.Seq ? obj.Seq : 1,
-			  AlarmLimit: obj.AlarmLimit ? obj.AlarmLimit : 100
+              AlarmLimit: obj.AlarmLimit ? obj.AlarmLimit : 100
             }
           })
         }
@@ -224,6 +224,19 @@ module.exports = (app, db) => {
     let sql = `
       select maf_mold from maf_pn
       where 1=1 and maf_mold = '${req.params.mafMold}'
+    `
+    const result = await db.query(sql, dbOptions)
+    if (result.length > 0) {
+      res.status(200).send(result[0])
+    } else {
+      res.status(400).send({ message: 'resource not found' })
+    }
+  })
+
+  router.get('/api/duplicate/mafMold/:mafPn/:mafMold', async function (req, res, next) {
+    let sql = `
+      select maf_mold from maf_pn
+      where 1=1 and maf_mold = '${req.params.mafMold}' and maf_pn = '${req.params.mafPn}'
     `
     const result = await db.query(sql, dbOptions)
     if (result.length > 0) {

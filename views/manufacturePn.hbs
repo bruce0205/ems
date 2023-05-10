@@ -317,7 +317,7 @@
         if (response.status === 200) return true
       },
       async duplicateMafMold() {
-        let url = `/manufacturePn/api/duplicate/mafMold/${this.mafMold}`
+        let url = `/manufacturePn/api/duplicate/mafMold/${this.mafPn}/${this.mafMold}`
         const response = await fetch(url, {
           method: 'GET',
           headers: new Headers({
