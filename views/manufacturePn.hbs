@@ -489,7 +489,7 @@
   }
   .ofy {
 		overflow-y: scroll;
-		height: 40vh;
+		height: 480px;
 	}
   .tableStyle {
     width: 80%;
@@ -518,14 +518,14 @@
   <transition name="modal">
     <div class="modal-mask">
       <div class="modal-wrapper">
-        <div class="modal-container" style="width: 600px;height:70%">
+        <div class="modal-container" style="width: 600px">
 
           <div class="modal-header">
             <h4>維護不良原因 - ${mafPn} - ${mafMold}</h4>
           </div>
 
-          <div class="modal-body ofy" style="height:70%">
-            <div style="width: 100%">
+          <div class="modal-body">
+            <div class="ofy" style="width: 100%">
               <table class="tableStyle">
                 <tr>
                   <th style ="width: 15%"  class="thStyle">action</th>

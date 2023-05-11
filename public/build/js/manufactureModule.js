@@ -195,8 +195,10 @@ var manufactureModule = (function () {
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               var i = $("<i>").css({ "margin-right": "4px" });
+              var span = $("<span>").css({ "white-space": "pre", "word-break": "keep-all" });
               i.addClass("fa fa-edit")
-              div.append(i).append(data);
+              span.append(data)
+              div.append(i).append(span);
               if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
@@ -674,7 +676,7 @@ var manufactureModule = (function () {
         "inputCss": 'my-input-class',
         "columns": [8, 9, 12, 13],
         "allowNulls": {
-          "columns": [3],
+          "columns": [8, 9],
           "errorClass": 'error'
         },
         "confirmationButton": { // could also be true
@@ -689,7 +691,7 @@ var manufactureModule = (function () {
           },
           {
             "column": 9,
-            "type": "text",
+            "type": "textarea",
             "options": null
           },
           {
