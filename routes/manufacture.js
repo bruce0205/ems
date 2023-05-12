@@ -58,6 +58,9 @@ module.exports = (app, db) => {
           color: '#646464',
           size: 12
         },
+        alignment: {
+          wrapText: true,
+        },
       });
 
       let rowCount = data.length
@@ -76,7 +79,12 @@ module.exports = (app, db) => {
         ws.cell(1, index + 1).string(adjustValue).style(headerStyle);
       })
 
-      const numberColumnIndex = [11, 12, 13, 14, 15, 13, 19, 20, 21, 22, 23, 24, 25, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 40, 41, 42, 43];
+      const numberColumnIndex = [
+        11, 12, 13, 14, 15, 19, 20, // 不良品總數, 良品總數，稼動起始數, 稼動結束數, 連片數, 嫁動差異
+        21, 22, 23, 24, 25, 27, 28, 29, 30, // 嫁動率, 目標良率,
+        31, 32, 33, 34, 35, 36, 37, 38, 40,
+        41, 42, 43, 44, 45, 46, 47, 48
+      ];
       data.forEach(function (row, i) {
         let cells = R.values(row)
         cells.forEach(function (cell, j) {
@@ -84,7 +92,7 @@ module.exports = (app, db) => {
             if (R.contains(j, numberColumnIndex)) {
               ws.cell(i + 2, j + 1).number(cell).style(cellStyle);
             } else {
-              ws.cell(i + 2, j + 1).string(cell.toString()).style(cellStyle);
+              ws.cell(i + 2, j + 1).string(cell.toString().replace(/\r?\n/g, "\r\n")).style(cellStyle);
             }
           } else {
             ws.cell(i + 2, j + 1).string('').style(cellStyle);

@@ -578,6 +578,20 @@ var manufactureModule = (function () {
           },
           {
             "title": "縮水",
+            "data": "縮水",
+            "render": function (data, type, row, meta) {
+              var div = $("<div>");
+              div.append(data);
+              if (!!!row['user_etime']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
+              return div.wrap('<div></div>').parent().html();
+            },
+          },
+          {
+            "title": "破片",
             "data": "破片",
             "render": function (data, type, row, meta) {
               var div = $("<div>");
@@ -593,6 +607,76 @@ var manufactureModule = (function () {
           {
             "title": "暗影",
             "data": "暗影",
+            "render": function (data, type, row, meta) {
+              var div = $("<div>");
+              div.append(data);
+              if (!!!row['user_etime']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
+              return div.wrap('<div></div>').parent().html();
+            },
+          },
+          {
+            "title": "留樣片",
+            "data": "留樣片",
+            "render": function (data, type, row, meta) {
+              var div = $("<div>");
+              div.append(data);
+              if (!!!row['user_etime']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
+              return div.wrap('<div></div>').parent().html();
+            },
+          },
+          {
+            "title": "調機片",
+            "data": "調機片",
+            "render": function (data, type, row, meta) {
+              var div = $("<div>");
+              div.append(data);
+              if (!!!row['user_etime']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
+              return div.wrap('<div></div>').parent().html();
+            },
+          },
+          {
+            "title": "復機片",
+            "data": "復機片",
+            "render": function (data, type, row, meta) {
+              var div = $("<div>");
+              div.append(data);
+              if (!!!row['user_etime']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
+              return div.wrap('<div></div>').parent().html();
+            },
+          },
+          {
+            "title": "白暗痕",
+            "data": "白暗痕",
+            "render": function (data, type, row, meta) {
+              var div = $("<div>");
+              div.append(data);
+              if (!!!row['user_etime']) {
+                div.addClass('highlight-wip')
+              } else if (row['生產良率'] < row['目標良率']) {
+                div.addClass('highlight-yield');
+              }
+              return div.wrap('<div></div>').parent().html();
+            },
+          },
+          {
+            "title": "殘膠",
+            "data": "殘膠",
             "render": function (data, type, row, meta) {
               var div = $("<div>");
               div.append(data);
