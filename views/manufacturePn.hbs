@@ -64,7 +64,7 @@
 
 <div id="app" class="right_col" role="main">
   <button style="display: none" id="show-modal" @click="showResetPasswordModal = true">Show Modal</button>
-  <modal v-if="showModal" :form-type="formType" :maf-pn="mafPn" :maf-mold="mafMold" @cancel="showModal = false"
+  <modal v-if="showModal" :form-type="formType" :origin-maf-pn="mafPn" :maf-mold="mafMold" @cancel="showModal = false"
     @close="close">
   </modal>
   <reason v-if="showReasonModal" :maf-pn="mafPn" :maf-mold="mafMold" @cancel="showReasonModal = false" @close="close">
@@ -258,7 +258,7 @@
   })
 
   Vue.component('modal', {
-    props: ['formType', 'mafPn', 'mafMold'],
+    props: ['formType', 'originMafPn', 'mafMold'],
     template: '#modal-template',
     delimiters: ['${', '}'],
     data() {
@@ -287,6 +287,7 @@
       }
     },
     created() {
+      this.mafPn = this.originMafPn
       if (this.mafPn && this.mafMold) this.fetchData()
     },
     mounted() {
@@ -459,7 +460,7 @@
       showNewForm() {
         this.formType = 'new'
         this.showModal = true
-        this.mafPn = null
+        this.mafPn = ''
         this.mafMold = null
       },
       async fetchParameters(typeName) {
@@ -478,6 +479,9 @@
       }
     },
     watch: {
+      mafPn(newValue) {
+        console.log("mafPn", newValue)
+      }
     }
   })
 </script>
@@ -585,7 +589,7 @@
                     <label class="control-label col-md-4 col-sm-4 col-xs-12" for="first-name"><span class="required">*</span> 料號
                     </label>
                     <div class="col-md-8 col-sm-8 col-xs-12">
-                      <input :disabled="formType==='modify'" type="text" v-model="mafPn" class="form-control" maxlength="10" autocomplete="off">
+                      <input :disabled="formType==='modify'" type="text" v-model="mafPn" class="form-control" maxlength="20">
                     </div>
                     <div class="col-md-4 col-sm-4 col-xs-12"></div>
                     <div class="col-md-8 col-sm-8 col-xs-12">
