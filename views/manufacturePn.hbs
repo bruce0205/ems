@@ -331,13 +331,14 @@
       },
       async duplicate() {
         let flag = true
-
+        /*
         if (await this.duplicateMafPn()) {
           this.showDuplicated.mafPn = true
           flag = false
         } else {
           this.showDuplicated.mafPn = false
         }
+        */
 
         if (await this.duplicateMafMold()) {
           this.showDuplicated.mafMold = true
