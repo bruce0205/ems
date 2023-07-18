@@ -76,9 +76,42 @@
       </div>
     </div>
 
+    {{!-- <div class="clearfix"></div> --}}
     <!-- auto refresh -->
-    <div class="col-md-6 col-sm-6 col-xs-12 form-group top_search">
-      <div class="form-inline pull-right">
+    {{!-- <div style="display:grid; grid-template-columns: 1fr 1fr; column-gap: 5px;">
+      <div style="display: flex; flex-direction: row">
+        <button v-for="status in statusList" type="button" class="btn btn-xs"
+          v-bind:style="getButtonStyle(status.backgroundColor)" @click="filter(status.text)">${status.text}</button>
+      </div>
+      <div>
+        <div class="radio">
+          <label>
+            <input name="autoRefresh" type="radio" value="current" class="flat">
+            <span style="margin-left: 5px; margin-right: 5px">即時資訊</span>
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="autoRefresh" type="radio" value="night" class="flat">
+            <span style="margin-left: 5px; margin-right: 5px">${nightLabel} 07:00 (夜班)</span>
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="autoRefresh" type="radio" value="day" class="flat">
+            <span style="margin-left: 5px; margin-right: 5px">${dayLabel} 19:00 (日班)</span>
+          </label>
+        </div>
+      </div>
+    </div> --}}
+    <div class="col-md-12 col-sm-12 col-xs-12 form-group top_search">
+      <div class="col-md-6 form-inline pull-left">
+        <div style="display: flex; flex-direction: row">
+          <button v-for="status in statusList" type="button" class="btn btn-xs"
+            v-bind:style="getButtonStyle(status.backgroundColor)" @click="filter(status.text)">${status.text}</button>
+        </div>
+      </div>
+      <div class="col-md-6 form-inline pull-right" style="display: flex; flex-direction: row; justify-content: end">
         {{!-- <label for="" style="margin-right: 10px">Auto Refresh</label> --}}
         <div class="radio">
           <label>
@@ -214,6 +247,12 @@
     },
     mounted() { },
     methods: {
+      getButtonStyle(backgroundColor) {
+        return {
+          'color': '#fff',
+          'background-color': backgroundColor
+        }
+      },
       fetchData() {
         this.isLoading = true
         var url = `/dashboard/api/data`;
