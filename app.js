@@ -14,6 +14,7 @@ const index = require('./routes/index');
 const machine = require('./routes/machine');
 const mold = require('./routes/mold');
 const manufacture = require('./routes/manufacture');
+const dashboard = require('./routes/dashboard');
 const login = require('./routes/login');
 const kanban = require('./routes/kanban');
 const tryMold = require('./routes/tryMold');
@@ -67,6 +68,7 @@ parts(app, db);
 partsConfig(app, db);
 users(app, db);
 manufacturePn(app, db);
+dashboard(app, db);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

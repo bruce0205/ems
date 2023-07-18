@@ -1,0 +1,282 @@
+<style>
+  .progress {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    border-radius: 10px;
+    height: 10px;
+  }
+
+  .progress::-webkit-progress-bar,
+  .progress::-webkit-progress-value {
+    border-radius: 10px;
+  }
+
+  .progress--copyright::-webkit-progress-bar {
+    background-color: #ffe4e6;
+  }
+
+  .progress--copyright::-webkit-progress-value {
+    background: #e11d48
+  }
+
+
+  .progress--illustration::-webkit-progress-bar {
+    background-color: #dee7e3;
+  }
+
+  .progress--illustration::-webkit-progress-value {
+    background-color: #46bd84;
+  }
+
+
+  .progress--design::-webkit-progress-bar {
+    background-color: #d8e7f4;
+  }
+
+  .progress--design::-webkit-progress-value {
+    background-color: #08a0f7;
+  }
+
+  .card {
+    display: flex;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-left: 18px;
+    padding-right: 18px;
+    flex-direction: column;
+    row-gap: 0.6rem;
+    border-radius: 0.4rem;
+    border: 2px solid #E5E7EB;
+    width: 260px;
+    background-color: #F9FAFB;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  .text-red {
+    color: #F87171;
+  }
+</style>
+
+<script src="../build/js/vue.min.js"></script>
+
+<div id="app">
+  <div class="right_col" role="main">
+    <div class="page-title">
+      <div class="title_left">
+        <h3>機台看板
+        </h3>
+      </div>
+
+      <div class="title_right">
+        <div class="col-md-3 col-sm-3 col-xs-12 form-group pull-right top_search">
+          <label for="" style="margin-right: 10px">${now}</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- auto refresh -->
+    <div class="col-md-6 col-sm-6 col-xs-12 form-group top_search">
+      <div class="form-inline pull-right">
+        {{!-- <label for="" style="margin-right: 10px">Auto Refresh</label> --}}
+        <div class="radio">
+          <label>
+            <input name="autoRefresh" type="radio" value="current" class="flat">
+            <span style="margin-left: 5px; margin-right: 5px">即時資訊</span>
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="autoRefresh" type="radio" value="night" class="flat">
+            <span style="margin-left: 5px; margin-right: 5px">${nightLabel} 07:00 (夜班)</span>
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="autoRefresh" type="radio" value="day" class="flat">
+            <span style="margin-left: 5px; margin-right: 5px">${dayLabel} 19:00 (日班)</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    <hr v-if="!isLoading">
+
+    <div v-if="!isLoading" class=""
+      style="padding: 0px 10px 20px 10px; display: flex; flex-direction: row; column-gap: 30px; flex-wrap: wrap; row-gap: 40px;">
+      <!-- loop start -->
+      <div v-for="machine in machines" class="card">
+        <div style="display: flex; flex-direction: row; column-gap: 8px; align-items: center; ">
+          <div
+            style="display: flex;flex-direction: row;justify-content: center;align-items: center;border-radius: 9999px; width: 56px;height: 56px;"
+            :style="{'background-color': machine.backgroundColor}">
+            <span
+              style="font-size: 16px; line-height: 20px; font-weight: 600; color: #F9FAFB; ">${machine.mah_num}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; ">
+            <span style="font-size: 14px;line-height: 1.25rem; font-weight: 700; ">${machine.mah_pn}</span>
+            <span style="font-size: 12px; line-height: 1.25rem; font-weight: 500; ">${machine.mah_mold}</span>
+          </div>
+        </div>
+        <div style="margin-top: 2px;">
+          <div style="display: flex; flex-direction: row; justify-content: space-between; ">
+            <span style="font-size: 12px;line-height: 1.25rem; font-weight: 500; ">產能效率</span>
+            <span style="font-size: 12px;line-height: 1.25rem; font-weight: 700; ">${machine.Performance}</span>
+          </div>
+          <div style="padding: 0px 10px;">
+            <progress class="progress"
+              :class="{'progress--copyright': machine.Performance != 0 && machine.Performance < 95, 'progress--illustration': machine.Performance != 0 && machine.Performance >= 95}"
+              style="margin: 5px 0px;" max="100" :value="machine.Performance">
+              ${machine.Performance}</progress>
+          </div>
+        </div>
+        <div>
+          <div style="display: flex; flex-direction: row; justify-content: space-between; ">
+            <span style="font-size: 12px;line-height: 1.25rem; font-weight: 500; ">良率</span>
+            <span style="font-size: 12px;line-height: 1.25rem; font-weight: 700; ">${machine.Quality}</span>
+          </div>
+          <div style="padding: 0px 10px;">
+            <progress class="progress"
+              :class="{'progress--copyright': machine.Quality != 0 && machine.Quality < machine.maf_tryd, 'progress--illustration': machine.Quality != 0 && machine.Quality >= machine.maf_tryd}"
+              style="margin: 5px 0px;" max="100" :value="machine.Quality">
+              ${machine.Quality}</progress>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 2fr 3fr; column-gap: 1rem; ">
+          <span style="font-size: 12px; line-height: 1.25rem; font-weight: 500; ">不良比率</span>
+          <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; ">
+            <div
+              style="display: flex; flex-direction: row; column-gap: 0.25rem; justify-content: flex-start; align-items: center; ">
+              <span style="font-size: 12px; line-height: 1.25rem; font-weight: 500; ">Remark</span>
+              <span style="font-size: 12px;line-height: 1rem;color: #6B7280;cursor: pointer; ">
+                <i class="fa fa-arrows-alt"></i></span>
+            </div>
+
+            <span style="font-size: 0.75rem;line-height: 1rem;color: #6B7280;cursor: pointer; ">
+              <i class="fa fa-pencil"></i></span>
+          </div>
+          <div
+            style="margin-top:4px; display: grid; grid-template-columns: 3fr 2fr ;padding-top: 0.25rem; padding-left: 0.5rem; row-gap: 0.25rem; ">
+            <template v-for="item in machine.ErrorList">
+              <span :class="{'text-red': item.Err_pert >= 5}"
+                style="font-size: 0.75rem;line-height: 1rem; ">${item.Err_name}</span>
+              <span :class="{'text-red': item.Err_pert >= 5}"
+                style="font-size: 0.75rem;line-height: 1rem; font-weight: 500; text-decoration: underline; ">
+                ${item.Err_pert}%</span>
+            </template>
+            <template v-for="item in (3 - machine.ErrorList.length)">
+              <span style="font-size: 0.75rem;line-height: 1rem; ">無</span>
+              <span style="font-size: 0.75rem;line-height: 1rem; font-weight: 500; text-decoration: underline; ">
+              </span>
+            </template>
+          </div>
+          <div
+            style="margin-top:4px;display: flex; padding-top: 0.5rem; padding-left: 0.5rem; flex-direction: column; justify-content: flex-start; ">
+            <span style="font-size: 0.75rem;line-height: 1rem; ">
+              ${machine.mah_remark}
+            </span>
+          </div>
+        </div>
+      </div>
+      <!-- loop end -->
+    </div>
+  </div>
+</div>
+
+<script>
+  let vm = new Vue({
+    delimiters: ['${', '}'],
+    el: '#app',
+    data: {
+      isLoading: false,
+      cnt: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      machines: [],
+      statusList: [],
+      dayDate: '',
+      nightDate: ''
+    },
+    created() {
+      if (moment().format('HH:mm:ss') >= '19:00:00') {
+        // 如果between 19:00:00 and 23:59:59, 日班='今天', 夜班='今天'
+        this.dayDate = moment()
+        this.nightDate = moment()
+      } else if (moment().format('HH:mm:ss') >= '07:00:00') {
+        // 如果between 07:00:00 and 18:59:59, 日班='昨天', 夜班='今天'
+        this.dayDate = moment().subtract({ d: 1 })
+        this.nightDate = moment()
+      } else if (moment().format('HH:mm:ss') >= '00:00:00') {
+        // 如果between 00:00:00 and 06:59:59, 日班='昨天', 夜班='昨天'
+        this.dayDate = moment().subtract({ d: 1 })
+        this.nightDate = moment().subtract({ d: 1 })
+      }
+      this.fetchData();
+    },
+    mounted() { },
+    methods: {
+      fetchData() {
+        this.isLoading = true
+        var url = `/dashboard/api/data`;
+        fetch(url, {
+          method: 'GET',
+          credentials: "same-origin"
+        }).then((response) => {
+          return response.json();
+        }).then((data) => {
+          this.machines = data.machines
+          this.statusList = data.statusList
+          this.isLoading = false
+        }).catch((err) => {
+          console.error(err);
+        });
+      },
+      fetchSnapShot(dataClass) {
+        this.isLoading = true
+        const dataData = dataClass === 'day' ? this.dayDate.format('YYYY-MM-DD') : this.nightDate.format('YYYY-MM-DD')
+        var url = `/dashboard/api/data/snapshot?date=${dataData}&class=${dataClass === 'day' ? 'D' : 'N'}`;
+        fetch(url, {
+          method: 'GET',
+          credentials: "same-origin"
+        }).then((response) => {
+          return response.json();
+        }).then((data) => {
+          this.machines = data.machines
+          this.statusList = data.statusList
+          for (let machine of this.machines) {
+            machine.ErrorList = JSON.parse(machine.ErrorList)
+          }
+          this.isLoading = false
+        }).catch((err) => {
+          console.error(err);
+        });
+      },
+    },
+    computed: {
+      now() {
+        return moment().format("YYYY-MM-DD HH:mm:ss")
+      },
+      dayLabel() {
+        return this.dayDate.format('MM/DD')
+      },
+      nightLabel() {
+        return this.nightDate.format('MM/DD')
+      }
+    }
+  })
+
+  $(document).ready(function () {
+    $("[name='autoRefresh']").filter("[value='current']").iCheck('check')
+
+    $("input[name='autoRefresh']").on('ifChecked', function (event) {
+      console.log('autoRefresh changed: ' + $("[name='autoRefresh']:checked").val())
+      vm.isLoading = true
+      if ($("[name='autoRefresh']:checked").val() === 'current') {
+        vm.fetchData()
+      } else if ($("[name='autoRefresh']:checked").val() === 'day') {
+        vm.fetchSnapShot('day')
+      } else if ($("[name='autoRefresh']:checked").val() === 'night') {
+        vm.fetchSnapShot('night')
+      }
+    });
+  });
+</script>
