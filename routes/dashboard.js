@@ -68,9 +68,11 @@ module.exports = (app, db) => {
 
     const machines = []
     for (let val of data) {
-      let color = R.find(R.propEq('text', val.status.trim()))(statusList)
+      if (!!val.status) {
+        let color = R.find(R.propEq('text', val.status.trim()))(statusList)
+        val['backgroundColor'] = color ? color.backgroundColor : ''
+      }
       val['ErrorList'] = await getErrorList(val.mah_num);
-      val['backgroundColor'] = color ? color.backgroundColor : ''
       machines.push(val)
     }
 
@@ -96,8 +98,10 @@ module.exports = (app, db) => {
 
     const machines = []
     for (let val of data) {
-      let color = R.find(R.propEq('text', val.status?.trim()))(statusList)
-      val['backgroundColor'] = color ? color.backgroundColor : ''
+      if (!!val.status) {
+        let color = R.find(R.propEq('text', val.status.trim()))(statusList)
+        val['backgroundColor'] = color ? color.backgroundColor : ''
+      }
       machines.push(val)
     }
 
