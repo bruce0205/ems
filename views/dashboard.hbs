@@ -57,6 +57,55 @@
   .text-red {
     color: #F87171;
   }
+
+  .multiline-ellipsis {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    /* start showing ellipsis when 3rd line is reached */
+    white-space: pre-wrap;
+    /* let the text wrap preserving spaces */
+  }
+
+  .modal-mask {
+    position: fixed;
+    z-index: 9998;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .5);
+    display: table;
+  }
+
+  .modal-wrapper {
+    display: table-cell;
+    vertical-align: middle;
+  }
+
+  .modal-container {
+    width: 600px;
+    margin: 0px auto;
+    padding: 5px 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+    font-family: Helvetica, Arial, sans-serif;
+  }
+
+  .modal-header h4 {
+    margin-top: 0;
+    color: #42b983;
+  }
+
+  .modal-body {
+    margin: 0px 0;
+  }
+
+  .modal-default-button {
+    float: right;
+  }
 </style>
 
 <script src="../build/js/vue.min.js"></script>
@@ -76,34 +125,6 @@
       </div>
     </div>
 
-    {{!-- <div class="clearfix"></div> --}}
-    <!-- auto refresh -->
-    {{!-- <div style="display:grid; grid-template-columns: 1fr 1fr; column-gap: 5px;">
-      <div style="display: flex; flex-direction: row">
-        <button v-for="status in statusList" type="button" class="btn btn-xs"
-          v-bind:style="getButtonStyle(status.backgroundColor)" @click="filter(status.text)">${status.text}</button>
-      </div>
-      <div>
-        <div class="radio">
-          <label>
-            <input name="autoRefresh" type="radio" value="current" class="flat">
-            <span style="margin-left: 5px; margin-right: 5px">即時資訊</span>
-          </label>
-        </div>
-        <div class="radio">
-          <label>
-            <input name="autoRefresh" type="radio" value="night" class="flat">
-            <span style="margin-left: 5px; margin-right: 5px">${nightLabel} 07:00 (夜班)</span>
-          </label>
-        </div>
-        <div class="radio">
-          <label>
-            <input name="autoRefresh" type="radio" value="day" class="flat">
-            <span style="margin-left: 5px; margin-right: 5px">${dayLabel} 19:00 (日班)</span>
-          </label>
-        </div>
-      </div>
-    </div> --}}
     <div class="col-md-12 col-sm-12 col-xs-12 form-group top_search">
       <div class="col-md-6 form-inline pull-left">
         <div style="display: flex; flex-direction: row">
@@ -112,7 +133,6 @@
         </div>
       </div>
       <div class="col-md-6 form-inline pull-right" style="display: flex; flex-direction: row; justify-content: end">
-        {{!-- <label for="" style="margin-right: 10px">Auto Refresh</label> --}}
         <div class="radio">
           <label>
             <input name="autoRefresh" type="radio" value="current" class="flat">
@@ -182,11 +202,13 @@
             <div
               style="display: flex; flex-direction: row; column-gap: 0.25rem; justify-content: flex-start; align-items: center; ">
               <span style="font-size: 12px; line-height: 1.25rem; font-weight: 500; ">Remark</span>
-              <span style="font-size: 12px;line-height: 1rem;color: #6B7280;cursor: pointer; ">
+              <span @click="showModal(machine.mah_num, machine.mah_remark, 'view', machine.sys_id)"
+                style="font-size: 12px;line-height: 1rem;color: #6B7280;cursor: pointer; ">
                 <i class="fa fa-arrows-alt"></i></span>
             </div>
 
-            <span style="font-size: 0.75rem;line-height: 1rem;color: #6B7280;cursor: pointer; ">
+            <span @click="showModal(machine.mah_num, machine.mah_remark, 'edit', machine.sys_id)"
+              style="font-size: 0.75rem;line-height: 1rem;color: #6B7280;cursor: pointer; ">
               <i class="fa fa-pencil"></i></span>
           </div>
           <div
@@ -206,28 +228,81 @@
           </div>
           <div
             style="margin-top:4px;display: flex; padding-top: 0.5rem; padding-left: 0.5rem; flex-direction: column; justify-content: flex-start; ">
-            <span style="font-size: 0.75rem;line-height: 1rem; ">
-              ${machine.mah_remark}
-            </span>
+            <span class="multiline-ellipsis" style="font-size: 0.75rem;line-height: 1rem; ">${machine.mah_remark}</span>
           </div>
         </div>
       </div>
       <!-- loop end -->
+      <modal v-if="isShowModal" @cancel="isShowModal = false" @close="closeModal" :machine="selectedMachine"
+        :remark="selectedRemark" :action="selectedAction" :id="selectedSysId">
+      </modal>
     </div>
   </div>
 </div>
 
 <script>
+  Vue.component('modal', {
+    props: ['machine', 'remark', 'action', 'id'],
+    template: '#modal-template',
+    delimiters: ['${', '}'],
+    data() {
+      return {
+        description: '',
+      }
+    },
+    created() {
+      this.description = this.remark
+    },
+    computed: {},
+    methods: {
+      async save() {
+        try {
+          this.isLoading = true
+          const body = {
+            remark: this.description,
+            machine: this.machine,
+            sysId: this.id,
+          }
+          var url = `/dashboard/api/data/remark`;
+          let header = {
+            'Content-Type': 'application/json'
+          }
+          const response = await fetch(url, {
+            method: 'PUT',
+            body: JSON.stringify(body),
+            headers: new Headers(header),
+            credentials: "same-origin"
+          })
+          if (response.status === 200) {
+            notify(`Remark維護成功`, 'success');
+          } else {
+            throw response.statusText
+          }
+          this.$emit('close')
+        } catch (ex) {
+          console.error(ex)
+          notify(`Remark維護失敗`, 'danger');
+        }
+      }
+    },
+    watch: {}
+  })
+
   let vm = new Vue({
     delimiters: ['${', '}'],
     el: '#app',
     data: {
+      isShowModal: false,
       isLoading: false,
       cnt: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       machines: [],
       statusList: [],
       dayDate: '',
-      nightDate: ''
+      nightDate: '',
+      selectedMachine: '',
+      selectedRemark: '',
+      selectedAction: '',
+      selectedSysId: '',
     },
     created() {
       if (moment().format('HH:mm:ss') >= '19:00:00') {
@@ -247,6 +322,25 @@
     },
     mounted() { },
     methods: {
+      showModal(machine, remark, action, sysId) {
+        this.selectedMachine = machine
+        this.selectedRemark = remark
+        this.selectedAction = action
+        this.selectedSysId = sysId
+
+        this.isShowModal = true
+      },
+      closeModal() {
+        this.isShowModal = false;
+        console.log('dataClass', $("[name='autoRefresh']:checked").val())
+        if ($("[name='autoRefresh']:checked").val() === 'current') {
+          this.fetchData()
+        } else if ($("[name='autoRefresh']:checked").val() === 'day') {
+          this.fetchSnapShot('day')
+        } else if ($("[name='autoRefresh']:checked").val() === 'night') {
+          this.fetchSnapShot('night')
+        }
+      },
       getButtonStyle(backgroundColor) {
         return {
           'color': '#fff',
@@ -318,4 +412,38 @@
       }
     });
   });
+</script>
+
+<script type="text/x-template" id="modal-template">
+  <transition name="modal">
+    <div class="modal-mask">
+      <div class="modal-wrapper">
+        <div class="modal-container">
+
+          <div class="modal-header">
+            <h4>${machine} Remark</h4>
+          </div>
+
+          <div class="modal-body">
+            <div style="width: 100%">
+              <form class="form-horizontal">
+                <div class="form-group">
+                  <div class="col-md-12 col-sm-12 col-xs-12">
+                    <textarea v-if="action === 'edit'" v-model="description"class="form-control" rows="6" style="resize: none;"></textarea>
+                    <div v-else style="white-space: pre-wrap;; word-break: break-all; ">${description}</div>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" style="float: right" @click="$emit('cancel')">Cancel</button>
+            <button v-if="action === 'edit'" type="button" class="btn btn-warning" style="float: right" @click="save">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </transition>
 </script>

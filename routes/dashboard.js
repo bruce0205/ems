@@ -85,7 +85,7 @@ module.exports = (app, db) => {
 
   router.get('/api/data/snapshot', async function (req, res, next) {
     const data = await db.query(`
-      select m.mah_num,m.mah_pn,m.mah_mold, mah_sta,m.mah_result as status,m.remark as mah_remark ,m.Availability,m.Performance,m.Quality,pn.maf_tryd, m.ErrorList
+      select m.sys_id, m.mah_num,m.mah_pn,m.mah_mold, mah_sta,m.mah_result as status,m.remark as mah_remark ,m.Availability,m.Performance,m.Quality,pn.maf_tryd, m.ErrorList
       from tbl_dashboard_snapshot m
       left join MAF_PN pn on pn.maf_pn = m.mah_pn and pn.maf_mold = m.mah_mold
       left join CLS_STATUS_MAPPING s on s.status_app = m.mah_result
@@ -109,6 +109,40 @@ module.exports = (app, db) => {
       machines,
       statusList
     });
+  })
+
+  router.put('/api/data/remark', async function (req, res, next) {
+    try {
+      console.log(req.body)
+      let sql
+      if (!!req.body.sysId) {
+        sql = `
+          update tbl_dashboard_snapshot set remark = :remark where sys_id = :sysId
+        `
+        await db.query(sql, {
+          type: Sequelize.QueryTypes.SELECT,
+          replacements: {
+            sysId: req.body.sysId,
+            remark: req.body.remark,
+          }
+        })
+      } else {
+        sql = `
+          update mah_sta set mah_remark = :remark where mah_num = :machine
+        `
+        await db.query(sql, {
+          type: Sequelize.QueryTypes.SELECT,
+          replacements: {
+            machine: req.body.machine,
+            remark: req.body.remark,
+          }
+        })
+      }
+      res.status(200).send({})
+    } catch (ex) {
+      console.error(ex)
+      res.status(500).send({ errorMessage: ex })
+    }
   })
 
   async function getErrorList(machine) {
