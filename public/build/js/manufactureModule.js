@@ -1,3 +1,9 @@
+function numberWithCommas(x) {
+  if (!!x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+}
+
 var manufactureModule = (function () {
   var dataTableInstance;
   var self = this;
@@ -212,7 +218,7 @@ var manufactureModule = (function () {
             "data": "不良總數",
             "render": function (data, type, row, meta) {
               var div = $("<div>");
-              div.append(data);
+              div.append(numberWithCommas(data));
               if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
@@ -226,7 +232,7 @@ var manufactureModule = (function () {
             "data": "良品總數",
             "render": function (data, type, row, meta) {
               var div = $("<div>");
-              div.append(data);
+              div.append(numberWithCommas(data));
               if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
@@ -242,7 +248,7 @@ var manufactureModule = (function () {
               var div = $("<div>");
               var i = $("<i>").css({ "margin-right": "4px" });
               i.addClass("fa fa-edit")
-              div.append(i).append(data);
+              div.append(i).append(numberWithCommas(data));
               if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
@@ -258,7 +264,7 @@ var manufactureModule = (function () {
               var div = $("<div>");
               var i = $("<i>").css({ "margin-right": "4px" });
               i.addClass("fa fa-edit")
-              div.append(i).append(data);
+              div.append(i).append(numberWithCommas(data));
               if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
@@ -371,7 +377,7 @@ var manufactureModule = (function () {
             "data": "實際與標準差異片數",
             "render": function (data, type, row, meta) {
               var div = $("<div>");
-              div.append(data);
+              div.append(numberWithCommas(data));
               if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
@@ -441,7 +447,7 @@ var manufactureModule = (function () {
             "data": "損益成本",
             "render": function (data, type, row, meta) {
               var div = $("<div>");
-              div.append(data);
+              div.append(numberWithCommas(data));
               if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
@@ -469,7 +475,7 @@ var manufactureModule = (function () {
             "data": "生產時間",
             "render": function (data, type, row, meta) {
               var div = $("<div>");
-              div.append(data);
+              div.append(numberWithCommas(data));
               if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {
@@ -707,7 +713,7 @@ var manufactureModule = (function () {
             "data": "正常",
             "render": function (data, type, row, meta) {
               var div = $("<div>");
-              div.append(data);
+              div.append(numberWithCommas(data));
               if (!!!row['user_etime']) {
                 div.addClass('highlight-wip')
               } else if (row['生產良率'] < row['目標良率']) {

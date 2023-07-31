@@ -201,6 +201,10 @@
     },
   })
 
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
   let vm = new Vue({
     delimiters: ['${', '}'],
     el: '#app',
@@ -239,8 +243,8 @@
             this.user_hole = data[0].user_hole
             this.user_name = data[0].user_name
             this.Quality = data[0].Quality
-            this.Normal_count = data[0].Normal_count
-            this.AbNormal_count = data[0].AbNormal_count
+            this.Normal_count = numberWithCommas(data[0].Normal_count)
+            this.AbNormal_count = numberWithCommas(data[0].AbNormal_count)
           }
         }).catch((err) => {
           console.error(err);

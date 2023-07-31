@@ -58,6 +58,7 @@ module.exports = (app, db) => {
           color: '#646464',
           size: 12
         },
+        numberFormat: '#,##0;',
         alignment: {
           wrapText: true,
         },
