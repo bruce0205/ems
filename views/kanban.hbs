@@ -75,7 +75,7 @@
                 data-fgColor="gray" :value="machine.OEE" readonly>
             </div>
             <div class="col-md-3">
-              <p :class="{'selected-font': machine.isSelected, 'unselected-font': !machine.isSelected}">Available</p>
+              <p :class="{'selected-font': machine.isSelected, 'unselected-font': !machine.isSelected}">Availability</p>
               <input :id="machine.mah_num+'-'+machine.pn+'-'+'AVA'" style="cursor: pointer" class="knob" data-width="50" data-height="50"
                 data-angleOffset=90 data-linecap=round data-fgColor="gray" :value="machine.AVA" @click="locationRedirect('available',machine.mah_num)"
                 readonly>
