@@ -53,15 +53,17 @@ module.exports = (app, db) => {
   });
 
   router.get('/api/data', async function (req, res, next) {
-    const data = await db.query(`
-        select m.mah_num,m.mah_pn,m.mah_mold, mah_sta,s.status_oee as status,m.mah_remark ,a.Availability,p.Performance,q.Quality,pn.maf_tryd
-        from MAH_STA m
-        left join MAF_PN pn on pn.maf_pn = m.mah_pn and pn.maf_mold = m.mah_mold
-        left join CLS_STATUS_MAPPING s on s.status_app = m.mah_result
-        cross apply GetOEE_A_fn(m.mah_num) a
-        cross apply GetOEE_P_fn(m.mah_num) p
-        cross apply GetOEE_Q_fn(m.mah_num) q
-      `, {
+    // const sql = `
+    //   select m.mah_num,m.mah_pn,m.mah_mold, mah_sta,s.status_oee as status,m.mah_remark ,a.Availability,p.Performance,q.Quality,pn.maf_tryd
+    //   from MAH_STA m
+    //   left join MAF_PN pn on pn.maf_pn = m.mah_pn and pn.maf_mold = m.mah_mold
+    //   left join CLS_STATUS_MAPPING s on s.status_app = m.mah_result
+    //   cross apply GetOEE_A_fn(m.mah_num) a
+    //   cross apply GetOEE_P_fn(m.mah_num) p
+    //   cross apply GetOEE_Q_fn(m.mah_num) q
+    // `
+    const sql = `select * from Get_Dashboard_fn()`
+    const data = await db.query(sql, {
       raw: true, // Set this to true if you don't have a model definition for your query.
       type: Sequelize.QueryTypes.SELECT
     })
