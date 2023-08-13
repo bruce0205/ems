@@ -151,7 +151,7 @@ module.exports = (app, db) => {
     console.log('machine', machine)
     const list = await db.query(`
         select top(3) ltrim(rtrim(Err_name)) as Err_name,Err_pert
-        from GetOEE_Q_ErrorList_fn('${machine}')
+        from GetOEE_Q_ErrorList_Class_fn('${machine}')
         where Err_id not in (12,100)
         and Err_pert > 0
         order by Err_Pert desc
