@@ -275,6 +275,7 @@
         mafHev: null,
         mafTryd: null,
         mafPrice: null,
+        alarmEanble: null,
         showRequired: {
           mafPn: false,
           mafMold: false,
@@ -294,6 +295,10 @@
       $('.input-group.date').datepicker({
         autoclose: true,
         format: "yyyy-mm-dd"
+      });
+      $('input.flat').iCheck({
+        checkboxClass: 'icheckbox_flat-green',
+        radioClass: 'iradio_flat-green'
       });
     },
     destroyed() {
@@ -393,6 +398,9 @@
         this.mafHev = obj.maf_hev
         this.mafTryd = obj.maf_tryd
         this.mafPrice = obj.maf_price
+        this.alarmEanble = obj.alarmEanble
+
+        if (obj.alarmEanble) $('#alarmEanble').iCheck('check');
         $("#mafDate").val(obj.maf_date);
       },
       async save() {
@@ -418,6 +426,7 @@
             mafHev: this.mafHev,
             mafTryd: this.mafTryd,
             mafPrice: this.mafPrice,
+            alarmEanble: $("#alarmEanble:checked").length,
           }
           const response = await fetch(url, {
             method: method,
@@ -728,6 +737,20 @@
                     </label>
                     <div class="col-md-8 col-sm-8 col-xs-12">
                       <input class="form-control" list="browsers" v-model="mafPrice" type="number" name="browser" autocomplete="off">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label class="control-label col-md-4 col-sm-4 col-xs-12" for="last-name">是否發報異常
+                    </label>
+                    <div class="col-md-8 col-sm-8 col-xs-12">
+                      <div class="checkbox">
+                        <label>
+                          <input id="alarmEanble" name="alarmEanble" type="checkbox" class="flat" v-model="alarmEanble">
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>

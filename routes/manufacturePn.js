@@ -37,7 +37,8 @@ module.exports = (app, db) => {
         maf_ptmd,
         maf_hev,
         maf_tryd,
-        maf_price
+        maf_price,
+        alarmEanble
         from MAF_PN a
       Where 1=1
     `
@@ -61,7 +62,7 @@ module.exports = (app, db) => {
 
   router.get('/api/data/:mafPn/:mafMold', async function (req, res, next) {
     let sql = `
-      select maf_pn, maf_mold, maf_hole1, maf_hole2, CONVERT(char(10), maf_date,126) maf_date, maf_cto, maf_pke, maf_cytime, maf_ptmd, maf_hev, maf_tryd, maf_price
+      select maf_pn, maf_mold, maf_hole1, maf_hole2, CONVERT(char(10), maf_date,126) maf_date, maf_cto, maf_pke, maf_cytime, maf_ptmd, maf_hev, maf_tryd, maf_price, alarmEanble
       from maf_pn
       where 1=1 and maf_pn = '${req.params.mafPn}' and maf_mold = '${req.params.mafMold}'
     `
@@ -131,8 +132,8 @@ module.exports = (app, db) => {
     try {
       let sql = `
         insert into maf_pn
-        (maf_pn, maf_mold, maf_hole1, maf_hole2, maf_date, maf_cto, maf_pke, maf_cytime, maf_ptmd, maf_hev, maf_tryd, maf_price) values
-        (:mafPn, :mafMold, :mafHole1, :mafHole2, :mafDate, :mafCto, :mafPke, :mafCytime, :mafPtmd, :mafHev, :mafTryd, :mafPrice)
+        (maf_pn, maf_mold, maf_hole1, maf_hole2, maf_date, maf_cto, maf_pke, maf_cytime, maf_ptmd, maf_hev, maf_tryd, maf_price, alarmEanble) values
+        (:mafPn, :mafMold, :mafHole1, :mafHole2, :mafDate, :mafCto, :mafPke, :mafCytime, :mafPtmd, :mafHev, :mafTryd, :mafPrice, :alarmEanble)
       `
       await db.query(sql, {
         type: Sequelize.QueryTypes.SELECT,
@@ -148,7 +149,8 @@ module.exports = (app, db) => {
           mafPtmd: req.body.mafPtmd,
           mafHev: req.body.mafHev,
           mafTryd: req.body.mafTryd,
-          mafPrice: req.body.mafPrice ? req.body.mafPrice : 0
+          mafPrice: req.body.mafPrice ? req.body.mafPrice : 0,
+          alarmEanble: req.body.alarmEanble,
         }
       })
       res.status(200).send({})
@@ -161,7 +163,7 @@ module.exports = (app, db) => {
   router.put('/api/data', async function (req, res, next) {
     try {
       let sql = `
-        update maf_pn set maf_hole1 = :mafHole1, maf_hole2 = :mafHole2, maf_date = :mafDate, maf_cto = :mafCto, maf_pke = :mafPke, maf_cytime = :mafCytime, maf_ptmd = :mafPtmd, maf_hev = :mafHev, maf_tryd = :mafTryd, maf_price = :mafPrice
+        update maf_pn set maf_hole1 = :mafHole1, maf_hole2 = :mafHole2, maf_date = :mafDate, maf_cto = :mafCto, maf_pke = :mafPke, maf_cytime = :mafCytime, maf_ptmd = :mafPtmd, maf_hev = :mafHev, maf_tryd = :mafTryd, maf_price = :mafPrice, alarmEanble = :alarmEanble
         where maf_pn = :mafPn and maf_mold = :mafMold
       `
       await db.query(sql, {
@@ -178,7 +180,8 @@ module.exports = (app, db) => {
           mafPtmd: req.body.mafPtmd,
           mafHev: req.body.mafHev ? req.body.mafHev : null,
           mafTryd: req.body.mafTryd ? req.body.mafTryd : null,
-          mafPrice: req.body.mafPrice ? req.body.mafPrice : 0
+          mafPrice: req.body.mafPrice ? req.body.mafPrice : 0,
+          alarmEanble: req.body.alarmEanble,
         }
       })
       res.status(200).send({})

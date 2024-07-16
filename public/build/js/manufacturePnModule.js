@@ -94,6 +94,13 @@ var manufacturePnModule = (function () {
 						"data": "maf_price"
 					},
 					{
+						"title": "是否發報異常",
+						"data": "alarmEanble",
+						"render": function (data, type, row, meta) {
+							return row.alarmEanble ? '是' : '否'
+						}
+					},
+					{
 						"title": "Action",
 						"data": "sys_id",
 						"render": function (data, type, row, meta) {

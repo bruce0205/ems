@@ -87,7 +87,7 @@ module.exports = (app, db) => {
 
   router.get('/api/data/snapshot', async function (req, res, next) {
     const data = await db.query(`
-      select m.sys_id, m.mah_num,m.mah_pn,m.mah_mold, mah_sta,m.mah_result as status,m.remark as mah_remark ,m.Availability,m.Performance,m.Quality,pn.maf_tryd, m.ErrorList
+      select m.sys_id, m.mah_num,m.mah_pn,m.mah_mold, mah_sta,m.mah_result as status,m.remark as mah_remark ,m.Availability,m.Performance,m.Quality,pn.maf_tryd, m.ErrorList, m.Normal_count, m.AbNormal_count
       from tbl_dashboard_snapshot m
       left join MAF_PN pn on pn.maf_pn = m.mah_pn and pn.maf_mold = m.mah_mold
       left join CLS_STATUS_MAPPING s on s.status_app = m.mah_result
