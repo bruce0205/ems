@@ -1,0 +1,996 @@
+<link href="../vendors/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet">
+
+<style>
+.required {
+  color: #E57373
+}
+</style>
+
+<script src="../build/js/vue.min.js"></script>
+
+<div id="app" class="right_col" role="main">
+  <div class="">
+    <div class="page-title">
+      <div class="title_left">
+        <h3>數據分析
+          <small></small>
+        </h3>
+      </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>查詢條件
+            </h2>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <form class="form-horizontal">
+
+              <div class="col-md-3 col-sm-12 col-xs-12 form-group">
+                <label style="text-align:left" class="control-label col-md-4 col-sm-4 col-xs-12"><span class="required">*</span> 生產起日</label>
+                <div class="col-md-8 col-sm-8 col-xs-12">
+                  <div id="dp3" class="input-group date">
+                    <input id="fromDate" v-model="selectedFromDate" type="text" class="form-control">
+                    <span class="input-group-addon">
+                      <i class="glyphicon glyphicon-th"></i>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-3 col-sm-12 col-xs-12 form-group">
+                <label style="text-align:left" class="control-label col-md-4 col-sm-4 col-xs-12"><span class="required">*</span> 生產迄日</label>
+                <div class="col-md-8 col-sm-8 col-xs-12">
+                  <div id="dp4" class="input-group date ">
+                    <input id="endDate" v-model="selectedEndDate" type="text" class="form-control">
+                    <span class="input-group-addon">
+                      <i class="glyphicon glyphicon-th"></i>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-3 col-sm-12 col-xs-12 form-group">
+                <label style="text-align:left" class="control-label col-md-4 col-sm-4 col-xs-12"><span class="required">*</span> 時間單位</label>
+                <div class="col-md-8 col-sm-8 col-xs-12">
+                  <select v-model="selectedTimeUnit" id="selectedTimeUnit" class="form-control">
+                    <option></option>
+                    <option v-for="param in timeUnitList" :value="param.field_value">${param.field_key}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-md-3 col-sm-12 col-xs-12 form-group">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                  <div class="checkbox">
+                    <label>
+                      <input id="isShowAbnormal" name="isShowAbnormal" type="checkbox" class="flat" v-model="isShowAbnormal">
+                      &nbsp;&nbsp;&nbsp;&nbsp;顯示不良原因
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-7 col-sm-7 col-xs-12 form-group" style="display: flex; flex-direction: row; column-gap: 10px; align-items: center">
+                <label style="text-align:left" class="control-label"><span class="required">*</span> 產生數據</label>
+
+                <div class="radio">
+                  <label>
+                    <input name="selectedDataType" type="radio" value="yield" v-model="selectedDataType"  class="flat">
+                    <span style="margin-left: 5px; margin-right: 5px">良率</span>
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input name="selectedDataType" type="radio" value="utilization" v-model="selectedDataType" class="flat">
+                    <span style="margin-left: 5px; margin-right: 5px">稼動率</span>
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input name="selectedDataType" type="radio" value="quantity" v-model="selectedDataType" class="flat">
+                    <span style="margin-left: 5px; margin-right: 5px">良品數量</span>
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input name="selectedDataType" type="radio" value="operation" v-model="selectedDataType" class="flat">
+                    <span style="margin-left: 5px; margin-right: 5px">實際稼動秒數</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="col-md-5 col-sm-5 col-xs-12 form-group" style="display: flex; flex-direction: row; column-gap: 10px; align-items: center">
+                <label style="text-align:left" class="control-label">區分種類</label>
+                <div class="radio">
+                  <label>
+                    <input name="selectedGroupType" type="radio" value="class" v-model="selectedGroupType" class="flat">
+                    <span style="margin-left: 5px; margin-right: 5px">班別</span>
+                  </label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input name="selectedGroupType" type="radio" value="employee" v-model="selectedGroupType" class="flat">
+                    <span style="margin-left: 5px; margin-right: 5px">人員</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="col-md-12 col-sm-12 col-xs-12 form-group" style="display: flex; flex-direction: column; row-gap: 10px; border: 2px solid #e4e4e7; border-radius: 8px">
+                <div class="col-md-3 col-sm-3 col-xs-12 form-group">
+                  <label style="text-align:left" class="control-label col-md-4 col-sm-4 col-xs-12">生產資訊</label>
+                </div>
+                <div style="padding-left: 40px;">
+                  <product-info v-for="(productInfo, index) in productInfoList" @add="addProductInfo" @delete="deleteProductInfo"
+                    :index="index" :from-date="selectedFromDate" :end-date="selectedEndDate" :product-info="productInfo" :manufacture-no="productInfo.manufactureNo" :part-no="productInfo.partNo" :mold-no="productInfo.moldNo"
+                    @update="updateProductInfo"
+                  >
+                  </product-info>
+                </div>
+              </div>
+
+              <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+                <button id="searchBtn" type="button" style="float: right;" class="btn btn-primary" :disabled="!isEnableSearch" @click="search">
+                  <i class="fa fa-search" style="margin-right: 10px"></i>Search
+                </button>
+              </div>
+
+            </form>
+
+
+            <div class="ln_solid"></div>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div v-if="isShowChart" id="chartReport">
+                <canvas style="height: 400px; padding-top: 20px; width: 100%;"  id="myChart4" ></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/x-template" id="product-template">
+  <div class="col-md-12 col-sm-12 col-xs-12 form-group" style="display: flex; flex-direction: row; column-gap: 30px; align-items: center">
+    <div style="display: flex; flex-direction: row; column-gap: 8px; align-items: center">
+      <label style="text-align:left; word-break: keep-all; width: 40px" class="control-label"><span class="required">*</span> 機台</label>
+      {{!-- <input type="text" class="form-control" :value="manufactureNo" placeholder="" @input='(e) => $emit("update", index, "manufactureNo", e.target.value)'> --}}
+      <select v-model="machineNoSelected" style="width: 80px" class="form-control" @change='(e) => $emit("update", index, "manufactureNo", e.target.value)'>
+        <option></option>
+        <option v-for="machineNo in machineNoList" :value="machineNo['機台']">${machineNo['機台']}</option>
+      </select>
+    </div>
+    <div style="display: flex; flex-direction: row; column-gap: 8px">
+      <label style="text-align:left; word-break: keep-all; width: 40px" class="control-label"><span class="required">*</span> 料號</label>
+      <select v-model="partNoSelected" style="width: 220px" :disabled="partNoList.length === 0" class="form-control" @change='(e) => $emit("update", index, "partNo", e.target.value)'>
+        <option></option>
+        <option v-for="partNo in partNoList" :value="partNo['料號']">${partNo['料號']}</option>
+      </select>
+    </div>
+    <div style="display: flex; flex-direction: row; column-gap: 8px">
+      <label style="text-align:left; word-break: keep-all; width: 40px" class="control-label">模號</label>
+      <select v-model="moldNoSelected" style="width: 180px" :disabled="moldNoList.length === 0" class="form-control" @change='(e) => $emit("update", index, "moldNo", e.target.value)'>
+        <option></option>
+        <option v-for="moldNo in moldNoList" :value="moldNo['模號']">${moldNo['模號']}</option>
+      </select>
+    </div>
+    <div>
+      <img style="width: 16px; height: 16px; cursor: pointer; margin-right: 10px;" src="../build/images/minus.png" @click='$emit("delete", index)'></img>
+      <img style="width: 16px; height: 16px; cursor: pointer" src="../build/images/plus.png" @click='$emit("add")'></img>
+    </div>
+  </div>
+</script>
+
+<script>
+$(document).ready(function () {
+  analysisModule.init('{{fromDate}}', '{{endDate}}');
+})
+
+Vue.component('product-info', {
+  props: ['index', 'manufactureNo', 'moldNo', 'partNo', 'productInfo', 'fromDate', 'endDate'],
+  template: '#product-template',
+  delimiters: ['${', '}'],
+  async mounted() {
+    this.loadMachineNo();
+  },
+  data() {
+    return {
+      machineNoSelected: null,
+      machineNoList: [],
+      partNoSelected: null,
+      partNoList: [],
+      moldNoSelected: null,
+      moldNoList: [],
+    }
+  },
+  methods: {
+    async loadMachineNo() {
+      var response = await fetch(`/analysis/api/machineNo?fromDate=${this.fromDate}&endDate=${this.endDate}`, {
+        method: 'GET',
+        credentials: "same-origin"
+      })
+      var data = await response.json()
+      this.machineNoList = data.data
+    },
+    async loadPartNo() {
+      var response = await fetch(`/analysis/api/partNo?fromDate=${this.fromDate}&endDate=${this.endDate}&machineNo=${this.machineNoSelected}`, {
+        method: 'GET',
+        credentials: "same-origin"
+      })
+      var data = await response.json()
+      this.partNoList = data.data
+    },
+    async loadMoldNo() {
+      var response = await fetch(`/analysis/api/moldNo?fromDate=${this.fromDate}&endDate=${this.endDate}&machineNo=${this.machineNoSelected}&partNo=${this.partNoSelected}`, {
+        method: 'GET',
+        credentials: "same-origin"
+      })
+      var data = await response.json()
+      this.moldNoList = data.data
+    },
+  },
+  watch: {
+    machineNoSelected(newValue) {
+      console.log('machineNoSelected', newValue)
+      this.partNoSelected = ""
+      this.partNoList = []
+      this.moldNoSelected = ""
+      this.moldNoList = []
+      if (!!newValue) {
+        this.loadPartNo()
+      }
+    },
+    partNoSelected(newValue) {
+      console.log('partNoSelected', newValue)
+      this.moldNoSelected = ""
+      this.moldNoList = []
+      if (!!newValue) {
+        this.loadMoldNo()
+      }
+    }
+  }
+})
+
+const colorList = [
+  "#60a5fa",
+  "#f472b6",
+  "#22d3ee",
+  "#facc15",
+  "#38bdf8",
+  "#fb923c",
+  "#a1a1aa",
+  "#e879f9",
+  "#555bc1",
+  "#fab77b",
+  "#6a81ca",
+  "#7304e2",
+  "#ef105b",
+  "#ede504",
+  "#c47944",
+  "#a8c438",
+  "#18ad6f",
+  "#d6cb31",
+  "#aa163b",
+  "#e83525",
+  "#b2e062",
+  "#118919",
+  "#fce300",
+  "#ed934e",
+  "#dd6394",
+  "#e8cb14",
+  "#a7d339",
+  "#d64f40",
+  "#d32f23",
+  "#96ef28",
+  "#62ea3c",
+  "#07af1a",
+]
+
+const xAxes = {
+  ticks: {
+    beginAtZero: false,
+    autoSkip: true,
+    maxTicksLimit: 12,
+    maxRotation: 0,
+    minRotation: 0,
+  },
+  stacked: false,
+  gridLines: {
+    display: false,
+    offsetGridLines: false,
+  }
+}
+const leftYAxes = {
+  id: 'A',
+  display: true,
+  stacked: false,
+  gridLines: {
+    display: true,
+  },
+  ticks: {
+    beginAtZero: true,
+  },
+  type: 'linear',
+  position: 'left',
+}
+const rightYAxes = {
+  id: 'B',
+  display: true,
+  stacked: true,
+  gridLines: {
+    display: false,
+  },
+  ticks: {
+    fontSize: 12,
+    beginAtZero: true,
+    callback: function(value, index, values) {
+        return value + ' ea';
+    },
+  },
+  type: 'linear',
+  position: 'right',
+}
+
+const groupTypeConfig = {
+  class: {
+    name: '班別'
+  },
+  employee: {
+    name: '人員'
+  }
+}
+const dataTypeConfig = {
+  yield: {
+    column: 'Quality',
+    name: '良率',
+    unit: '%',
+  },
+  quantity: {
+    column: 'Normal_count',
+    name: '良品數量',
+    unit: 'ea',
+  },
+  operation: {
+    column: 'ttlCT',
+    name: '實際稼動秒數',
+    unit: 'sec',
+  },
+  utilization: {
+    column: 'rateCT',
+    name: '稼動率',
+    unit: '%',
+  },
+}
+
+let vm = new Vue({
+  delimiters: ['${', '}'],
+  el: '#app',
+  data: {
+    labels: [],
+    leftDataList: [],
+    leftLabelList: [],
+    rightDataList: [],
+    selectedFromDate: moment().subtract(28, 'days').format("YYYY-MM-DD"),
+    selectedEndDate: moment().format("YYYY-MM-DD"),
+    chartInstance: null,
+    isShowChart: true,
+    isShowAbnormal: false,
+    selectedDataType: 'yield',
+    selectedGroupType: '',
+    selectedTimeUnit: 'Day',
+    timeUnitList: [
+      {
+      'field_key': '日',
+      'field_value': 'Day'
+      },
+      {
+      'field_key': '週',
+      'field_value': 'Week'
+      },
+      {
+      'field_key': '月',
+      'field_value': 'Month'
+      }
+    ],
+    productInfoList: [{
+      manufactureNo: "",
+      partNo: "",
+      moldNo: ""
+    }]
+  },
+  created() {
+  },
+  computed: {
+    isShowChart() {
+      return !!this.chartInstance?.data?.labels
+    },
+    datasets() {
+      var tempList = []
+      this.leftDataList.forEach((dataList, index) => {
+        tempList.push({
+          yAxisID: 'A',
+          label: this.leftLabelList[index],
+          backgroundColor: colorList[index],
+          borderColor: colorList[index],
+          fill: false,
+          data: dataList.map((x) => x.value),
+          type: 'line',
+          lineTension: 0.3
+        })
+      })
+
+      if (this.isShowAbnormal) {
+        tempList.push({
+          yAxisID: 'B',
+          label: 'Error Rank 3',
+          backgroundColor: "#caf270",
+          data: this.rightDataList?.[0].map((x) => x.value),
+        })
+
+        tempList.push({
+          yAxisID: 'B',
+          label: 'Error Rank 2',
+          backgroundColor: "#45c490",
+          data: this.rightDataList?.[1].map((x) => x.value),
+        })
+
+        tempList.push({
+          yAxisID: 'B',
+          label: 'Error Rank 1',
+          backgroundColor: "#008d93",
+          data: this.rightDataList?.[2].map((x) => x.value),
+        })
+      }
+
+      return tempList
+    },
+    isEnableSearch() {
+      let result = true
+      for (let i = 0; i < this.productInfoList.length; i++) {
+        if (!!!this.productInfoList[i].manufactureNo || !!!this.productInfoList[i].partNo) {
+          result = false;
+          break;
+        }
+      }
+      return result
+    }
+  },
+  async mounted() {
+    this.initDatePicker()
+    this.initChart()
+    // this.buildChartTemplate()
+  },
+  methods: {
+    initDatePicker() {
+      const _this = this
+
+      $('#dp3').datepicker({
+        autoclose: true,
+        format: "yyyy-mm-dd"
+      }).on('changeDate', function(e) {
+        console.log('cccccc', e.format())
+        _this.selectedFromDate = e.format()
+      });
+
+      $('#dp4').datepicker({
+        autoclose: true,
+        format: "yyyy-mm-dd"
+      }).on('changeDate', function(e) {
+        _this.selectedEndDate = e.format()
+      });
+    },
+    initChart() {
+      const _this = this
+      if ($("#myChart4").length) {
+        const data = {
+          labels: [],
+          datasets: [],
+        }
+
+        const options = {
+          tooltips: {
+            displayColors: true,
+            callbacks:{
+              title: function(tooltipItem, data) {
+                return data['labels'][tooltipItem[0]['index']];
+              },
+              label: function(tooltipItem, data) {
+                console.log('datasets', data.datasets[tooltipItem.datasetIndex])
+                console.log('tooltipItem.datasetIndex', tooltipItem.datasetIndex)
+                console.log('this.leftDataList.length', _this.leftDataList.length)
+                console.log(_this.rightDataList?.[tooltipItem.datasetIndex - _this.leftDataList.length])
+
+                const label = data.datasets[tooltipItem.datasetIndex].label
+                const reason = _this.rightDataList?.[tooltipItem.datasetIndex - _this.leftDataList.length]?.[tooltipItem.index]?.reason
+                const reasonDisplay = reason ? ` (${reason})`: ` (${label})`
+                return data['datasets'][tooltipItem.datasetIndex]['data'][tooltipItem['index']] + reasonDisplay;
+              },
+            },
+          },
+          scales: {
+            xAxes: [xAxes],
+            yAxes: [leftYAxes, rightYAxes]
+          },
+          responsive: true,
+          maintainAspectRatio: true,
+          title: {
+            display: true,
+            text: 'Chart Title'
+          },
+          legend: { position: 'bottom' },
+        }
+
+        const ctx = document.getElementById('myChart4').getContext('2d');
+
+        this.chartInstance = new Chart(ctx, {
+          type: 'bar',
+          data: data,
+          options: options
+        });
+
+        document.getElementById("myChart4").style.display = "none";
+      }
+    },
+    clearChart() {
+      const _this = this
+      document.getElementById("myChart4").style.display = "none";
+      this.chartInstance.data.labels = [];
+      this.chartInstance.data.datasets = []
+      this.chartInstance.options.scales.yAxes[0].ticks.callback = function(value, index, values) {
+        return value + ` ${dataTypeConfig[_this.selectedDataType].unit}`;
+      }
+      this.chartInstance.update()
+    },
+    async fetchAndGenData() {
+      const leftDataList = []
+      const rightDataList = []
+      this.chartInstance.config.options.scales.yAxes[1].ticks.display = this.isShowAbnormal
+
+      // 1) calculate time unit point
+      const timeTicks = await this.calculateTimeTicks()
+      this.labels = timeTicks?.data?.map((x) => x.date)
+
+      // 2-1) fetch data
+      var body = {
+        fromDate: this.selectedFromDate,
+        endDate: this.selectedEndDate,
+        timeUnit: this.selectedTimeUnit,
+        dataType: this.selectedDataType,
+        groupType: this.selectedGroupType,
+        isShowAbnormal: this.isShowAbnormal,
+        productInfoList: this.productInfoList,
+      }
+      var header = {
+        'Content-Type': 'application/json'
+      }
+      var response = await fetch('/analysis/api/data', {
+        method: 'POST',
+        credentials: "same-origin",
+        body: JSON.stringify(body),
+        headers: new Headers(header),
+      })
+			var data = await response.json()
+
+      // 2-2) gen data & ticks
+      const { dataList, labelList } = this.genDataList(data)
+      leftDataList.push(...dataList)
+      console.log('labelList', labelList)
+
+      if (this.isShowAbnormal) {
+        // 3-1) fetch error data
+        var errorResponse = await fetch('/analysis/api/error', {
+          method: 'POST',
+          credentials: "same-origin",
+          body: JSON.stringify(body),
+          headers: new Headers(header),
+        })
+        var errorData = await errorResponse.json()
+
+        // 3-2) gen error data
+        var errorDataList = this.genErrorDataList(errorData)
+        rightDataList.push(errorDataList.rankThree)
+        rightDataList.push(errorDataList.rankTwo)
+        rightDataList.push(errorDataList.rankOne)
+      }
+
+      this.leftDataList = leftDataList
+      this.rightDataList = rightDataList
+      this.leftLabelList = labelList
+    },
+    genDataList(data) {
+      const resultList = []
+      const labelList = []
+
+      if (this.selectedGroupType === 'employee') {
+        // group by user_name
+
+        let myMap = new Map();
+        data?.data?.forEach((record) => {
+          if (myMap.has(record.user_name)) {
+            const originList = myMap.get(record.user_name)
+            originList.push(record)
+            myMap.set(record.user_name, originList)
+          } else {
+            myMap.set(record.user_name, [record])
+          }
+        })
+        for (let [key, value] of myMap.entries()) {
+          labelList.push(dataTypeConfig[this.selectedDataType].name + ` (${key})`)
+
+          let temp = []
+          this.labels.forEach((tick) => {
+            const result = value?.filter((record) => record.groupDate === tick);
+            if (result.length) {
+              temp.push({value: result[0][dataTypeConfig[this.selectedDataType].column]})
+            } else {
+              temp.push({value: null})
+            }
+          })
+          resultList.push(temp)
+        }
+
+      } else if (this.selectedGroupType === 'class') {
+        // group by mfg_class
+
+        let myMap = new Map();
+        data?.data?.forEach((record) => {
+          if (myMap.has(record.mfg_class)) {
+            const originList = myMap.get(record.mfg_class)
+            originList.push(record)
+            myMap.set(record.mfg_class, originList)
+          } else {
+            myMap.set(record.mfg_class, [record])
+          }
+        })
+        for (let [key, value] of myMap.entries()) {
+          labelList.push(dataTypeConfig[this.selectedDataType].name + ` (${key})`)
+
+          let temp = []
+          this.labels.forEach((tick) => {
+            const result = value?.filter((record) => record.groupDate === tick);
+            if (result.length) {
+              temp.push({value: result[0][dataTypeConfig[this.selectedDataType].column]})
+            } else {
+              temp.push({value: null})
+            }
+          })
+          resultList.push(temp)
+        }
+
+      } else {
+        let temp = []
+        this.labels.forEach((tick) => {
+          const result = data?.data?.filter((record) => record.groupDate === tick);
+          if (result.length) {
+            temp.push({value: result[0][dataTypeConfig[this.selectedDataType].column]})
+          } else {
+            temp.push({value: null})
+          }
+        })
+        resultList.push(temp)
+        labelList.push(dataTypeConfig[this.selectedDataType].name)
+      }
+
+      return {
+        dataList: resultList,
+        labelList: labelList,
+      }
+    },
+    genErrorDataList(data) {
+      console.log('errorData', data)
+      let rankOne = []
+      let rankTwo = []
+      let rankThree = []
+
+      this.labels.forEach((tick) => {
+        // 1) handle rank 1
+        const resultOne = data?.data?.filter((record) => {
+          return record.groupDate === tick && record.row_num === '1'
+        });
+        if (resultOne.length) {
+          rankOne.push({ value: resultOne[0].ErrorCount, reason: resultOne[0].err_nam.trim() })
+        } else {
+          rankOne.push({ value: null })
+        }
+
+        // 1) handle rank 2
+        const resultTwo = data?.data?.filter((record) => {
+          return record.groupDate === tick && record.row_num === '2'
+        });
+        if (resultTwo.length) {
+          rankTwo.push({ value: resultTwo[0].ErrorCount, reason: resultTwo[0].err_nam.trim() })
+        } else {
+          rankTwo.push({ value: null })
+        }
+
+        // 1) handle rank 3
+        const resultThree = data?.data?.filter((record) => {
+          return record.groupDate === tick && record.row_num === '3'
+        });
+        if (resultThree.length) {
+          rankThree.push({ value: resultThree[0].ErrorCount, reason: resultThree[0].err_nam.trim() })
+        } else {
+          rankThree.push({ value: null })
+        }
+      })
+      console.log('rankOne', rankOne)
+      console.log('rankTwo', rankTwo)
+      console.log('rankThree', rankThree)
+      return { rankOne, rankTwo, rankThree }
+    },
+    addProductInfo() {
+      this.productInfoList.push({
+        manufactureNo: "",
+        partNo: "",
+        moldNo: ""
+      })
+    },
+    updateProductInfo(index, field, value) {
+      this.productInfoList[index][field] = value
+    },
+    deleteProductInfo(index) {
+      this.productInfoList.splice(index, 1)
+    },
+    async search() {
+      // 1) clear chart
+      this.clearChart()
+
+      // 2) fetch data
+      await this.fetchAndGenData()
+
+      // 3) update chart
+      this.$nextTick(()=> {
+        this.updateChart()
+      })
+    },
+    updateChart() {
+      // TODO: change ticks unit
+      document.getElementById("myChart4").style.display = null;
+      this.chartInstance.data.labels.push(...this.labels);
+      this.chartInstance.data.datasets.push(...this.datasets)
+
+      var gropuTypeName = groupTypeConfig[this.selectedGroupType]?.name ? ` group by ${groupTypeConfig[this.selectedGroupType].name}` : ''
+      this.chartInstance.options.title.text = dataTypeConfig[this.selectedDataType].name + gropuTypeName
+      this.chartInstance.update()
+    },
+    buildChartTemplate() {
+      // step 1: fetch data
+      const labels = ["07-01","07-02","07-03","07-04","07-05","07-06","07-07","07-08","07-09"]
+      const dataList = [
+        [
+          {value: 93},
+          {value: 92},
+          {value: 91},
+          {value: 96},
+          {value: 97},
+          {value: 98},
+          {value: 92},
+          {value: 93},
+          {value: 91},
+          {value: 94},
+        ],
+        [
+          {value: 94},
+          {value: 99},
+          {value: 95},
+          {value: 94},
+          {value: 98},
+          {value: 94},
+          {value: 94},
+          {value: 98},
+          {value: 99},
+        ],
+        [
+          {reason: "白點", value: 3},
+          {reason: "黑點", value: 3},
+          {reason: "亮點", value: 4},
+          {reason: "光點", value: 5},
+          {reason: "白點", value: 1},
+          {reason: "黑點", value: 2},
+          {reason: "亮點", value: 5},
+          {reason: "光點", value: 6},
+          {reason: "白點", value: 8},
+        ], // rank 3
+        [
+          {reason: "汙點", value: 3},
+          {reason: "白點", value: 4},
+          {reason: "汙點", value: 5},
+          {reason: "黑點", value: 6},
+          {reason: "亮點", value: 7},
+          {reason: "光點", value: 8},
+          {reason: "黑點", value: 9},
+          {reason: "光點", value: 1},
+          {reason: "白點", value: 2},
+        ], // rank 2
+        [
+          {reason: "亮點", value: 4},
+          {reason: "白點", value: 1},
+          {reason: "黑點", value: 2},
+          {reason: "白點", value: 3},
+          {reason: "汙點", value: 5},
+          {reason: "黑點", value: 5},
+          {reason: "光點", value: 2},
+          {reason: "亮點", value: 1},
+          {reason: "光點", value: 5},
+        ] // rank 1
+      ]
+
+      // step 2: build chart
+      const data = {
+        labels: labels,
+        datasets: [
+          {
+            yAxisID: 'A',
+            label: '良率 (趙氏桃)',
+            backgroundColor: "#e879f9", // blue
+            borderColor: "#e879f9",
+            fill: false,
+            data: dataList[0].map((x) => x.value),
+            type: 'line',
+            lineTension: 0.3
+          },
+          {
+            yAxisID: 'A',
+            label: '良率 (阮氏蕙)',
+            backgroundColor: "#fbbf24", // red
+            borderColor: "#fbbf24",
+            fill: false,
+            data: dataList[1].map((x) => x.value),
+            type: 'line',
+            lineTension: 0.3
+          },
+          {
+            yAxisID: 'B',
+            label: 'Error Rank 3',
+            backgroundColor: "#008d93",
+            data: dataList[2].map((x) => x.value),
+          },
+          {
+            yAxisID: 'B',
+            label: 'Error Rank 2',
+            backgroundColor: "#45c490",
+            data: dataList[3].map((x) => x.value),
+          },
+          {
+            yAxisID: 'B',
+            label: 'Error Rank 1',
+            backgroundColor: "#caf270",
+            data: dataList[4].map((x) => x.value),
+          },
+        ],
+      }
+      const options = {
+        tooltips: {
+          displayColors: true,
+          callbacks:{
+            title: function(tooltipItem, data) {
+              return data['labels'][tooltipItem[0]['index']];
+            },
+            label: function(tooltipItem, data) {
+              const reason = dataList?.[tooltipItem.datasetIndex]?.[tooltipItem.index]?.reason
+              const reasonDisplay = reason ? ` (${reason})`: ''
+              return data['datasets'][tooltipItem.datasetIndex]['data'][tooltipItem['index']] + reasonDisplay;
+            },
+          },
+        },
+        scales: {
+          xAxes: [{
+            stacked: true,
+            gridLines: {
+              display: false,
+            }
+          }],
+          yAxes: [{
+            id: 'A',
+            stacked: false,
+            ticks: {
+              beginAtZero: true,
+            },
+            type: 'linear',
+            position: 'left',
+          }, {
+            id: 'B',
+            stacked: true,
+            gridLines: {
+              display: false,
+            },
+            ticks: {
+              beginAtZero: true,
+            },
+            type: 'linear',
+            position: 'right',
+          }]
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: { position: 'bottom' },
+      }
+
+      const ctx = document.getElementById('myChart4').getContext('2d');
+      this.chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: options
+      });
+    },
+    async calculateTimeTicks() {
+      var response = await fetch(`/analysis/api/calculate/${this.selectedTimeUnit.toLowerCase()}?fromDate=${this.selectedFromDate}&endDate=${this.selectedEndDate}`, {
+        method: 'GET',
+        credentials: "same-origin"
+      })
+      var data = await response.json()
+      if (this.selectedTimeUnit === 'Week') {
+        const newList = data?.data?.map((record) => {
+          return {
+            date: `${record.YearNumber}-${record.WeekNumber}`
+          }
+        })
+        data.data = newList
+      } else if (this.selectedTimeUnit === 'Month') {
+        const newList = data?.data?.map((record) => {
+          return {
+            date: `${record.YearNumber}-${record.MonthNumber}`
+          }
+        })
+        data.data = newList
+      }
+      return data
+    },
+  },
+  watch: {
+    selectedFromDate(newValue) {
+      this.productInfoList= []
+      this.$nextTick(()=> {
+        this.addProductInfo()
+      })
+    },
+    selectedEndDate(newValue) {
+      this.productInfoList= []
+      this.$nextTick(()=> {
+        this.addProductInfo()
+      })
+    }
+  }
+})
+
+$(document).ready(function () {
+})
+
+$(document).ready(function () {
+
+  $("input[name='isShowAbnormal']").on('ifChecked', function (event) {
+    console.log('isShowAbnormal checked: ', $("#isShowAbnormal").prop('checked'))
+    vm.isShowAbnormal = true
+  })
+  $("input[name='isShowAbnormal']").on('ifUnchecked', function (event) {
+    console.log('isShowAbnormal unchecked: ', $("#isShowAbnormal").prop('checked'))
+    vm.isShowAbnormal = false
+  })
+
+
+  $("input[name='selectedDataType']").on('ifChecked', function (event) {
+    console.log('selectedDataType checked: ' + $("[name='selectedDataType']:checked").val(), vm.selectedDataType)
+    vm.selectedDataType = $("[name='selectedDataType']:checked").val()
+  });
+
+  $("input[name='selectedGroupType']").on('ifChecked', function (event) {
+    console.log('selectedGroupType checked: ' + $("[name='selectedGroupType']:checked").val(), vm.selectedGroupType)
+    vm.selectedGroupType = $("[name='selectedGroupType']:checked").val()
+  });
+  $("input[name='selectedGroupType']").on('ifClicked', function (event) {
+    console.log('selectedGroupType clicked: ' + $("[name='selectedGroupType']:checked").val(), vm.selectedGroupType)
+    vm.selectedGroupType = $("[name='selectedGroupType']:checked").val()
+    if (!!$("[name='selectedGroupType']:checked").val() && $("[name='selectedGroupType']:checked").val() === vm.selectedGroupType) {
+      vm.selectedGroupType = ""
+      $("[name='selectedGroupType']:checked").iCheck('uncheck');
+    }
+  });
+});
+</script>
+

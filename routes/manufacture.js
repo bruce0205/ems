@@ -68,6 +68,7 @@ module.exports = (app, db) => {
       let titles = R.keys(data[0])
 
       titles.forEach(function (value, index) {
+        // 起始點：index == 0
         let adjustValue = value
         if (index === 9) adjustValue = '料塊';
         if (index === 16) adjustValue = '標準稼動(秒)';

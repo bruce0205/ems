@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>epoch</title>
-  <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+  {{!-- <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script> --}}
 
   <!-- Bootstrap -->
   <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -66,12 +66,12 @@
                     <li>
                       <a href="/mold">模具管理</a>
                     </li>
-                    <li>
+                    {{!-- <li>
                       <a href="/manufacture">生產資訊</a>
-                    </li>
-                    <li>
+                    </li> --}}
+                    {{!-- <li>
                       <a href="/kanban">生產管理看板</a>
-                    </li>
+                    </li> --}}
                     <li>
                       <a href="/tryMold">試模資訊</a>
                     </li>
@@ -86,10 +86,27 @@
                     </li>
                   </ul>
                 </li>
+                <li>
+                  <a>
+                    <i class="fa fa-compass"></i> 生產資訊
+                    <span class="fa fa-chevron-down"></span>
+                  </a>
+                  <ul class="nav child_menu">
+                    <li>
+                      <a href="/manufacture">資訊報表</a>
+                    </li>
+                    <li>
+                      <a href="/kanban">管理看板</a>
+                    </li>
+                    <li>
+                      <a href="/analysis">數據分析</a>
+                    </li>
+                  </ul>
+                </li>
                 {{#if isAdmin}}
                 <li>
                   <a>
-                    <i class="fa fa-compass"></i> 系統設定
+                    <i class="fa fa-gear"></i> 系統設定
                     <span class="fa fa-chevron-down"></span>
                   </a>
                   <ul class="nav child_menu">
@@ -187,17 +204,17 @@
 
       <!-- Custom Theme Scripts -->
       <script src="../build/js/custom.js"></script>
-      <script src="../build/js/epoch.js"></script> {{#if isMachine}}
-      <script src="../build/js/machineModule.js"></script> {{else if isMold}}
-      <script src="../build/js/moldModule.js"></script> {{else if isManufacture}}
-      <script src="../build/js/manufactureModule.js"></script> {{else if isTryMold}}
-      <script src="../build/js/tryMoldModule.js"></script> {{else if isQcFile}}
-      <script src="../build/js/qcFileModule.js"></script>
-      <script src="../build/js/qcFileUploadModule.js"></script> {{else if isParts}}
-      <script src="../build/js/partsModule.js"></script> {{else if isPartsConfig}}
-      <script src="../build/js/partsConfigModule.js"></script> {{else if isUsers}}
-      <script src="../build/js/usersModule.js"></script> {{else if isManufacturePn}}
-      <script src="../build/js/manufacturePnModule.js"></script>
+      <script src="../build/js/epoch.js"></script>
+      {{#if isMachine}}<script src="../build/js/machineModule.js"></script>
+      {{else if isMold}}<script src="../build/js/moldModule.js"></script>
+      {{else if isManufacture}}<script src="../build/js/manufactureModule.js"></script>
+      {{else if isAnalysis}}<script src="../build/js/analysisModule.js"></script>
+      {{else if isTryMold}}<script src="../build/js/tryMoldModule.js"></script>
+      {{else if isQcFile}}<script src="../build/js/qcFileModule.js"></script><script src="../build/js/qcFileUploadModule.js"></script>
+      {{else if isParts}}<script src="../build/js/partsModule.js"></script>
+      {{else if isPartsConfig}}<script src="../build/js/partsConfigModule.js"></script>
+      {{else if isUsers}}<script src="../build/js/usersModule.js"></script>
+      {{else if isManufacturePn}}<script src="../build/js/manufacturePnModule.js"></script>
       {{/if}}
 
       <!-- page content -->

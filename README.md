@@ -27,11 +27,15 @@ sequelize-cli
 
 ## migration
 ```
-docker cp ./oeeAPP_202305102217 sqlserver:/var/opt/mssql/data
+docker compose down -v
+docker compose up -d
+```
+```
+docker cp ./oeeAPP_20240711 sqlserver:/var/opt/mssql/data
 ```
 ```
 RESTORE DATABASE oeeAPP
-FROM DISK = '/var/opt/mssql/data/oeeAPP_202305102217'
+FROM DISK = '/var/opt/mssql/data/oeeAPP_20240711'
 WITH MOVE 'oeeAPP' TO '/var/opt/mssql/data/oeeAPP.mdf',
 MOVE 'oeeAPP_Log' TO '/var/opt/mssql/data/oeeAPP.ldf';
 // wait 2 mins...
