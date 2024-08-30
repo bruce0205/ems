@@ -201,16 +201,16 @@
           <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; ">
             <div
               style="display: flex; flex-direction: row; column-gap: 0.25rem; justify-content: flex-start; align-items: center; ">
-              <span style="font-size: 12px; line-height: 1.25rem; font-weight: 500; ">良品總數:</span>
-              <span style="font-style: italic; font-size: 10px; font-weight: 900; color: #22c55e">${machine.Normal_count}</span>
+              <span style="font-size: 12px; line-height: 16px; font-weight: 500; ">良品總數:</span>
+              <span style="font-style: italic; font-size: 14px; font-weight: 900; color: #22c55e">${machine.Normal_count}</span>
             </div>
           </div>
 
           <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; ">
             <div
               style="display: flex; flex-direction: row; column-gap: 0.25rem; justify-content: flex-start; align-items: center; ">
-              <span style="font-size: 12px; line-height: 1.25rem; font-weight: 500; ">不良品總數:</span>
-              <span style="font-style: italic; font-size: 10px; font-weight: 900; color: #f59e0b">${machine.AbNormal_count}</span>
+              <span style="font-size: 12px; line-height: 16px; font-weight: 500; ">不良品總數:</span>
+              <span style="font-style: italic; font-size: 14px; font-weight: 900; color: #f59e0b">${machine.AbNormal_count}</span>
             </div>
           </div>
         </div>
@@ -220,14 +220,14 @@
           <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; ">
             <div
               style="display: flex; flex-direction: row; column-gap: 0.25rem; justify-content: flex-start; align-items: center; ">
-              <span style="font-size: 12px; line-height: 1.25rem; font-weight: 500; ">Remark</span>
+              <span style="font-size: 12px; line-height: 16px; font-weight: 700; ">Remark</span>
               <span @click="showModal(machine.mah_num, machine.mah_remark, 'view', machine.sys_id)"
-                style="font-size: 12px;line-height: 1rem;color: #6B7280;cursor: pointer; ">
+                style="font-size: 12px; line-height: 1rem;color: #6B7280;cursor: pointer; ">
                 <i class="fa fa-arrows-alt"></i></span>
             </div>
 
             <span @click="showModal(machine.mah_num, machine.mah_remark, 'edit', machine.sys_id)"
-              style="font-size: 0.75rem;line-height: 1rem;color: #6B7280;cursor: pointer; ">
+              style="font-size: 12px; line-height: 16px; color: #6B7280;cursor: pointer; ">
               <i class="fa fa-pencil"></i></span>
           </div>
 
@@ -235,20 +235,20 @@
             style="margin-top:4px; display: grid; grid-template-columns: 3fr 2fr ;padding-top: 0.25rem; padding-left: 0.5rem; row-gap: 0.25rem; ">
             <template v-for="item in machine.ErrorList">
               <span :class="{'text-red': item.Err_pert >= 5}"
-                style="font-size: 0.75rem;line-height: 1rem; ">${item.Err_name}</span>
+                style="font-size: 12px; line-height: 16px; ">${item.Err_name}</span>
               <span :class="{'text-red': item.Err_pert >= 5}"
-                style="font-size: 0.75rem;line-height: 1rem; font-weight: 500; text-decoration: underline; ">
+                style="font-size: 12px; line-height: 16px; font-weight: 500; text-decoration: underline; ">
                 ${item.Err_pert}%</span>
             </template>
             <template v-for="item in (3 - machine.ErrorList.length)">
-              <span style="font-size: 0.75rem;line-height: 1rem; ">無</span>
-              <span style="font-size: 0.75rem;line-height: 1rem; font-weight: 500; text-decoration: underline; ">
+              <span style="font-size: 12px; line-height: 16px; ">無</span>
+              <span style="font-size: 12px; line-height: 16px; font-weight: 500; text-decoration: underline; ">
               </span>
             </template>
           </div>
           <div
             style="margin-top:4px;display: flex; padding-top: 0.5rem; padding-left: 0.5rem; flex-direction: column; justify-content: flex-start; ">
-            <span class="multiline-ellipsis" style="font-size: 0.75rem;line-height: 1rem; ">${machine.mah_remark}</span>
+            <span class="multiline-ellipsis" style="font-size: 12px; line-height: 16px; color: #6B7280">${machine.mah_remark}</span>
           </div>
         </div>
       </div>
