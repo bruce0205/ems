@@ -133,8 +133,15 @@
                   </product-info>
                 </div>
               </div>
+              <div class="col-md-6 col-sm-6 col-xs-6 form-group"></div>
 
-              <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+              <div class="col-md-6 col-sm-6 col-xs-6 form-group" style="display: flex; flex-direction: row; align-items: center; justify-content: end; column-gap: 20px">
+                  <div class="checkbox">
+                    <label>
+                      <input id="isShowAllTooltips" name="isShowAllTooltips" type="checkbox" class="flat" v-model="isShowAllTooltips">
+                      &nbsp;&nbsp;&nbsp;&nbsp;自動顯示圖表資料數據
+                    </label>
+                  </div>
                 <button id="searchBtn" type="button" style="float: right;" class="btn btn-primary" :disabled="!isEnableSearch" @click="search">
                   <i class="fa fa-search" style="margin-right: 10px"></i>Search
                 </button>
@@ -216,10 +223,13 @@ Vue.component('product-info', {
         credentials: "same-origin"
       })
       var data = await response.json()
-      this.machineNoList = data.data
+      const list = [{'機台': 'ALL'}, ...data.data]
+      this.machineNoList = list
     },
     async loadPartNo() {
-      var response = await fetch(`/analysis/api/partNo?fromDate=${this.fromDate}&endDate=${this.endDate}&machineNo=${this.machineNoSelected}`, {
+      var params = `fromDate=${this.fromDate}&endDate=${this.endDate}`
+      if (this.machineNoSelected !== 'ALL') params = params + `&machineNo=${this.machineNoSelected}`
+      var response = await fetch(`/analysis/api/partNo?${params}`, {
         method: 'GET',
         credentials: "same-origin"
       })
@@ -227,7 +237,9 @@ Vue.component('product-info', {
       this.partNoList = data.data
     },
     async loadMoldNo() {
-      var response = await fetch(`/analysis/api/moldNo?fromDate=${this.fromDate}&endDate=${this.endDate}&machineNo=${this.machineNoSelected}&partNo=${this.partNoSelected}`, {
+      var params = `fromDate=${this.fromDate}&endDate=${this.endDate}&partNo=${this.partNoSelected}`
+      if (this.machineNoSelected !== 'ALL') params = params + `&machineNo=${this.machineNoSelected}`
+      var response = await fetch(`/analysis/api/moldNo?${params}`, {
         method: 'GET',
         credentials: "same-origin"
       })
@@ -237,7 +249,6 @@ Vue.component('product-info', {
   },
   watch: {
     machineNoSelected(newValue) {
-      console.log('machineNoSelected', newValue)
       this.partNoSelected = ""
       this.partNoList = []
       this.moldNoSelected = ""
@@ -247,7 +258,6 @@ Vue.component('product-info', {
       }
     },
     partNoSelected(newValue) {
-      console.log('partNoSelected', newValue)
       this.moldNoSelected = ""
       this.moldNoList = []
       if (!!newValue) {
@@ -262,34 +272,11 @@ const colorList = [
   "#f472b6",
   "#22d3ee",
   "#facc15",
-  "#38bdf8",
-  "#fb923c",
-  "#a1a1aa",
-  "#e879f9",
-  "#555bc1",
-  "#fab77b",
-  "#6a81ca",
-  "#7304e2",
-  "#ef105b",
-  "#ede504",
-  "#c47944",
-  "#a8c438",
-  "#18ad6f",
-  "#d6cb31",
-  "#aa163b",
-  "#e83525",
-  "#b2e062",
-  "#118919",
-  "#fce300",
-  "#ed934e",
-  "#dd6394",
-  "#e8cb14",
-  "#a7d339",
-  "#d64f40",
-  "#d32f23",
-  "#96ef28",
-  "#62ea3c",
-  "#07af1a",
+  "#83f68e", "#bb4873", "#ab9313", "#2a86d9", "#7e67a5", "#fa737b", "#2bc52f", "#a08081", "#fbd8d0", "#e08254",
+  "#64f6b0", "#e75f88", "#6df413", "#4411b3", "#787f4d", "#e65aa3", "#b200c9", "#52c52a", "#45cb6a", "#ba3201",
+  "#b8d52c", "#4fe89e", "#242421", "#d69a86", "#3c983c", "#ccc46c", "#0c9964", "#30b22b", "#95bc8c", "#5b2ec7",
+  "#96cbb4", "#821009", "#6dd480", "#fc9247", "#cf3a00", "#927852", "#0859ed", "#b8b472", "#9bf060", "#230b73",
+  "#572a13", "#54f336", "#14ce15", "#ad8484", "#77a0ec", "#e1824b", "#118255", "#85bb90", "#4da6b9", "#75d132"
 ]
 
 const xAxes = {
@@ -330,7 +317,7 @@ const rightYAxes = {
     fontSize: 12,
     beginAtZero: true,
     callback: function(value, index, values) {
-        return value + ' ea';
+        return value + ' %';
     },
   },
   type: 'linear',
@@ -368,6 +355,40 @@ const dataTypeConfig = {
   },
 }
 
+const alwaysShowTooltipPlugin =  {
+    afterDatasetsDraw: function(chartInstance, easing) {
+        if (chartInstance.config.options.showAllTooltips || easing === 1) {
+            chartInstance.data.datasets.forEach(function(dataset, i) {
+                var meta = chartInstance.getDatasetMeta(i);
+                if (!meta.hidden) {
+                    meta.data.forEach(function(element, index) {
+                        var ctx = chartInstance.chart.ctx;
+                        ctx.fillStyle = '#94a3b8';
+
+                        var fontSize = 12;
+                        var fontStyle = 'normal';
+                        var fontFamily = 'Helvetica Neue';
+                        ctx.font = Chart.helpers.fontString(fontSize, fontStyle, fontFamily);
+
+                        // Get the data value
+                        if (!!dataset.data[index]) {
+                          var dataString = dataset.data[index].toString();
+
+                          // Make sure alignment settings are correct
+                          ctx.textAlign = 'center';
+                          ctx.textBaseline = 'middle';
+
+                          var padding = 5;
+                          var position = element.tooltipPosition();
+                          ctx.fillText(dataString, position.x, position.y - (fontSize / 2) - padding);
+                        }
+                    });
+                }
+            });
+        }
+    }
+}
+
 let vm = new Vue({
   delimiters: ['${', '}'],
   el: '#app',
@@ -376,11 +397,13 @@ let vm = new Vue({
     leftDataList: [],
     leftLabelList: [],
     rightDataList: [],
+    rightLabelList: [],
     selectedFromDate: moment().subtract(28, 'days').format("YYYY-MM-DD"),
     selectedEndDate: moment().format("YYYY-MM-DD"),
     chartInstance: null,
     isShowChart: true,
     isShowAbnormal: false,
+    isShowAllTooltips: true,
     selectedDataType: 'yield',
     selectedGroupType: '',
     selectedTimeUnit: 'Day',
@@ -426,26 +449,15 @@ let vm = new Vue({
       })
 
       if (this.isShowAbnormal) {
-        tempList.push({
-          yAxisID: 'B',
-          label: 'Error Rank 3',
-          backgroundColor: "#caf270",
-          data: this.rightDataList?.[0].map((x) => x.value),
+        this.rightDataList.forEach((item, index) => {
+          tempList.push({
+            yAxisID: 'B',
+            label: this.rightLabelList[index],
+            backgroundColor: colorList[this.leftDataList.length + index],
+            data: item.map((x) => x.value),
+          })
         })
 
-        tempList.push({
-          yAxisID: 'B',
-          label: 'Error Rank 2',
-          backgroundColor: "#45c490",
-          data: this.rightDataList?.[1].map((x) => x.value),
-        })
-
-        tempList.push({
-          yAxisID: 'B',
-          label: 'Error Rank 1',
-          backgroundColor: "#008d93",
-          data: this.rightDataList?.[2].map((x) => x.value),
-        })
       }
 
       return tempList
@@ -501,11 +513,6 @@ let vm = new Vue({
                 return data['labels'][tooltipItem[0]['index']];
               },
               label: function(tooltipItem, data) {
-                console.log('datasets', data.datasets[tooltipItem.datasetIndex])
-                console.log('tooltipItem.datasetIndex', tooltipItem.datasetIndex)
-                console.log('this.leftDataList.length', _this.leftDataList.length)
-                console.log(_this.rightDataList?.[tooltipItem.datasetIndex - _this.leftDataList.length])
-
                 const label = data.datasets[tooltipItem.datasetIndex].label
                 const reason = _this.rightDataList?.[tooltipItem.datasetIndex - _this.leftDataList.length]?.[tooltipItem.index]?.reason
                 const reasonDisplay = reason ? ` (${reason})`: ` (${label})`
@@ -518,12 +525,16 @@ let vm = new Vue({
             yAxes: [leftYAxes, rightYAxes]
           },
           responsive: true,
+          showAllTooltips: this.isShowAllTooltips,
           maintainAspectRatio: true,
           title: {
             display: true,
             text: 'Chart Title'
           },
           legend: { position: 'bottom' },
+        }
+        if (this.isShowAllTooltips) {
+          Chart.pluginService.register(alwaysShowTooltipPlugin);
         }
 
         const ctx = document.getElementById('myChart4').getContext('2d');
@@ -548,8 +559,6 @@ let vm = new Vue({
       this.chartInstance.update()
     },
     async fetchAndGenData() {
-      const leftDataList = []
-      const rightDataList = []
       this.chartInstance.config.options.scales.yAxes[1].ticks.display = this.isShowAbnormal
 
       // 1) calculate time unit point
@@ -579,8 +588,10 @@ let vm = new Vue({
 
       // 2-2) gen data & ticks
       const { dataList, labelList } = this.genDataList(data)
-      leftDataList.push(...dataList)
-      console.log('labelList', labelList)
+      console.log('leftDataList', dataList)
+      console.log('leftLabelList', labelList)
+      this.leftDataList = dataList
+      this.leftLabelList = labelList
 
       if (this.isShowAbnormal) {
         // 3-1) fetch error data
@@ -593,17 +604,34 @@ let vm = new Vue({
         var errorData = await errorResponse.json()
 
         // 3-2) gen error data
-        var errorDataList = this.genErrorDataList(errorData)
-        rightDataList.push(errorDataList.rankThree)
-        rightDataList.push(errorDataList.rankTwo)
-        rightDataList.push(errorDataList.rankOne)
+        const { errorDataList, errorLabelList } = this.genErrorDataList(errorData)
+        console.log('rightDataList', errorDataList)
+        console.log('rightLabelList', errorLabelList)
+        this.rightDataList = errorDataList
+        this.rightLabelList = errorLabelList
       }
-
-      this.leftDataList = leftDataList
-      this.rightDataList = rightDataList
-      this.leftLabelList = labelList
     },
     genDataList(data) {
+      const resultList = []
+      const labelList = []
+
+      const groupedData = Object.groupBy(data?.data, ({ series_name }) => series_name);
+
+      for (const [seriesName, dataList] of Object.entries(groupedData)) {
+        labelList.push(seriesName)
+        let temp = []
+        for (const data of dataList) {
+          temp.push({value: data[dataTypeConfig[this.selectedDataType].column] ? data[dataTypeConfig[this.selectedDataType].column] : null})
+        }
+        resultList.push(temp)
+      }
+
+      return {
+        dataList: resultList,
+        labelList: labelList,
+      }
+    },
+    genDataListOld(data) {
       const resultList = []
       const labelList = []
 
@@ -683,7 +711,33 @@ let vm = new Vue({
       }
     },
     genErrorDataList(data) {
-      console.log('errorData', data)
+      const resultList = []
+      const labelList = []
+
+      const groupedData = Object.groupBy(data?.data, ({ err_nam }) => err_nam);
+
+      for (const [seriesName, dataList] of Object.entries(groupedData)) {
+        labelList.push(seriesName?.trim())
+        let temp = []
+
+        this.labels.forEach((tick) => {
+          const result = dataList?.filter((record) => record.groupDate === tick);
+          if (result.length) {
+            temp.push({value: result[0].ErrorPert, reason: seriesName?.trim(), tick })
+          } else {
+            temp.push({value: null, reason: seriesName?.trim(), tick })
+          }
+        })
+
+        resultList.push(temp)
+      }
+
+      return {
+        errorDataList: resultList,
+        errorLabelList: labelList,
+      }
+    },
+    genErrorDataListOld(data) {
       let rankOne = []
       let rankTwo = []
       let rankThree = []
@@ -719,9 +773,6 @@ let vm = new Vue({
           rankThree.push({ value: null })
         }
       })
-      console.log('rankOne', rankOne)
-      console.log('rankTwo', rankTwo)
-      console.log('rankThree', rankThree)
       return { rankOne, rankTwo, rankThree }
     },
     addProductInfo() {
@@ -752,11 +803,19 @@ let vm = new Vue({
     updateChart() {
       // TODO: change ticks unit
       document.getElementById("myChart4").style.display = null;
+      console.log('chart.labels', this.labels)
+      console.log('chart.datasets', this.datasets)
       this.chartInstance.data.labels.push(...this.labels);
       this.chartInstance.data.datasets.push(...this.datasets)
 
       var gropuTypeName = groupTypeConfig[this.selectedGroupType]?.name ? ` group by ${groupTypeConfig[this.selectedGroupType].name}` : ''
       this.chartInstance.options.title.text = dataTypeConfig[this.selectedDataType].name + gropuTypeName
+      this.chartInstance.options.showAllTooltips = this.isShowAllTooltips;
+      if (this.isShowAllTooltips) {
+        Chart.pluginService.register(alwaysShowTooltipPlugin);
+      } else {
+        Chart.pluginService.unregister(alwaysShowTooltipPlugin);
+      }
       this.chartInstance.update()
     },
     buildChartTemplate() {
@@ -960,19 +1019,19 @@ let vm = new Vue({
 })
 
 $(document).ready(function () {
-})
-
-$(document).ready(function () {
 
   $("input[name='isShowAbnormal']").on('ifChecked', function (event) {
-    console.log('isShowAbnormal checked: ', $("#isShowAbnormal").prop('checked'))
     vm.isShowAbnormal = true
   })
   $("input[name='isShowAbnormal']").on('ifUnchecked', function (event) {
-    console.log('isShowAbnormal unchecked: ', $("#isShowAbnormal").prop('checked'))
     vm.isShowAbnormal = false
   })
-
+  $("input[name='isShowAllTooltips']").on('ifChecked', function (event) {
+    vm.isShowAllTooltips = true
+  })
+  $("input[name='isShowAllTooltips']").on('ifUnchecked', function (event) {
+    vm.isShowAllTooltips = false
+  })
 
   $("input[name='selectedDataType']").on('ifChecked', function (event) {
     console.log('selectedDataType checked: ' + $("[name='selectedDataType']:checked").val(), vm.selectedDataType)

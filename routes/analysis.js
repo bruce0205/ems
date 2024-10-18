@@ -28,9 +28,10 @@ module.exports = (app, db) => {
     })
 
     router.get('/api/partNo', function (req, res, next) {
-      db.query(`
-        select distinct [料號] from GetMFGHistory('${req.query.fromDate}','${req.query.endDate}') where [機台] = '${req.query.machineNo}'
-      `, {
+      var sql = `select distinct [料號] from GetMFGHistory('${req.query.fromDate}','${req.query.endDate}')`
+      if (req.query.machineNo) sql = sql + ` where [機台] = '${req.query.machineNo}'`
+
+      db.query(sql, {
         raw: false, // Set this to true if you don't have a model definition for your query.
         type: Sequelize.QueryTypes.SELECT
       }).then(data => {
@@ -41,9 +42,10 @@ module.exports = (app, db) => {
     })
 
     router.get('/api/moldNo', function (req, res, next) {
-      db.query(`
-        select distinct [模號] from GetMFGHistory('${req.query.fromDate}','${req.query.endDate}') where [機台] = '${req.query.machineNo}' and [料號] = '${req.query.partNo}'
-      `, {
+      var sql = `select distinct [模號] from GetMFGHistory('${req.query.fromDate}','${req.query.endDate}') where [料號] = '${req.query.partNo}'`
+      if (req.query.machineNo) sql = sql + ` and [機台] = '${req.query.machineNo}'`
+
+      db.query(sql, {
         raw: false, // Set this to true if you don't have a model definition for your query.
         type: Sequelize.QueryTypes.SELECT
       }).then(data => {
