@@ -1,6 +1,8 @@
 const express = require('express');
 var Sequelize = require('sequelize');
 const router = express.Router();
+var xl = require('excel4node');
+const R = require('ramda');
 
 module.exports = (app, db) => {
     router.get('/', function (req, res, next) {
@@ -183,6 +185,145 @@ OPTION (MAXRECURSION 0);
         }).catch(err => {
           console.error(err);
         });
+    });
+
+    router.post('/excel', function (req, res, next) {
+      console.log('isShowAbnormal', req.body.isShowAbnormal)
+      const executions = []
+      let productSql = ''
+      req.body.productInfoList.forEach((productInfo) => {
+        productSql += ` insert into @typeSTA values ('${productInfo.manufactureNo}','${productInfo.partNo}','${productInfo.moldNo}') `
+      })
+
+      const execOne = db.query(`
+        declare @typeSTA as Type_STA
+        ${productSql}
+        exec [dbo].[GetMFGReport_sp] '${req.body.fromDate}','${req.body.endDate}','${req.body.timeUnit}', @typeSTA, '${req.body.groupType}'
+      `, {
+        raw: false, // Set this to true if you don't have a model definition for your query.
+        type: Sequelize.QueryTypes.SELECT
+      })
+      executions.push(execOne)
+
+      if (req.body.isShowAbnormal) {
+        const execTwo = db.query(`
+          declare @typeSTA as Type_STA
+          ${productSql}
+          exec [dbo].[GetMFGReport_ErrorList_sp] '${req.body.fromDate}','${req.body.endDate}','${req.body.timeUnit}', @typeSTA
+        `, {
+          raw: false, // Set this to true if you don't have a model definition for your query.
+          type: Sequelize.QueryTypes.SELECT
+        })
+        executions.push(execTwo)
+      }
+
+      Promise.all(executions)
+      .then((results) => {
+        const wb = new xl.Workbook();
+        const headerStyle = wb.createStyle({
+          font: {
+            color: '#FF0800',
+            size: 12
+          },
+          numberFormat: '$#,##0.00; ($#,##0.00); -'
+        });
+        const cellStyle = wb.createStyle({
+          font: {
+            color: '#646464',
+            size: 12
+          },
+          numberFormat: '#,##0;',
+          alignment: {
+            wrapText: true,
+          },
+        });
+
+        // 1) add "data" sheet
+        let ws = wb.addWorksheet('data');
+        let titles = R.keys(results[0][0])
+
+        titles.forEach(function (value, index) {
+          // 起始點：index == 0
+          let adjustValue = value
+          if (index === 0) adjustValue = 'series_name';
+          if (index === 1) adjustValue = 'date';
+          if (index === 2) adjustValue = 'MachineNo';
+          if (index === 3) adjustValue = 'PartNo';
+          if (index === 4) adjustValue = '班別';
+          if (index === 5) adjustValue = '員工帳號';
+          if (index === 6) adjustValue = '員工姓名';
+          if (index === 7) adjustValue = '良品數量(ea)';
+          if (index === 8) adjustValue = '稼動率(%)';
+          if (index === 9) adjustValue = '良率(%)';
+          if (index === 10) adjustValue = '實際稼動秒數(sec)';
+
+          ws.cell(1, index + 1).string(adjustValue).style(headerStyle);
+        })
+
+        const numberColumnIndex = [
+          7, // Normal_count
+          8, // rateCT
+          9, // Quality
+          10, // ttlCT
+        ];
+        results[0].forEach(function (row, i) {
+          let cells = R.values(row)
+          cells.forEach(function (cell, j) {
+            if (cell === 0 || cell) {
+              if (R.contains(j, numberColumnIndex)) {
+                ws.cell(i + 2, j + 1).number(cell).style(cellStyle);
+              } else {
+                ws.cell(i + 2, j + 1).string(cell.toString().replace(/\r?\n/g, "\r\n")).style(cellStyle);
+              }
+            } else {
+              ws.cell(i + 2, j + 1).string('').style(cellStyle);
+            }
+          })
+        })
+
+        // TODO: 2) add "error" sheet
+        if (req.body.isShowAbnormal) {
+          let errorWs = wb.addWorksheet('error');
+          let titles = R.keys(results[1][0])
+
+          titles.forEach(function (value, index) {
+            // 起始點：index == 0
+            let adjustValue = value
+            if (index === 0) adjustValue = '日期';
+            if (index === 1) adjustValue = '不良原因id';
+            if (index === 2) adjustValue = '不良原因名稱';
+            if (index === 3) adjustValue = '不良數(ea)';
+            if (index === 4) adjustValue = '不良百分比(%)';
+
+            errorWs.cell(1, index + 1).string(adjustValue).style(headerStyle);
+          })
+
+          const numberColumnIndex = [
+            3, // Normal_count
+            4, // rateCT
+          ];
+          results[1].forEach(function (row, i) {
+            let cells = R.values(row)
+            cells.forEach(function (cell, j) {
+              if (cell === 0 || cell) {
+                if (R.contains(j, numberColumnIndex)) {
+                  errorWs.cell(i + 2, j + 1).number(cell).style(cellStyle);
+                } else {
+                  errorWs.cell(i + 2, j + 1).string(cell.toString().replace(/\r?\n/g, "\r\n")).style(cellStyle);
+                }
+              } else {
+                errorWs.cell(i + 2, j + 1).string('').style(cellStyle);
+              }
+            })
+          })
+        }
+
+        wb.write('ExcelFile.xlsx', res);
+
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
     });
 
     app.use('/analysis', router);

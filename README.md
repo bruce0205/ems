@@ -31,11 +31,11 @@ docker compose down -v
 docker compose up -d
 ```
 ```
-docker cp ./oeeAPP_20240711 sqlserver:/var/opt/mssql/data
+docker cp ./oeeAPP_20241018 sqlserver:/var/opt/mssql/data
 ```
 ```
 RESTORE DATABASE oeeAPP
-FROM DISK = '/var/opt/mssql/data/oeeAPP_20240711'
+FROM DISK = '/var/opt/mssql/data/oeeAPP_20241018'
 WITH MOVE 'oeeAPP' TO '/var/opt/mssql/data/oeeAPP.mdf',
 MOVE 'oeeAPP_Log' TO '/var/opt/mssql/data/oeeAPP.ldf';
 // wait 2 mins...

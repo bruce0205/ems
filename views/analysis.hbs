@@ -133,24 +133,29 @@
                   </product-info>
                 </div>
               </div>
-              <div class="col-md-6 col-sm-6 col-xs-6 form-group"></div>
+              {{!-- <div class="col-md-6 col-sm-6 col-xs-6 form-group"></div> --}}
 
-              <div class="col-md-6 col-sm-6 col-xs-6 form-group" style="display: flex; flex-direction: row; align-items: center; justify-content: end; column-gap: 20px">
-                  <div class="checkbox">
-                    <label>
-                      <input id="isShowAllTooltips" name="isShowAllTooltips" type="checkbox" class="flat" v-model="isShowAllTooltips">
-                      &nbsp;&nbsp;&nbsp;&nbsp;自動顯示圖表資料數據
-                    </label>
-                  </div>
-                <button id="searchBtn" type="button" style="float: right;" class="btn btn-primary" :disabled="!isEnableSearch" @click="search">
+              <div class="col-md-12 col-sm-12 col-xs-12 form-group" style="display: flex; flex-direction: row; align-items: center; justify-content: end;">
+                <div class="checkbox">
+                  <label>
+                    <input id="isShowAllTooltips" name="isShowAllTooltips" type="checkbox" class="flat" v-model="isShowAllTooltips">
+                    &nbsp;&nbsp;&nbsp;&nbsp;自動顯示圖表資料數據
+                  </label>
+                </div>
+                <button id="searchBtn" type="button" style="float: right; margin-left: 20px" class="btn btn-primary" :disabled="!isEnableSearch" @click="search">
                   <i class="fa fa-search" style="margin-right: 10px"></i>Search
                 </button>
               </div>
-
             </form>
 
 
             <div class="ln_solid"></div>
+            <div class="col-md-12 col-sm-12 col-xs-12 form-group">
+              <button id="excelBtn" type="button" style="float: right;display: none" class="btn btn-success"
+                @click="download">
+                <i class="fa fa-download" style="margin-right: 10px"></i>Download
+              </button>
+            </div>
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div v-if="isShowChart" id="chartReport">
                 <canvas style="height: 400px; padding-top: 20px; width: 100%;"  id="myChart4" ></canvas>
@@ -806,9 +811,41 @@ let vm = new Vue({
     deleteProductInfo(index) {
       this.productInfoList.splice(index, 1)
     },
+    async download() {
+      var body = {
+        fromDate: this.selectedFromDate,
+        endDate: this.selectedEndDate,
+        timeUnit: this.selectedTimeUnit,
+        dataType: this.selectedDataType,
+        groupType: this.selectedGroupType,
+        isShowAbnormal: this.isShowAbnormal,
+        productInfoList: this.productInfoList,
+      }
+      var header = {
+        'Content-Type': 'application/json'
+      }
+      fetch('/analysis/excel', {
+        method: 'POST',
+        credentials: "same-origin",
+        body: JSON.stringify(body),
+        headers: new Headers(header),
+      })
+      .then(response => response.blob())
+      .then(blob => {
+        var url = window.URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'file.xlsx';  // 文件名
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+      .catch(err => console.error('Download failed:', err));
+    },
     async search() {
       // 1) clear chart
       this.clearChart()
+      $("#excelBtn").hide();
 
       // 2) fetch data
       await this.fetchAndGenData()
@@ -816,6 +853,7 @@ let vm = new Vue({
       // 3) update chart
       this.$nextTick(()=> {
         this.updateChart()
+        $("#excelBtn").show();
       })
     },
     updateChart() {
