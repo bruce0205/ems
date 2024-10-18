@@ -615,7 +615,16 @@ let vm = new Vue({
       const resultList = []
       const labelList = []
 
-      const groupedData = Object.groupBy(data?.data, ({ series_name }) => series_name);
+      var groupedData = (data && data.data || []).reduce(function (acc, item) {
+        var key = item.series_name;
+
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+
+        acc[key].push(item);
+        return acc;
+      }, {});
 
       for (const [seriesName, dataList] of Object.entries(groupedData)) {
         labelList.push(seriesName)
@@ -714,7 +723,16 @@ let vm = new Vue({
       const resultList = []
       const labelList = []
 
-      const groupedData = Object.groupBy(data?.data, ({ err_nam }) => err_nam);
+      var groupedData = (data && data.data || []).reduce(function (acc, item) {
+        var key = item.err_nam;
+
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+
+        acc[key].push(item);
+        return acc;
+      }, {});
 
       for (const [seriesName, dataList] of Object.entries(groupedData)) {
         labelList.push(seriesName?.trim())
