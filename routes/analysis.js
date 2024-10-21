@@ -245,10 +245,10 @@ OPTION (MAXRECURSION 0);
         titles.forEach(function (value, index) {
           // 起始點：index == 0
           let adjustValue = value
-          if (index === 0) adjustValue = 'series_name';
-          if (index === 1) adjustValue = 'date';
-          if (index === 2) adjustValue = 'MachineNo';
-          if (index === 3) adjustValue = 'PartNo';
+          if (index === 0) adjustValue = 'series';
+          if (index === 1) adjustValue = '日期';
+          if (index === 2) adjustValue = '機台';
+          if (index === 3) adjustValue = '料號';
           if (index === 4) adjustValue = '班別';
           if (index === 5) adjustValue = '員工帳號';
           if (index === 6) adjustValue = '員工姓名';
@@ -281,7 +281,7 @@ OPTION (MAXRECURSION 0);
           })
         })
 
-        // TODO: 2) add "error" sheet
+        // 2) add "error" sheet
         if (req.body.isShowAbnormal) {
           let errorWs = wb.addWorksheet('error');
           let titles = R.keys(results[1][0])
