@@ -534,7 +534,7 @@ let vm = new Vue({
           maintainAspectRatio: true,
           title: {
             display: true,
-            text: 'Chart Title'
+            text: '數據分析'
           },
           legend: { position: 'bottom' },
         }
@@ -865,7 +865,9 @@ let vm = new Vue({
       this.chartInstance.data.datasets.push(...this.datasets)
 
       var gropuTypeName = groupTypeConfig[this.selectedGroupType]?.name ? ` group by ${groupTypeConfig[this.selectedGroupType].name}` : ''
+      console.log('updateChart.title.before', this.chartInstance.options.title.text)
       this.chartInstance.options.title.text = dataTypeConfig[this.selectedDataType].name + gropuTypeName
+      console.log('updateChart.title.after', this.chartInstance.options.title.text)
       this.chartInstance.options.showAllTooltips = this.isShowAllTooltips;
       if (this.isShowAllTooltips) {
         Chart.pluginService.register(alwaysShowTooltipPlugin);
