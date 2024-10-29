@@ -295,7 +295,6 @@ const xAxes = {
   stacked: false,
   gridLines: {
     display: false,
-    offsetGridLines: false,
   }
 }
 const leftYAxes = {
@@ -878,9 +877,19 @@ let vm = new Vue({
     },
     buildChartTemplate() {
       // step 1: fetch data
-      const labels = ["07-01","07-02","07-03","07-04","07-05","07-06","07-07","07-08","07-09"]
+      const labels = ["2024-07-01","2024-07-02","2024-07-03","2024-07-04","2024-07-05","2024-07-06","2024-07-07","2024-07-08","2024-07-09", "2024-07-01","2024-07-02","2024-07-03","2024-07-04","2024-07-05","2024-07-06","2024-07-07","2024-07-08","2024-07-09"]
       const dataList = [
         [
+          {value: 93},
+          {value: 92},
+          {value: 91},
+          {value: 96},
+          {value: 97},
+          {value: 98},
+          {value: 92},
+          {value: 93},
+          {value: 91},
+          {value: 94},
           {value: 93},
           {value: 92},
           {value: 91},
@@ -902,8 +911,26 @@ let vm = new Vue({
           {value: 94},
           {value: 98},
           {value: 99},
+          {value: 94},
+          {value: 99},
+          {value: 95},
+          {value: 94},
+          {value: 98},
+          {value: 94},
+          {value: 94},
+          {value: 98},
+          {value: 99},
         ],
         [
+          {reason: "白點", value: 3},
+          {reason: "黑點", value: 3},
+          {reason: "亮點", value: 4},
+          {reason: "光點", value: 5},
+          {reason: "白點", value: 1},
+          {reason: "黑點", value: 2},
+          {reason: "亮點", value: 5},
+          {reason: "光點", value: 6},
+          {reason: "白點", value: 8},
           {reason: "白點", value: 3},
           {reason: "黑點", value: 3},
           {reason: "亮點", value: 4},
@@ -924,8 +951,26 @@ let vm = new Vue({
           {reason: "黑點", value: 9},
           {reason: "光點", value: 1},
           {reason: "白點", value: 2},
+          {reason: "汙點", value: 3},
+          {reason: "白點", value: 4},
+          {reason: "汙點", value: 5},
+          {reason: "黑點", value: 6},
+          {reason: "亮點", value: 7},
+          {reason: "光點", value: 8},
+          {reason: "黑點", value: 9},
+          {reason: "光點", value: 1},
+          {reason: "白點", value: 2},
         ], // rank 2
         [
+          {reason: "亮點", value: 4},
+          {reason: "白點", value: 1},
+          {reason: "黑點", value: 2},
+          {reason: "白點", value: 3},
+          {reason: "汙點", value: 5},
+          {reason: "黑點", value: 5},
+          {reason: "光點", value: 2},
+          {reason: "亮點", value: 1},
+          {reason: "光點", value: 5},
           {reason: "亮點", value: 4},
           {reason: "白點", value: 1},
           {reason: "黑點", value: 2},
