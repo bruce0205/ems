@@ -462,6 +462,13 @@ let vm = new Vue({
             data: item.map((x) => x.value),
           })
         })
+      } else {
+          tempList.push({
+            yAxisID: 'B',
+            label: 'empty',
+            data: this.leftDataList[0].map((x) => x.value),
+            hidden: true,
+          })
       }
 
       return tempList
@@ -535,7 +542,15 @@ let vm = new Vue({
             display: true,
             text: '數據分析'
           },
-          legend: { position: 'bottom' },
+          legend: {
+            position: 'bottom',
+            labels: {
+              filter: function(item, chart) {
+                // Logic to remove a particular legend item goes here
+                return !item.text.includes('empty');
+              }
+            }
+          },
         }
         if (this.isShowAllTooltips) {
           Chart.pluginService.register(alwaysShowTooltipPlugin);
@@ -882,8 +897,9 @@ let vm = new Vue({
       })
     },
     updateChart() {
-      // TODO: change ticks unit
       document.getElementById("myChart4").style.display = null;
+      console.log('this.labels', this.labels)
+      console.log('this.datasets', this.datasets)
       this.chartInstance.data.labels.push(...this.labels);
       this.chartInstance.data.datasets.push(...this.datasets)
 
@@ -892,7 +908,7 @@ let vm = new Vue({
       this.chartInstance.options.showAllTooltips = this.isShowAllTooltips;
 
       // console.log('this.isShowAbnormal', this.isShowAbnormal)
-      this.chartInstance.options.scales.xAxes[0].gridLines.offsetGridLines = this.isShowAbnormal
+      // this.chartInstance.options.scales.xAxes[0].gridLines.offsetGridLines = this.isShowAbnormal
 
       if (this.isShowAllTooltips) {
         Chart.pluginService.register(alwaysShowTooltipPlugin);
