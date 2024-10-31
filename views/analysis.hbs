@@ -158,7 +158,7 @@
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div v-if="isShowChart" id="chartReport">
-                <canvas style="height: 400px; padding-top: 20px; width: 100%;"  id="myChart4" ></canvas>
+                <canvas style="height: 400px; padding-top: 20px; width: 100%"  id="myChart4" ></canvas>
               </div>
             </div>
           </div>
@@ -552,6 +552,13 @@ let vm = new Vue({
             }
           },
         }
+        Chart.pluginService.register({
+          beforeDraw: function(c) {
+            var ctx = c.chart.ctx;
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, c.chart.width, c.chart.height);
+          }
+        })
         if (this.isShowAllTooltips) {
           Chart.pluginService.register(alwaysShowTooltipPlugin);
         }
